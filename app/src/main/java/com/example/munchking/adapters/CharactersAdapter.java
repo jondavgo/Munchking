@@ -12,18 +12,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.munchking.R;
-import com.example.munchking.models.Character;
+import com.example.munchking.models.CharPost;
 import com.parse.ParseFile;
 
 import java.util.List;
 
 public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.ViewHolder> {
 
-    List<Character> characters;
+    List<CharPost> charPosts;
     Context context;
 
-    public CharactersAdapter(List<Character> characters, Context context) {
-        this.characters = characters;
+    public CharactersAdapter(List<CharPost> charPosts, Context context) {
+        this.charPosts = charPosts;
         this.context = context;
     }
 
@@ -37,22 +37,22 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Character character = characters.get(position);
-        holder.bind(character);
+        CharPost charPost = charPosts.get(position);
+        holder.bind(charPost);
     }
 
     @Override
     public int getItemCount() {
-        return characters.size();
+        return charPosts.size();
     }
 
-    public void addAll(List<Character> c){
-        characters.addAll(c);
+    public void addAll(List<CharPost> c){
+        charPosts.addAll(c);
         notifyDataSetChanged();
     }
 
     public void clear(){
-        characters.clear();
+        charPosts.clear();
         notifyDataSetChanged();
     }
 
@@ -71,11 +71,11 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.Vi
             tvUser = itemView.findViewById(R.id.tvUser);
         }
 
-        public void bind(Character character) {
-            tvName.setText(character.getName());
-            tvTtrpg.setText(character.getTtrpg());
-            tvUser.setText(character.getUser().getUsername());
-            ParseFile photo = character.getPhoto();
+        public void bind(CharPost charPost) {
+            tvName.setText(charPost.getName());
+            tvTtrpg.setText(charPost.getTtrpg());
+            tvUser.setText(charPost.getUser().getUsername());
+            ParseFile photo = charPost.getPhoto();
             if(photo != null) {
                 Glide.with(context).load(photo.getUrl()).into(ivPhoto);
             }

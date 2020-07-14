@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.example.munchking.R;
+import com.example.munchking.models.CharPost;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -68,14 +69,16 @@ public class ComposeFragment extends Fragment {
     }
 
     private void savePost() {
-
+        // TODO
+        CharPost character = new CharPost();
+        //character.setName();
     }
 
     private void GoToGallery() {
-
+        // TODO
     }
 
     private void GoToCamera() {
-
+        // TODO
     }
 }

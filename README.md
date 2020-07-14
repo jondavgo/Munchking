@@ -8,12 +8,12 @@
 
 ## Overview
 ### Description
-This app allows its users to upload D&D (or any TTRPG) character, browse other user's sheets, and give their opinion on them through likes and comments.
+This app allows its users to upload D&D (or any TTRPG) charPost, browse other user's sheets, and give their opinion on them through likes and comments.
 
 ### App Evaluation
 - **Category:** Entertainment
 - **Mobile:** The app uses its camera to allow for the uploading of images for posting and the creation of profile pictures. Additionally, it allows for push notifications that let users know if their posts were liked/commented on in real time.
-- **Story:** People who play Tabletop RPGs cherish their characters and hold them in high regard. Whether people want to show off their character sheet for a character they are playing currently or want to theory craft a character to show their fullest potential, people would be more than willing to post.
+- **Story:** People who play Tabletop RPGs cherish their charPosts and hold them in high regard. Whether people want to show off their charPost sheet for a charPost they are playing currently or want to theory craft a charPost to show their fullest potential, people would be more than willing to post.
 - **Market:** Tabletop RPGs have blown up in recent years due to the creation of D&D 5th Edition and its large following. In addition to this, celebrities like voice actor Matthew Mercer have begun openly supporting and enjoying the game, making it closer to the mainstream than it has been before.
 - **Habit:** Users of this app can both interact with other user's creations or post their own. 
 - **Scope:** The app seems reasonable to make in 4 weeks. Even stripped to its bare bones, the app provides many interesting challenges for myself as an app developer.

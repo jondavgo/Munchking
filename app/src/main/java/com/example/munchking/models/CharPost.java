@@ -6,7 +6,7 @@ import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 @ParseClassName("Character")
-public class Character extends ParseObject {
+public class CharPost extends ParseObject {
 
     // Keys
     public static final String KEY_NAME = "name";
@@ -15,7 +15,7 @@ public class Character extends ParseObject {
     public static final String KEY_USER = "creator";
 
     // Required empty constructor
-    public Character(){}
+    public CharPost(){}
 
     // Getters
     public String getName() {

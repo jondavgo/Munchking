@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.example.munchking.R;
 import com.example.munchking.adapters.CharactersAdapter;
-import com.example.munchking.models.Character;
+import com.example.munchking.models.CharPost;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -30,7 +30,7 @@ import java.util.List;
 public class HomeFragment extends Fragment {
 
     private CharactersAdapter adapter;
-    private List<Character> characters;
+    private List<CharPost> charPosts;
 
     private RecyclerView rvChars;
 
@@ -49,8 +49,8 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        characters = new ArrayList<>();
-        adapter = new CharactersAdapter(characters, getContext());
+        charPosts = new ArrayList<>();
+        adapter = new CharactersAdapter(charPosts, getContext());
 
         rvChars = view.findViewById(R.id.rvChars);
 
@@ -61,11 +61,11 @@ public class HomeFragment extends Fragment {
     }
 
     private void query() {
-        ParseQuery<Character> query = ParseQuery.getQuery(Character.class);
-        query.include(Character.KEY_USER);
-        query.findInBackground(new FindCallback<Character>() {
+        ParseQuery<CharPost> query = ParseQuery.getQuery(CharPost.class);
+        query.include(CharPost.KEY_USER);
+        query.findInBackground(new FindCallback<CharPost>() {
             @Override
-            public void done(List<Character> objects, ParseException e) {
+            public void done(List<CharPost> objects, ParseException e) {
                 if(e == null){
                     adapter.addAll(objects);
                 } else {
