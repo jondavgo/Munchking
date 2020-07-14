@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private BottomNavigationView bottomNav;
-    private FrameLayout flContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar);
         bottomNav = findViewById(R.id.bottomNav);
-        flContainer = findViewById(R.id.flContainer);
 
         setSupportActionBar(toolbar);
 

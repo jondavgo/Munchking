@@ -46,6 +46,16 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.Vi
         return characters.size();
     }
 
+    public void addAll(List<Character> c){
+        characters.addAll(c);
+        notifyDataSetChanged();
+    }
+
+    public void clear(){
+        characters.clear();
+        notifyDataSetChanged();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         ImageView ivPhoto;

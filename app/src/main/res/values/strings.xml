@@ -13,4 +13,8 @@
     <string name="create_a_character">Create a Character!</string>
     <string name="profile">Profile</string>
     <string name="character_image">Character Image</string>
+    <string name="post">Post</string>
+    <string name="character_name">Character Name</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="view_gallery">View Gallery</string>
 </resources>
