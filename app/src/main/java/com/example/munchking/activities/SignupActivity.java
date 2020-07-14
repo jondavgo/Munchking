@@ -3,14 +3,77 @@ package com.example.munchking.activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.munchking.R;
+import com.parse.ParseException;
+import com.parse.ParseUser;
+import com.parse.SignUpCallback;
 
 public class SignupActivity extends AppCompatActivity {
+
+    Button btnSignup;
+    EditText etUsername;
+    EditText etEmail;
+    EditText etPassword;
+    EditText etConfirm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+
+        btnSignup = findViewById(R.id.btnSignUp);
+        etUsername = findViewById(R.id.etUsername);
+        etEmail = findViewById(R.id.etEmail);
+        etPassword = findViewById(R.id.etPassword);
+        etConfirm = findViewById(R.id.etConfirm);
+
+        etUsername.setText(getIntent().getStringExtra("user"));
+        etPassword.setText(getIntent().getStringExtra("password"));
+
+        btnSignup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String username = etUsername.getText().toString();
+                String password = etPassword.getText().toString();
+                String email = etEmail.getText().toString();
+                String confirm = etConfirm.getText().toString();
+                if(password.equals(confirm)) {
+                    signUp(username, password, email);
+                } else {
+                    Toast.makeText(SignupActivity.this, "Passwords do not match!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void signUp(String username, String password, String email) {
+        // Create the ParseUser
+        ParseUser user = new ParseUser();
+        // Set core properties
+        user.setUsername(username);
+        user.setPassword(password);
+        user.setEmail(email);
+        // Set custom properties
+
+        // Invoke signUpInBackground
+        user.signUpInBackground(new SignUpCallback() {
+            public void done(ParseException e) {
+                if (e == null) {
+                    // Hooray! Let them use the app now.
+                    LoginActivity.goToMain(SignupActivity.this);
+                } else {
+                    // Sign up didn't succeed. Look at the ParseException
+                    // to figure out what went wrong
+                    Log.e("SignupActivity", "Sign up failed!!!", e);
+                    Toast.makeText(SignupActivity.this, "Unable to sign up. Please try again!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }
