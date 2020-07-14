@@ -12,4 +12,5 @@
     <string name="home">Home</string>
     <string name="create_a_character">Create a Character!</string>
     <string name="profile">Profile</string>
+    <string name="character_image">Character Image</string>
 </resources>
