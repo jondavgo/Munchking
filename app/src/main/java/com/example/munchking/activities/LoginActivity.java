@@ -28,6 +28,11 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        // Login Persistence
+        if(ParseUser.getCurrentUser() != null){
+            goToMain(this);
+        }
+
         btnLogin = findViewById(R.id.btnLogin);
         btnSignup = findViewById(R.id.btnSignUp);
         etUser = findViewById(R.id.etUsername);
@@ -46,6 +51,13 @@ public class LoginActivity extends AppCompatActivity {
                 signIn();
             }
         });
+
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        if (currentUser != null) {
+            // do stuff with the user
+        } else {
+            // show the signup or login screen
+        }
     }
 
     private void signIn() {
