@@ -53,19 +53,23 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 Fragment fragment;
+                String tag;
                 switch (item.getItemId()) {
                     case R.id.action_home:
                         fragment = fragment1;
+                        tag = "home";
                         break;
                     case R.id.action_new:
                         fragment = fragment2;
+                        tag = "compose";
                         break;
                     case R.id.action_profile:
                     default:
                         fragment = fragment3;
+                        tag = "profile";
                         break;
                 }
-                fragMan.beginTransaction().replace(R.id.flContainer, fragment).commit();
+                fragMan.beginTransaction().replace(R.id.flContainer, fragment, tag).commit();
                 return true;
             }
         });

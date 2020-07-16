@@ -99,8 +99,8 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.Vi
             fragment.setArguments(args);
             FragmentManager fragmentManager = ((MainActivity)context).getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.flContainer, fragment,"tag");
-            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.replace(R.id.flContainer, fragment,"details");
+            fragmentTransaction.addToBackStack("home");
             fragmentTransaction.commit();
         }
     }
