@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="games_array">
+        <item>Dungeons and Dragons 5e</item>
+        <item>Dungeons and Dragons 3.5e</item>
+        <item>Pathfinder</item>
+        <item>Pathfinder 2e</item>
+        <item>Call of Cthulu 7e</item>
+        <item>Warhammer 40k</item>
+        <item>Cyberpunk</item>
+        <item>Other</item>
+    </string-array>
+</resources>

@@ -29,10 +29,10 @@ import java.util.List;
  */
 public class HomeFragment extends Fragment {
 
-    private CharactersAdapter adapter;
-    private List<CharPost> charPosts;
+    protected CharactersAdapter adapter;
+    protected List<CharPost> charPosts;
 
-    private RecyclerView rvChars;
+    protected RecyclerView rvChars;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -60,7 +60,7 @@ public class HomeFragment extends Fragment {
         query();
     }
 
-    private void query() {
+    protected void query() {
         ParseQuery<CharPost> query = ParseQuery.getQuery(CharPost.class);
         query.include(CharPost.KEY_USER);
         query.findInBackground(new FindCallback<CharPost>() {

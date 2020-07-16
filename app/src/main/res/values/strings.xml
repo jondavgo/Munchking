@@ -17,4 +17,5 @@
     <string name="character_name">Character Name</string>
     <string name="take_photo">Take Photo</string>
     <string name="view_gallery">View Gallery</string>
+    <string name="choose_a_game">Choose a Game...</string>
 </resources>
