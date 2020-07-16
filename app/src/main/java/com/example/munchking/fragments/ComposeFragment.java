@@ -145,15 +145,7 @@ public class ComposeFragment extends Fragment {
                 Toast.makeText(getContext(), "Post saved!", Toast.LENGTH_SHORT).show();
                 etCharName.setText("");
                 ivPreview.setImageResource(0);
-                DetailFragment fragment = new DetailFragment();
-                Bundle args = new Bundle();
-                args.putParcelable("post", Parcels.wrap(post));
-                fragment.setArguments(args);
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.flContainer, fragment,"details");
-                fragmentTransaction.addToBackStack("compose");
-                fragmentTransaction.commit();
+                toDetails(post);
             }
         });
     }
@@ -219,6 +211,18 @@ public class ComposeFragment extends Fragment {
         } else {
             Toast.makeText(getContext(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void toDetails(CharPost post) {
+        DetailFragment fragment = new DetailFragment();
+        Bundle args = new Bundle();
+        args.putParcelable("post", Parcels.wrap(post));
+        fragment.setArguments(args);
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.flContainer, fragment,"details");
+        fragmentTransaction.addToBackStack("compose");
+        fragmentTransaction.commit();
     }
 
     public Bitmap loadFromUri(Uri photoUri) {
