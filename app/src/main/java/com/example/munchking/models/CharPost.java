@@ -5,6 +5,9 @@ import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
+import org.parceler.Parcel;
+
+@Parcel(analyze={CharPost.class})
 @ParseClassName("Character")
 public class CharPost extends ParseObject {
 

@@ -14,6 +14,8 @@ import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.exifinterface.media.ExifInterface;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -36,6 +38,9 @@ import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import org.parceler.Parcels;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -101,7 +106,7 @@ public class ComposeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 String name = etCharName.getText().toString();
-                savePost(name, selectedGame, ParseUser.getCurrentUser(), photoFile);
+                savePost(name, selectedGame, ParseUser.getCurrentUser(), file);
             }
         });
 
@@ -123,12 +128,11 @@ public class ComposeFragment extends Fragment {
         });
     }
 
-    // TODO fix image gallery posting by turning bitmap to byte[]
-    private void savePost(String name, String ttrpg, ParseUser user, File photoFile) {
-        CharPost post = new CharPost();
+    private void savePost(String name, String ttrpg, ParseUser user, ParseFile myFile) {
+        final CharPost post = new CharPost();
         post.setName(name);
         post.setTtrpg(ttrpg);
-        post.setPhoto(new ParseFile(photoFile));
+        post.setPhoto(myFile);
         post.setUser(user);
         post.saveInBackground(new SaveCallback() {
             @Override
@@ -142,6 +146,15 @@ public class ComposeFragment extends Fragment {
                 etCharName.setText("");
                 ivPreview.setImageResource(0);
                 // TODO: Go to detail activity/fragment for this post
+                DetailFragment fragment = new DetailFragment();
+                Bundle args = new Bundle();
+                args.putParcelable("post", Parcels.wrap(post));
+                fragment.setArguments(args);
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.flContainer, fragment,"tag");
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
             }
         });
     }
@@ -190,14 +203,16 @@ public class ComposeFragment extends Fragment {
                 case CAMERA_REQUEST_CODE:
                     Bitmap takenImage = rotateBitmapOrientation(photoFile.getAbsolutePath());
                     ivPreview.setImageBitmap(takenImage);
+                    file = new ParseFile(photoFile);
                     break;
                 case GALLERY_REQUEST_CODE:
                     Uri photoUri = data.getData();
-
                     // Load the image located at photoUri into selectedImage
                     Bitmap selectedImage = loadFromUri(photoUri);
-                    file = new ParseFile(photoFileName, selectedImage.getNinePatchChunk());
-
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    selectedImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    byte[] image = stream.toByteArray();
+                    file = new ParseFile(photoFileName, image);
                     // Load the selected image into a preview
                     ivPreview.setImageBitmap(selectedImage);
                     break;
