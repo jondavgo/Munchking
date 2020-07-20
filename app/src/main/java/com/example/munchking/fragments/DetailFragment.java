@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +34,12 @@ public class DetailFragment extends Fragment {
     TextView tvUser;
     Button btnComments;
     CharPost charPost;
+    TextView tvDescName;
+    TextView tvDescription;
+    TextView tvTraitName;
+    RecyclerView rvTraits;
+    TextView tvEquipName;
+    RecyclerView rvEquipment;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -53,6 +60,12 @@ public class DetailFragment extends Fragment {
         tvTtrpg = itemView.findViewById(R.id.tvTtrpg);
         tvUser = itemView.findViewById(R.id.tvUser);
         btnComments = itemView.findViewById(R.id.btnComments);
+        tvDescName = itemView.findViewById(R.id.tvWordDesc);
+        tvDescription = itemView.findViewById(R.id.tvDesc);
+        tvTraitName = itemView.findViewById(R.id.tvTraits);
+        tvEquipName = itemView.findViewById(R.id.tvEquipment);
+        rvEquipment = itemView.findViewById(R.id.rvEquipment);
+        rvTraits = itemView.findViewById(R.id.rvTraits);
         charPost = Parcels.unwrap(getArguments().getParcelable("post"));
 
         tvName.setText(charPost.getName());
@@ -77,5 +90,31 @@ public class DetailFragment extends Fragment {
                 fragmentTransaction.commit();
             }
         });
+        tvEquipName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggleVisibility(rvEquipment);
+            }
+        });
+        tvTraitName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggleVisibility(rvTraits);
+            }
+        });
+        tvDescName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggleVisibility(tvDescription);
+            }
+        });
+    }
+
+    private void toggleVisibility(View view){
+        if(view.getVisibility() == View.GONE){
+            view.setVisibility(View.VISIBLE);
+        } else {
+            view.setVisibility(View.GONE);
+        }
     }
 }
