@@ -39,8 +39,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.i("MainActivity", "Logged in as " + ParseUser.getCurrentUser().getUsername());
-
         fragMan = getSupportFragmentManager();
 
         toolbar = findViewById(R.id.toolbar);
@@ -48,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
-        // TODO: Set up BottomNavigation
         bottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -74,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         bottomNav.setSelectedItemId(R.id.action_home);
-        // TODO: Set up Frame Navigation
     }
 
     private void signOut(){
