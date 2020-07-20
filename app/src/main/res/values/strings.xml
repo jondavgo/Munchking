@@ -20,4 +20,5 @@
     <string name="choose_a_game">Choose a Game...</string>
     <string name="comments">Comments</string>
     <string name="type_your_comment">Type your comment...</string>
+    <string name="description">DESCRIPTION</string>
 </resources>

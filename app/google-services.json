@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "669579249760",
+    "firebase_url": "https://munchking-ee833.firebaseio.com",
+    "project_id": "munchking-ee833",
+    "storage_bucket": "munchking-ee833.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:669579249760:android:bcf6626260c5b31b005b05",
+        "android_client_info": {
+          "package_name": "com.example.munchking"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "669579249760-rj33s5s2a4mhehop0l1u59jreo5b70r9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhS9-bXk-9sUrJkFNey-07i4NtwTvAiBY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "669579249760-rj33s5s2a4mhehop0l1u59jreo5b70r9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

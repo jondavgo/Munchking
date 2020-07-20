@@ -14,8 +14,8 @@
             android:layout_height="128dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:contentDescription="@string/character_image"
             tools:srcCompat="@tools:sample/avatars" />
 
@@ -23,7 +23,9 @@
             android:id="@+id/tvName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:layout_toEndOf="@+id/ivPhoto"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="#000000"
@@ -40,7 +42,7 @@
             android:layout_toEndOf="@+id/ivPhoto"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#000000"
-            tools:text="From: D&amp;D 5e" />
+            tools:text="From: Dungeons &amp; Dragons 5e" />
 
         <TextView
             android:id="@+id/tvUser"
@@ -58,11 +60,55 @@
             android:id="@+id/btnComments"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/ivPhoto"
+            android:layout_below="@+id/tvDesc"
             android:layout_alignParentStart="true"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:text="@string/comments" />
+
+        <TextView
+            android:id="@+id/tvDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvWordDesc"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            tools:text='Daniel "Dart" Solaire was born in Baycliff to an average family. On his 16th birthday, he awoke to a strange power within him, transforming him from a run of the mill farmhand to a knack with a longbow!' />
+
+        <TextView
+            android:id="@+id/tvWordDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvClass"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/description"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvClass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView4"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            tools:text="Class: Fighter 11" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ivPhoto"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            tools:text="Race: Protector Aasimar" />
 
     </RelativeLayout>
 </ScrollView>
