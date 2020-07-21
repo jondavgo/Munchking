@@ -1,5 +1,6 @@
 package com.example.munchking.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -44,6 +45,7 @@ import org.parceler.Parcels;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -60,6 +62,7 @@ public class ComposeFragment extends Fragment {
     private final String photoFileName = "image.jpg";
     private String[] games;
     private String selectedGame;
+    private Context context;
 
     private Button btnCam;
     private Button btnGallery;
@@ -84,6 +87,7 @@ public class ComposeFragment extends Fragment {
 
         games = getResources().getStringArray(R.array.games_array);
         selectedGame = "";
+        context = getContext();
 
         btnCam = view.findViewById(R.id.btnCam);
         btnGallery = view.findViewById(R.id.btnGallery);
@@ -121,7 +125,7 @@ public class ComposeFragment extends Fragment {
         });
 
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.games_array, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context, R.array.games_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -168,7 +172,7 @@ public class ComposeFragment extends Fragment {
     private void GoToGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
-        if (intent.resolveActivity(getContext().getPackageManager()) != null) {
+        if (intent.resolveActivity(context.getPackageManager()) != null) {
             // Bring up gallery to select a photo
             startActivityForResult(intent, GALLERY_REQUEST_CODE);
         }
@@ -176,19 +180,19 @@ public class ComposeFragment extends Fragment {
 
     private void GoToCamera() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        photoFile = getPhotoFileUri(photoFileName);
+        photoFile = getPhotoFileUri();
 
-        Uri fileProvider = FileProvider.getUriForFile(getContext(), "com.codepath.fileprovider.gomez-munchking", photoFile);
+        Uri fileProvider = FileProvider.getUriForFile(context, "com.codepath.fileprovider.gomez-munchking", photoFile);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
 
-        if (intent.resolveActivity(getContext().getPackageManager()) != null) {
+        if (intent.resolveActivity(context.getPackageManager()) != null) {
             // Start the image capture intent to take photo
             startActivityForResult(intent, CAMERA_REQUEST_CODE);
         }
     }
 
-    private File getPhotoFileUri(String fileName) {
-        File mediaStorageDir = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), TAG);
+    private File getPhotoFileUri() {
+        File mediaStorageDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), TAG);
 
         // Create the storage directory if it does not exist
         if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()){
@@ -196,9 +200,7 @@ public class ComposeFragment extends Fragment {
         }
 
         // Return the file target for the photo based on filename
-        File file = new File(mediaStorageDir.getPath() + File.separator + fileName);
-
-        return file;
+        return new File(mediaStorageDir.getPath() + File.separator + "image.jpg");
     }
 
     @Override
@@ -233,7 +235,7 @@ public class ComposeFragment extends Fragment {
         Bundle args = new Bundle();
         args.putParcelable("post", Parcels.wrap(post));
         fragment.setArguments(args);
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.flContainer, fragment,"details");
         fragmentTransaction.addToBackStack("compose");
@@ -246,11 +248,11 @@ public class ComposeFragment extends Fragment {
             // check version of Android on device
             if(Build.VERSION.SDK_INT > 27){
                 // on newer versions of Android, use the new decodeBitmap method
-                ImageDecoder.Source source = ImageDecoder.createSource(getContext().getContentResolver(), photoUri);
+                ImageDecoder.Source source = ImageDecoder.createSource(context.getContentResolver(), photoUri);
                 image = ImageDecoder.decodeBitmap(source);
             } else {
                 // support older versions of Android by using getBitmap
-                image = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), photoUri);
+                image = MediaStore.Images.Media.getBitmap(context.getContentResolver(), photoUri);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -272,6 +274,7 @@ public class ComposeFragment extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        assert exif != null;
         String orientString = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
         int orientation = orientString != null ? Integer.parseInt(orientString) : ExifInterface.ORIENTATION_NORMAL;
         int rotationAngle = 0;
@@ -281,8 +284,7 @@ public class ComposeFragment extends Fragment {
         // Rotate Bitmap
         Matrix matrix = new Matrix();
         matrix.setRotate(rotationAngle, (float) bm.getWidth() / 2, (float) bm.getHeight() / 2);
-        Bitmap rotatedBitmap = Bitmap.createBitmap(bm, 0, 0, bounds.outWidth, bounds.outHeight, matrix, true);
         // Return result
-        return rotatedBitmap;
+        return Bitmap.createBitmap(bm, 0, 0, bounds.outWidth, bounds.outHeight, matrix, true);
     }
 }
