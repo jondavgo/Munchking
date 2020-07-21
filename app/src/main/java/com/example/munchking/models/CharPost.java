@@ -1,12 +1,19 @@
 package com.example.munchking.models;
 
+import androidx.core.util.Pair;
+
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.parceler.Parcel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Parcel(analyze={CharPost.class})
 @ParseClassName("Character")
@@ -98,5 +105,47 @@ public class CharPost extends ParseObject {
 
     public void setEquipment(JSONArray equipment) {
          put(KEY_EQUIP, equipment);
+    }
+
+    // Misc. Methods
+    // TODO
+    public static List<Pair<String, String>> fromJSONArray(){
+        return new ArrayList<>();
+    }
+
+    public void addTraitEquip(Pair<String, String> item, boolean trait) throws JSONException {
+        JSONArray arr;
+        if(trait){
+            arr = getTraits();
+        } else {
+            arr = getEquipment();
+        }
+
+        JSONObject object = new JSONObject();
+        object.put("name", item.first);
+        object.put("description", item.second);
+
+        if(trait){
+            setTraits(arr);
+        } else {
+            setEquipment(arr);
+        }
+    }
+
+    public void removeTraitEquip(int pos, boolean trait) throws JSONException{
+        JSONArray arr;
+        if(trait){
+            arr = getTraits();
+        } else {
+            arr = getEquipment();
+        }
+
+        arr.remove(pos);
+
+        if(trait){
+            setTraits(arr);
+        } else {
+            setEquipment(arr);
+        }
     }
 }

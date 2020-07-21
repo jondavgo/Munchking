@@ -107,6 +107,7 @@ public class DetailFragment extends Fragment {
         tvUser.setText(charPost.getUser().getUsername());
         tvClass.setText(String.format("Class: %s", charPost.getClasses()));
         tvRace.setText(String.format("Race: %s", charPost.getRace()));
+        tvDescription.setText(charPost.getDesc());
         ParseFile photo = charPost.getPhoto();
         if(photo != null) {
             Glide.with(getContext()).load(photo.getUrl()).into(ivPhoto);

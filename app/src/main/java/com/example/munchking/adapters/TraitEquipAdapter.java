@@ -68,9 +68,4 @@ public class TraitEquipAdapter extends RecyclerView.Adapter<TraitEquipAdapter.Vi
             tvDesc.setText(item.second);
         }
     }
-
-    // TODO
-    public static List<Pair<String, String>> fromJSONArray(){
-        return new ArrayList<>();
-    }
 }
