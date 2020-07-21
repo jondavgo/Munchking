@@ -38,6 +38,7 @@ import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import org.json.JSONArray;
 import org.parceler.Parcels;
 
 import java.io.ByteArrayOutputStream;
@@ -66,6 +67,9 @@ public class ComposeFragment extends Fragment {
     private ImageView ivPreview;
     private Spinner spinner;
     private EditText etCharName;
+    private EditText etClass;
+    private EditText etRace;
+    private EditText etDesc;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -87,6 +91,9 @@ public class ComposeFragment extends Fragment {
         ivPreview = view.findViewById(R.id.ivPreview);
         spinner = view.findViewById(R.id.spinner);
         etCharName = view.findViewById(R.id.etCharName);
+        etClass = view.findViewById(R.id.etClass);
+        etRace = view.findViewById(R.id.etRace);
+        etDesc = view.findViewById(R.id.etDesc);
 
         btnCam.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,7 +113,10 @@ public class ComposeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 String name = etCharName.getText().toString();
-                savePost(name, selectedGame, ParseUser.getCurrentUser(), file);
+                String classes = etClass.getText().toString();
+                String race = etRace.getText().toString();
+                String description = etDesc.getText().toString();
+                savePost(name, selectedGame, ParseUser.getCurrentUser(), file, classes, race, description);
             }
         });
 
@@ -128,12 +138,17 @@ public class ComposeFragment extends Fragment {
         });
     }
 
-    private void savePost(String name, String ttrpg, ParseUser user, ParseFile myFile) {
+    private void savePost(String name, String ttrpg, ParseUser user, ParseFile myFile, String classes, String race, String description) {
         final CharPost post = new CharPost();
         post.setName(name);
         post.setTtrpg(ttrpg);
         post.setPhoto(myFile);
         post.setUser(user);
+        post.setClasses(classes);
+        post.setRace(race);
+        post.setDesc(description);
+        post.setTraits(new JSONArray());
+        post.setEquipment(new JSONArray());
         post.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {

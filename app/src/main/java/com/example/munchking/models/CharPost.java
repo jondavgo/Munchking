@@ -148,4 +148,20 @@ public class CharPost extends ParseObject {
             setEquipment(arr);
         }
     }
+
+    public List<Pair<String, String>> toArrayList(boolean trait) throws JSONException {
+        JSONArray arr;
+        if(trait){
+            arr = getTraits();
+        } else {
+            arr = getEquipment();
+        }
+        List<Pair<String, String>> list = new ArrayList<>();
+        for (int i = 0; i < arr.length(); i++) {
+            String first = arr.getJSONObject(i).getString("name");
+            String second = arr.getJSONObject(i).getString("description");
+            list.add(new Pair<String, String>(first, second));
+        }
+        return list;
+    }
 }

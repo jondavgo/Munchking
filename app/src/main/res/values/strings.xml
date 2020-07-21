@@ -23,4 +23,7 @@
     <string name="description">DESCRIPTION</string>
     <string name="traits">TRAITS</string>
     <string name="equipment">EQUIPMENT</string>
+    <string name="class_and_level">Class and Level</string>
+    <string name="race">Race</string>
+    <string name="describe_your_character">Describe your Character...</string>
 </resources>
