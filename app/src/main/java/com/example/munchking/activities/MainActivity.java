@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.munchking.R;
+import com.example.munchking.dialogs.AddItemDialog;
 import com.example.munchking.fragments.ComposeFragment;
 import com.example.munchking.fragments.HomeFragment;
 import com.example.munchking.fragments.ProfileFragment;
