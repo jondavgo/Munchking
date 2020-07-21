@@ -4,9 +4,11 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -18,28 +20,39 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.munchking.R;
+import com.example.munchking.adapters.TraitEquipAdapter;
 import com.example.munchking.models.CharPost;
 import com.parse.ParseFile;
 
 import org.parceler.Parcels;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class DetailFragment extends Fragment {
 
+    CharPost charPost;
+    List<Pair<String, String>> traits;
+    List<Pair<String, String>> equipment;
+    TraitEquipAdapter traitAdapter;
+    TraitEquipAdapter equipAdapter;
+
     ImageView ivPhoto;
     TextView tvName;
     TextView tvTtrpg;
     TextView tvUser;
     Button btnComments;
-    CharPost charPost;
     TextView tvDescName;
     TextView tvDescription;
     TextView tvTraitName;
     RecyclerView rvTraits;
     TextView tvEquipName;
     RecyclerView rvEquipment;
+    TextView tvRace;
+    TextView tvClass;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -66,16 +79,40 @@ public class DetailFragment extends Fragment {
         tvEquipName = itemView.findViewById(R.id.tvEquipment);
         rvEquipment = itemView.findViewById(R.id.rvEquipment);
         rvTraits = itemView.findViewById(R.id.rvTraits);
-        charPost = Parcels.unwrap(getArguments().getParcelable("post"));
+        tvRace = itemView.findViewById(R.id.tvRace);
+        tvClass = itemView.findViewById(R.id.tvClass);
 
+        charPost = Parcels.unwrap(getArguments().getParcelable("post"));
+        traits = new ArrayList<>();
+        equipment = new ArrayList<>();
+        traitAdapter = new TraitEquipAdapter(getContext(), traits);
+        equipAdapter = new TraitEquipAdapter(getContext(), equipment);
+
+        // Set RVs
+        LinearLayoutManager Tmanager = new LinearLayoutManager(getContext());
+        LinearLayoutManager Emanager = new LinearLayoutManager(getContext());
+        rvTraits.setLayoutManager(Tmanager);
+        rvTraits.setAdapter(traitAdapter);
+        rvEquipment.setLayoutManager(Emanager);
+        rvEquipment.setAdapter(equipAdapter);
+
+        //Set DESC, TRAIT, and EQUIP to GONE
+        tvDescription.setVisibility(View.GONE);
+        rvTraits.setVisibility(View.GONE);
+        rvEquipment.setVisibility(View.GONE);
+
+        // Fill view with data
         tvName.setText(charPost.getName());
         tvTtrpg.setText(charPost.getTtrpg());
         tvUser.setText(charPost.getUser().getUsername());
+        tvClass.setText(String.format("Class: %s", charPost.getClasses()));
+        tvRace.setText(String.format("Race: %s", charPost.getRace()));
         ParseFile photo = charPost.getPhoto();
         if(photo != null) {
             Glide.with(getContext()).load(photo.getUrl()).into(ivPhoto);
         }
 
+        // Set clickables
         btnComments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -5,6 +5,7 @@ import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
+import org.json.JSONArray;
 import org.parceler.Parcel;
 
 @Parcel(analyze={CharPost.class})
@@ -16,6 +17,11 @@ public class CharPost extends ParseObject {
     public static final String KEY_PHOTO = "photo";
     public static final String KEY_TTRPG = "ttrpg";
     public static final String KEY_USER = "creator";
+    public static final String KEY_CLASS = "class";
+    public static final String KEY_RACE = "race";
+    public static final String KEY_DESC = "description";
+    public static final String KEY_TRAIT = "traits";
+    public static final String KEY_EQUIP = "equipment";
 
     // Required empty constructor
     public CharPost(){}
@@ -37,6 +43,26 @@ public class CharPost extends ParseObject {
         return getParseUser(KEY_USER);
     }
 
+    public String getClasses() {
+        return getString(KEY_CLASS);
+    }
+
+    public String getRace() {
+        return getString(KEY_RACE);
+    }
+
+    public String getDesc() {
+        return getString(KEY_DESC);
+    }
+
+    public JSONArray getTraits() {
+        return getJSONArray(KEY_TRAIT);
+    }
+
+    public JSONArray getEquipment() {
+        return getJSONArray(KEY_EQUIP);
+    }
+
     // Setters
     public void setName(String name){
         put(KEY_NAME, name);
@@ -52,5 +78,25 @@ public class CharPost extends ParseObject {
 
     public void setUser(ParseUser user){
         put(KEY_USER, user);
+    }
+
+    public void setClasses(String classes) {
+         put(KEY_CLASS, classes);
+    }
+
+    public void setRace(String race) {
+         put(KEY_RACE, race);
+    }
+
+    public void setDesc(String desc) {
+         put(KEY_DESC, desc);
+    }
+
+    public void setTraits(JSONArray traits) {
+         put(KEY_TRAIT, traits);
+    }
+
+    public void setEquipment(JSONArray equipment) {
+         put(KEY_EQUIP, equipment);
     }
 }

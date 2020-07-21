@@ -107,7 +107,15 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            tools:text='Daniel "Dart" Solaire was born in Baycliff to an average family. On his 16th birthday, he awoke to a strange power within him, transforming him from a run of the mill farmhand to a knack with a longbow!' />
+            tools:text='Daniel "Dart" Solaire was born in Baycliff to an average family. On his 16th birthday, he awoke to a strange power within him, transforming him from a run of the mill farmhand to a knack with a longbow!'
+            tools:visibility="visible" />
+
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -138,6 +146,12 @@
 
         </androidx.recyclerview.widget.RecyclerView>
 
+        <View
+            android:id="@+id/divider4"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -165,6 +179,20 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             tools:visibility="gone" />
+
+        <View
+            android:id="@+id/divider5"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
     </LinearLayout>
+
+    <View
+        android:id="@+id/divider3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignBottom="@+id/tvClass"
+        android:layout_marginBottom="0dp"
+        android:background="?android:attr/listDivider" />
 
 </RelativeLayout>
