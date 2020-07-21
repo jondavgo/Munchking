@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/ivPhoto"
@@ -88,7 +90,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvClass"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:orientation="vertical">
 
         <TextView
@@ -107,6 +109,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
             tools:text='Daniel "Dart" Solaire was born in Baycliff to an average family. On his 16th birthday, he awoke to a strange power within him, transforming him from a run of the mill farmhand to a knack with a longbow!'
             tools:visibility="visible" />
 
@@ -191,8 +194,29 @@
         android:id="@+id/divider3"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_alignBottom="@+id/tvClass"
-        android:layout_marginBottom="0dp"
+        android:layout_below="@+id/tvClass"
+        android:layout_marginTop="8dp"
         android:background="?android:attr/listDivider" />
 
+    <Button
+        android:id="@+id/btnAddTrait"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/llEquipment"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_toEndOf="@+id/btnComments"
+        android:text="@string/add_trait" />
+
+    <Button
+        android:id="@+id/btnAddEquip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/llEquipment"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_toEndOf="@id/btnAddTrait"
+        android:text="@string/add_equipment" />
+
 </RelativeLayout>
+</ScrollView>

@@ -26,4 +26,11 @@
     <string name="class_and_level">Class and Level</string>
     <string name="race">Race</string>
     <string name="describe_your_character">Describe your Character...</string>
+    <string name="edit_traits">Edit traits</string>
+    <string name="edit_equipment">Edit equipment</string>
+    <string name="add_trait">Add Trait</string>
+    <string name="add_equipment">Add Equipment</string>
+    <string name="name">NAME</string>
+    <string name="name_ellipses">Name...</string>
+    <string name="description_ellipses">Description...</string>
 </resources>

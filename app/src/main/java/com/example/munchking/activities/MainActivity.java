@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager fragMan;
     final private Fragment fragment1 = new HomeFragment();
     final private Fragment fragment2 = new ComposeFragment();
-    final private Fragment fragment3 = new ProfileFragment();
+    final private Fragment fragment3 = ProfileFragment.newInstance(ParseUser.getCurrentUser());
 
     private Toolbar toolbar;
     private BottomNavigationView bottomNav;

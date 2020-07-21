@@ -34,25 +34,27 @@ import java.util.List;
  */
 public class DetailFragment extends Fragment {
 
-    CharPost charPost;
-    List<Pair<String, String>> traits;
-    List<Pair<String, String>> equipment;
-    TraitEquipAdapter traitAdapter;
-    TraitEquipAdapter equipAdapter;
+    private CharPost charPost;
+    private List<Pair<String, String>> traits;
+    private List<Pair<String, String>> equipment;
+    private TraitEquipAdapter traitAdapter;
+    private TraitEquipAdapter equipAdapter;
 
-    ImageView ivPhoto;
-    TextView tvName;
-    TextView tvTtrpg;
-    TextView tvUser;
-    Button btnComments;
-    TextView tvDescName;
-    TextView tvDescription;
-    TextView tvTraitName;
-    RecyclerView rvTraits;
-    TextView tvEquipName;
-    RecyclerView rvEquipment;
-    TextView tvRace;
-    TextView tvClass;
+    private ImageView ivPhoto;
+    private TextView tvName;
+    private TextView tvTtrpg;
+    private TextView tvUser;
+    private Button btnComments;
+    private Button btnTrait;
+    private Button btnEquip;
+    private TextView tvDescName;
+    private TextView tvDescription;
+    private TextView tvTraitName;
+    private RecyclerView rvTraits;
+    private TextView tvEquipName;
+    private RecyclerView rvEquipment;
+    private TextView tvRace;
+    private TextView tvClass;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -81,6 +83,8 @@ public class DetailFragment extends Fragment {
         rvTraits = itemView.findViewById(R.id.rvTraits);
         tvRace = itemView.findViewById(R.id.tvRace);
         tvClass = itemView.findViewById(R.id.tvClass);
+        btnEquip = itemView.findViewById(R.id.btnAddEquip);
+        btnTrait = itemView.findViewById(R.id.btnAddTrait);
 
         charPost = Parcels.unwrap(getArguments().getParcelable("post"));
         traits = new ArrayList<>();
@@ -146,7 +150,24 @@ public class DetailFragment extends Fragment {
                 toggleVisibility(tvDescription);
             }
         });
+        btnEquip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addItem(equipAdapter, false);
+            }
+        });
+        btnTrait.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addItem(traitAdapter, true);
+            }
+        });
     }
+
+    private void addItem(TraitEquipAdapter adapter, boolean trait) {
+
+    }
+
 
     private void toggleVisibility(View view){
         if(view.getVisibility() == View.GONE){
