@@ -1,9 +1,12 @@
 package com.example.munchking.dialogs;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
@@ -35,21 +38,33 @@ public class AddItemDialog extends DialogFragment {
         return frag;
     }
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_add_item_dialog, container);
-    }
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        String title = getArguments().getString("title");
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        alertDialogBuilder.setTitle(title);
+        alertDialogBuilder.setView(R.layout.fragment_add_item_dialog);
+        alertDialogBuilder.setPositiveButton("OK",  new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // on success
+            }
+        });
+        alertDialogBuilder.setNeutralButton("Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // on failure
+            }
+        });
+        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
 
-
-    // TODO fix fragment and set up creation process properly
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        etName = view.findViewById(R.id.etName);
-        etDesc = view.findViewById(R.id.etDesc);
-        assert getArguments() != null;
-        String title = getArguments().getString("title", "Add Trait");
-        getDialog().setTitle(title);
+        return alertDialogBuilder.create();
     }
 }

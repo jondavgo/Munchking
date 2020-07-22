@@ -35,4 +35,6 @@
     <string name="profilepicture">ProfilePicture</string>
     <string name="password_mismatch">Passwords do not match!</string>
     <string name="signup_failure">Unable to sign up. Please try again!</string>
+    <string name="description_normal">Description</string>
+    <string name="name_normal">Name</string>
 </resources>
