@@ -163,6 +163,9 @@ public class ComposeFragment extends Fragment {
                 }
                 Toast.makeText(getContext(), "Post saved!", Toast.LENGTH_SHORT).show();
                 etCharName.setText("");
+                etClass.setText("");
+                etRace.setText("");
+                etDesc.setText("");
                 ivPreview.setImageResource(0);
                 toDetails(post);
             }

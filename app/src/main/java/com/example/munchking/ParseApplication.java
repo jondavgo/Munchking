@@ -6,6 +6,7 @@ import com.example.munchking.models.CharPost;
 import com.example.munchking.models.Comment;
 import com.parse.Parse;
 import com.parse.ParseObject;
+import com.parse.ParseFacebookUtils;
 
 public class ParseApplication extends Application {
     @Override
@@ -21,5 +22,6 @@ public class ParseApplication extends Application {
                 .applicationId("gomez-munchking") // should correspond to APP_ID env variable
                 .clientKey("Nat20IsWhatIRolled")  // set explicitly unless clientKey is explicitly configured on Parse server
                 .server("https://gomez-munchking.herokuapp.com/parse/").build());
+        ParseFacebookUtils.initialize(this);
     }
 }

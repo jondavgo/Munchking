@@ -34,11 +34,14 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation 'com.github.parse-community.Parse-SDK-Android:parse:1.24.2'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.1.0' // for logging API calls to LogCat
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     // Glide v4 uses this new annotation processor -- see https://bumptech.github.io/glide/doc/generatedapi.html
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     implementation 'org.parceler:parceler-api:1.1.12'
     annotationProcessor 'org.parceler:parceler:1.1.12'
+    implementation 'com.facebook.android:facebook-android-sdk:5.15.3'
+    implementation 'com.parse:parse-android:1.17.3'
+    implementation 'com.parse:parsefacebookutils-v4-android:1.10.7'
+    implementation 'com.google.android.gms:play-services-auth:18.1.0'
 }

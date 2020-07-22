@@ -16,6 +16,7 @@ import com.parse.SignUpCallback;
 
 public class SignupActivity extends AppCompatActivity {
 
+    public static final String TAG = "SignupActivity";
     Button btnSignup;
     EditText etUsername;
     EditText etEmail;
@@ -46,13 +47,13 @@ public class SignupActivity extends AppCompatActivity {
                 if(password.equals(confirm)) {
                     signUp(username, password, email);
                 } else {
-                    Toast.makeText(SignupActivity.this, "Passwords do not match!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignupActivity.this, R.string.password_mismatch, Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
-    private void signUp(String username, String password, String email) {
+    protected void signUp(String username, String password, String email) {
         // Create the ParseUser
         ParseUser user = new ParseUser();
         // Set core properties
@@ -70,8 +71,8 @@ public class SignupActivity extends AppCompatActivity {
                 } else {
                     // Sign up didn't succeed. Look at the ParseException
                     // to figure out what went wrong
-                    Log.e("SignupActivity", "Sign up failed!!!", e);
-                    Toast.makeText(SignupActivity.this, "Unable to sign up. Please try again!", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Sign up failed!!!", e);
+                    Toast.makeText(SignupActivity.this, R.string.signup_failure, Toast.LENGTH_SHORT).show();
                 }
             }
         });

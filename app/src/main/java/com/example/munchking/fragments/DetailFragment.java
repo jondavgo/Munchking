@@ -198,8 +198,7 @@ public class DetailFragment extends Fragment {
     }
 
     private void addItem(TraitEquipAdapter adapter, final boolean trait) {
-        // TODO: implement creation of items
-        Pair<String, String> item = new Pair<>("Test", "This is a test to see if I implemented backend properly.");
+        Pair<String, String> item = new Pair<>("New Item", "Press and hold onto me to edit what's inside!");
         try {
             charPost.addTraitEquip(item, trait);
             charPost.saveInBackground(new SaveCallback() {
