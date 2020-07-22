@@ -29,6 +29,7 @@ public class CharPost extends ParseObject {
     public static final String KEY_DESC = "description";
     public static final String KEY_TRAIT = "traits";
     public static final String KEY_EQUIP = "equipment";
+    public static final String KEY_DATE = "createdAt";
 
     // Required empty constructor
     public CharPost(){}

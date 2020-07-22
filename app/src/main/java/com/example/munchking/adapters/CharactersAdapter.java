@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.example.munchking.R;
 import com.example.munchking.activities.MainActivity;
 import com.example.munchking.fragments.DetailFragment;
+import com.example.munchking.fragments.ProfileFragment;
 import com.example.munchking.models.CharPost;
 import com.parse.ParseFile;
 
@@ -79,7 +80,7 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.Vi
             itemView.setOnClickListener(this);
         }
 
-        public void bind(CharPost charPost) {
+        public void bind(final CharPost charPost) {
             tvName.setText(charPost.getName());
             tvTtrpg.setText(charPost.getTtrpg());
             tvUser.setText(charPost.getUser().getUsername());
@@ -87,6 +88,18 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.Vi
             if(photo != null) {
                 Glide.with(context).load(photo.getUrl()).into(ivPhoto);
             }
+
+            tvUser.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ProfileFragment fragment = ProfileFragment.newInstance(charPost.getUser());
+                    FragmentManager fragmentManager = ((MainActivity)context).getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.flContainer, fragment,"profile");
+                    fragmentTransaction.addToBackStack("home");
+                    fragmentTransaction.commit();
+                }
+            });
         }
 
         @Override

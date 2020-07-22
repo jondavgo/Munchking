@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.munchking.R;
+import com.example.munchking.activities.MainActivity;
 import com.example.munchking.adapters.TraitEquipAdapter;
 import com.example.munchking.models.CharPost;
 import com.parse.FindCallback;
@@ -149,6 +150,17 @@ public class DetailFragment extends Fragment {
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.flContainer, fragment,"comments");
+                fragmentTransaction.addToBackStack("details");
+                fragmentTransaction.commit();
+            }
+        });
+        tvUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ProfileFragment fragment = ProfileFragment.newInstance(charPost.getUser());
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.flContainer, fragment,"profile");
                 fragmentTransaction.addToBackStack("details");
                 fragmentTransaction.commit();
             }

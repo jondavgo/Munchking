@@ -76,6 +76,7 @@ public class ProfileFragment extends HomeFragment {
     protected void query() {
         ParseQuery<CharPost> query = ParseQuery.getQuery(CharPost.class);
         query.include(CharPost.KEY_USER);
+        query.orderByDescending(CharPost.KEY_DATE);
         query.whereEqualTo(CharPost.KEY_USER, user);
         query.findInBackground(new FindCallback<CharPost>() {
             @Override
