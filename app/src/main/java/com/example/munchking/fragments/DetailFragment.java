@@ -102,8 +102,8 @@ public class DetailFragment extends Fragment {
         equipAdapter = new TraitEquipAdapter(getContext(), equipment);
 
         // Set RVs
-        LinearLayoutManager Tmanager = new LinearLayoutManager(getContext());
-        LinearLayoutManager Emanager = new LinearLayoutManager(getContext());
+        LinearLayoutManager Tmanager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager Emanager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         rvTraits.setLayoutManager(Tmanager);
         rvTraits.setAdapter(traitAdapter);
         rvEquipment.setLayoutManager(Emanager);
@@ -113,6 +113,12 @@ public class DetailFragment extends Fragment {
         tvDescription.setVisibility(View.GONE);
         rvTraits.setVisibility(View.GONE);
         rvEquipment.setVisibility(View.GONE);
+
+        // Disallow post editing when the user isn't the creator.
+        if(!ParseUser.getCurrentUser().getUsername().equals(charPost.getUser().getUsername())){
+            btnEquip.setVisibility(View.GONE);
+            btnTrait.setVisibility(View.GONE);
+        }
 
         // Fill view with data
         tvName.setText(charPost.getName());

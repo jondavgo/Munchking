@@ -10,13 +10,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.munchking.R;
 import com.example.munchking.dialogs.AddItemDialog;
 import com.example.munchking.models.CharPost;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
@@ -30,6 +34,9 @@ import java.util.List;
 public class ProfileFragment extends HomeFragment {
 
     ParseUser user;
+    ImageView ivPfp;
+    TextView tvUsername;
+    TextView tvFavs;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -44,8 +51,7 @@ public class ProfileFragment extends HomeFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
@@ -54,6 +60,16 @@ public class ProfileFragment extends HomeFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         user = Parcels.unwrap(getArguments().getParcelable("profile"));
+
+        ivPfp = view.findViewById(R.id.ivPfp);
+        tvUsername = view.findViewById(R.id.tvUsername);
+        tvFavs = view.findViewById(R.id.tvFavs);
+
+        tvUsername.setText(user.getUsername());
+        ParseFile photo = user.getParseFile("profilePic");
+        if(photo != null) {
+            Glide.with(getContext()).load(photo.getUrl()).into(ivPfp);
+        }
     }
 
     @Override
