@@ -108,11 +108,6 @@ public class CharPost extends ParseObject {
     }
 
     // Misc. Methods
-    // TODO
-    public static List<Pair<String, String>> fromJSONArray(){
-        return new ArrayList<>();
-    }
-
     public void addTraitEquip(Pair<String, String> item, boolean trait) throws JSONException {
         JSONArray arr;
         if(trait){
@@ -124,6 +119,7 @@ public class CharPost extends ParseObject {
         JSONObject object = new JSONObject();
         object.put("name", item.first);
         object.put("description", item.second);
+        arr.put(object);
 
         if(trait){
             setTraits(arr);

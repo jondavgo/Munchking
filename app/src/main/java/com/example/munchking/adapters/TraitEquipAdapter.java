@@ -24,8 +24,18 @@ public class TraitEquipAdapter extends RecyclerView.Adapter<TraitEquipAdapter.Vi
         this.items = items;
     }
 
-    public void addAll(List<Pair<String, String>> c){
-        items.addAll(c);
+    public void add(Pair<String, String> item){
+        items.add(item);
+        notifyItemInserted(items.size()-1);
+    }
+
+    public void remove(int pos){
+        items.remove(pos);
+        notifyItemRemoved(pos);
+    }
+
+    public void addAll(List<Pair<String, String>> i){
+        items.addAll(i);
         notifyDataSetChanged();
     }
 

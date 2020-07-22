@@ -11,19 +11,27 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.munchking.R;
 import com.example.munchking.adapters.TraitEquipAdapter;
 import com.example.munchking.models.CharPost;
+import com.parse.FindCallback;
+import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
+import org.json.JSONException;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
@@ -34,6 +42,7 @@ import java.util.List;
  */
 public class DetailFragment extends Fragment {
 
+    private final String TAG = "DetailFragment";
     private CharPost charPost;
     private List<Pair<String, String>> traits;
     private List<Pair<String, String>> equipment;
@@ -116,6 +125,12 @@ public class DetailFragment extends Fragment {
         if(photo != null) {
             Glide.with(getContext()).load(photo.getUrl()).into(ivPhoto);
         }
+        try {
+            equipAdapter.addAll(charPost.toArrayList(false));
+            traitAdapter.addAll(charPost.toArrayList(true));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         // Set clickables
         btnComments.setOnClickListener(new View.OnClickListener() {
@@ -164,10 +179,22 @@ public class DetailFragment extends Fragment {
         });
     }
 
-    private void addItem(TraitEquipAdapter adapter, boolean trait) {
-
+    private void addItem(TraitEquipAdapter adapter, final boolean trait) {
+        // TODO: implement creation of items
+        Pair<String, String> item = new Pair<>("Test", "This is a test to see if I implemented backend properly.");
+        try {
+            charPost.addTraitEquip(item, trait);
+            charPost.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    Log.i(TAG, "Added item to backend! Trait?: " + trait);
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        adapter.add(item);
     }
-
 
     private void toggleVisibility(View view){
         if(view.getVisibility() == View.GONE){
