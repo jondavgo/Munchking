@@ -49,6 +49,7 @@ public class DetailFragment extends Fragment {
     private List<Pair<String, String>> equipment;
     private TraitEquipAdapter traitAdapter;
     private TraitEquipAdapter equipAdapter;
+    private boolean isAuthor;
 
     private ImageView ivPhoto;
     private TextView tvName;
@@ -95,12 +96,13 @@ public class DetailFragment extends Fragment {
         tvClass = itemView.findViewById(R.id.tvClass);
         btnEquip = itemView.findViewById(R.id.btnAddEquip);
         btnTrait = itemView.findViewById(R.id.btnAddTrait);
+        isAuthor = ParseUser.getCurrentUser().getUsername().equals(charPost.getUser().getUsername());
 
         charPost = Parcels.unwrap(getArguments().getParcelable("post"));
         traits = new ArrayList<>();
         equipment = new ArrayList<>();
-        traitAdapter = new TraitEquipAdapter(getContext(), traits);
-        equipAdapter = new TraitEquipAdapter(getContext(), equipment);
+        traitAdapter = new TraitEquipAdapter(getContext(), traits, isAuthor);
+        equipAdapter = new TraitEquipAdapter(getContext(), equipment, isAuthor);
 
         // Set RVs
         LinearLayoutManager Tmanager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
@@ -116,7 +118,7 @@ public class DetailFragment extends Fragment {
         rvEquipment.setVisibility(View.GONE);
 
         // Disallow post editing when the user isn't the creator.
-        if(!ParseUser.getCurrentUser().getUsername().equals(charPost.getUser().getUsername())){
+        if(!isAuthor){
             btnEquip.setVisibility(View.GONE);
             btnTrait.setVisibility(View.GONE);
         }

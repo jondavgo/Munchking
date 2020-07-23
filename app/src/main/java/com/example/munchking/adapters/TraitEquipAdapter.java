@@ -23,10 +23,12 @@ import java.util.List;
 public class TraitEquipAdapter extends RecyclerView.Adapter<TraitEquipAdapter.ViewHolder> {
     Context context;
     List<Pair<String, String>> items;
+    boolean isAuthor;
 
-    public TraitEquipAdapter(Context context, List<Pair<String, String>> items) {
+    public TraitEquipAdapter(Context context, List<Pair<String, String>> items, boolean isAuthor) {
         this.context = context;
         this.items = items;
+        this.isAuthor = isAuthor;
     }
 
     public void add(Pair<String, String> item){
@@ -86,9 +88,11 @@ public class TraitEquipAdapter extends RecyclerView.Adapter<TraitEquipAdapter.Vi
 
         @Override
         public boolean onLongClick(View view) {
-            FragmentManager fragmentManager = ((MainActivity) context).getSupportFragmentManager();
-            AddItemDialog alertDialog = AddItemDialog.newInstance("Edit Me!!!");
-            alertDialog.show(fragmentManager, "fragment_alert");
+            if(isAuthor) {
+                FragmentManager fragmentManager = ((MainActivity) context).getSupportFragmentManager();
+                AddItemDialog alertDialog = AddItemDialog.newInstance("Edit Me!!!");
+                alertDialog.show(fragmentManager, "fragment_alert");
+            }
             return true;
         }
     }

@@ -45,12 +45,6 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         bottomNav = findViewById(R.id.bottomNav);
 
-        // TEST
-        FragmentManager fm = getSupportFragmentManager();
-        AddItemDialog alertDialog = AddItemDialog.newInstance("Some title");
-        alertDialog.show(fm, "fragment_alert");
-        // TEST
-
         setSupportActionBar(toolbar);
 
         bottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
