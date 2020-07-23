@@ -37,4 +37,5 @@
     <string name="signup_failure">Unable to sign up. Please try again!</string>
     <string name="description_normal">Description</string>
     <string name="name_normal">Name</string>
+    <string name="pick_your_favorite_games">Pick Your Favorite Games!</string>
 </resources>

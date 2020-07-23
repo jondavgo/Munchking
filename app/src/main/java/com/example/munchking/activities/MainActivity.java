@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
         // TEST
         FragmentManager fm = getSupportFragmentManager();
-         AddItemDialog alertDialog = AddItemDialog.newInstance("Some title");
+        AddItemDialog alertDialog = AddItemDialog.newInstance("Some title");
         alertDialog.show(fm, "fragment_alert");
         // TEST
 

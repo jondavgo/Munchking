@@ -8,9 +8,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.munchking.R;
+import com.example.munchking.activities.MainActivity;
+import com.example.munchking.dialogs.AddItemDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +67,7 @@ public class TraitEquipAdapter extends RecyclerView.Adapter<TraitEquipAdapter.Vi
         return items.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
 
         private TextView tvName;
         private TextView tvDesc;
@@ -71,11 +76,20 @@ public class TraitEquipAdapter extends RecyclerView.Adapter<TraitEquipAdapter.Vi
             super(itemView);
             tvName = itemView.findViewById(R.id.tvTraitName);
             tvDesc = itemView.findViewById(R.id.tvTraitDesc);
+            itemView.setOnLongClickListener(this);
         }
 
         public void bind(Pair<String, String> item) {
             tvName.setText(item.first);
             tvDesc.setText(item.second);
+        }
+
+        @Override
+        public boolean onLongClick(View view) {
+            FragmentManager fragmentManager = ((MainActivity) context).getSupportFragmentManager();
+            AddItemDialog alertDialog = AddItemDialog.newInstance("Edit Me!!!");
+            alertDialog.show(fragmentManager, "fragment_alert");
+            return true;
         }
     }
 }

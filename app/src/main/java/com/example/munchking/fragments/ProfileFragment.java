@@ -33,6 +33,7 @@ import java.util.List;
  */
 public class ProfileFragment extends HomeFragment {
 
+    public static final String TAG = "ProfileFragment";
     ParseUser user;
     ImageView ivPfp;
     TextView tvUsername;
@@ -82,9 +83,10 @@ public class ProfileFragment extends HomeFragment {
             @Override
             public void done(List<CharPost> objects, ParseException e) {
                 if(e == null){
+                    Log.i(TAG, "Profile viewed: " + user.getUsername());
                     adapter.addAll(objects);
                 } else {
-                    Log.e("HomeFragment", "Query error!", e);
+                    Log.e(TAG, "Query error!", e);
                     Toast.makeText(getContext(), "Something went wrong while grabbing posts!", Toast.LENGTH_SHORT).show();
                 }
             }
