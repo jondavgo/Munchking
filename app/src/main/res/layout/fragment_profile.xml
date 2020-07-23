@@ -76,6 +76,18 @@
             app:layout_constraintBottom_toTopOf="@+id/tvFavs"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="Friends: 0" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabPreferences"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_baseline_build_24"
+            app:layout_constraintBottom_toBottomOf="@+id/rvChars"
+            app:layout_constraintEnd_toEndOf="@+id/rvChars" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

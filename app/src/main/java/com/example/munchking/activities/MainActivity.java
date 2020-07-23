@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -17,7 +18,11 @@ import com.example.munchking.R;
 import com.example.munchking.dialogs.AddItemDialog;
 import com.example.munchking.fragments.ComposeFragment;
 import com.example.munchking.fragments.HomeFragment;
+import com.example.munchking.fragments.MapsFragment;
 import com.example.munchking.fragments.ProfileFragment;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.parse.LogOutCallback;
 import com.parse.ParseException;
@@ -27,10 +32,12 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
+    private FusedLocationProviderClient fusedLocationClient;
     private FragmentManager fragMan;
     final private Fragment fragment1 = new HomeFragment();
     final private Fragment fragment2 = new ComposeFragment();
     final private Fragment fragment3 = ProfileFragment.newInstance(ParseUser.getCurrentUser());
+    final private Fragment fragment4 = new MapsFragment();
 
     private Toolbar toolbar;
     private BottomNavigationView bottomNav;
@@ -40,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         fragMan = getSupportFragmentManager();
 
         toolbar = findViewById(R.id.toolbar);
@@ -54,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
                 String tag;
                 switch (item.getItemId()) {
                     case R.id.action_home:
+                    default:
                         fragment = fragment1;
                         tag = "home";
                         break;
@@ -62,16 +71,29 @@ public class MainActivity extends AppCompatActivity {
                         tag = "compose";
                         break;
                     case R.id.action_profile:
-                    default:
                         fragment = fragment3;
                         tag = "profile";
                         break;
+                    case R.id.action_map:
+                        fragment = fragment4;
+                        tag = "map";
                 }
                 fragMan.beginTransaction().replace(R.id.flContainer, fragment, tag).commit();
                 return true;
             }
         });
         bottomNav.setSelectedItemId(R.id.action_home);
+
+//        fusedLocationClient.getLastLocation()
+//                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+//                    @Override
+//                    public void onSuccess(Location location) {
+//                        // Got last known location. In some rare situations this can be null.
+//                        if (location != null) {
+//                            // Logic to handle location object
+//                        }
+//                    }
+//                });
     }
 
     private void signOut(){
