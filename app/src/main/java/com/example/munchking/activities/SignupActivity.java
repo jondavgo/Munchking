@@ -2,6 +2,7 @@ package com.example.munchking.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -67,7 +68,9 @@ public class SignupActivity extends AppCompatActivity {
             public void done(ParseException e) {
                 if (e == null) {
                     // Hooray! Let them use the app now.
-                    LoginActivity.goToMain(SignupActivity.this);
+                    Intent intent = new Intent(SignupActivity.this, PreferencesActivity.class);
+                    startActivity(intent);
+                    finish();
                 } else {
                     // Sign up didn't succeed. Look at the ParseException
                     // to figure out what went wrong

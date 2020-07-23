@@ -38,4 +38,7 @@
     <string name="description_normal">Description</string>
     <string name="name_normal">Name</string>
     <string name="pick_your_favorite_games">Pick Your Favorite Games!</string>
+    <string name="continue">Continue</string>
+    <string name="cont">Continue</string>
+    <string name="skip">Skip</string>
 </resources>
