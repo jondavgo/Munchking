@@ -15,13 +15,19 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.munchking.R;
+import com.example.munchking.activities.PreferencesActivity;
 import com.example.munchking.adapters.CharactersAdapter;
 import com.example.munchking.models.CharPost;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -29,6 +35,7 @@ import java.util.List;
  */
 public class HomeFragment extends Fragment {
 
+    public static final String TAG = "HomeFragment";
     protected CharactersAdapter adapter;
     protected List<CharPost> charPosts;
 
@@ -62,8 +69,14 @@ public class HomeFragment extends Fragment {
 
     protected void query() {
         ParseQuery<CharPost> query = ParseQuery.getQuery(CharPost.class);
+        JSONArray array = ParseUser.getCurrentUser().getJSONArray("favGames");
         query.include(CharPost.KEY_USER);
         query.orderByDescending(CharPost.KEY_DATE);
+        try {
+            query.whereContainedIn(CharPost.KEY_TTRPG, Arrays.asList(PreferencesActivity.fromJSONArray(array)));
+        } catch (JSONException e) {
+            Log.e(TAG, "JSON Exception during home query!", e);
+        }
         query.findInBackground(new FindCallback<CharPost>() {
             @Override
             public void done(List<CharPost> objects, ParseException e) {

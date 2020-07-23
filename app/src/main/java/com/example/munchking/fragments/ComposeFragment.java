@@ -146,7 +146,9 @@ public class ComposeFragment extends Fragment {
         final CharPost post = new CharPost();
         post.setName(name);
         post.setTtrpg(ttrpg);
-        post.setPhoto(myFile);
+        if(myFile != null) {
+            post.setPhoto(myFile);
+        }
         post.setUser(user);
         post.setClasses(classes);
         post.setRace(race);
@@ -241,7 +243,7 @@ public class ComposeFragment extends Fragment {
         FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.flContainer, fragment,"details");
-        fragmentTransaction.addToBackStack("compose");
+        fragmentTransaction.addToBackStack("home");
         fragmentTransaction.commit();
     }
 

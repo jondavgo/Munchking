@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.munchking.R;
-import com.example.munchking.dialogs.AddItemDialog;
 import com.example.munchking.models.CharPost;
 import com.parse.FindCallback;
 import com.parse.ParseException;
