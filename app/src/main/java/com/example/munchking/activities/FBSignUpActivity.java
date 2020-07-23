@@ -1,5 +1,6 @@
 package com.example.munchking.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -28,8 +29,9 @@ public class FBSignUpActivity extends SignupActivity {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
-                    // Hooray! Let them use the app now.
-                    LoginActivity.goToMain(FBSignUpActivity.this);
+                    Intent intent = new Intent(FBSignUpActivity.this, PreferencesActivity.class);
+                    startActivity(intent);
+                    finish();
                 } else {
                     // Sign up didn't succeed. Look at the ParseException
                     // to figure out what went wrong
