@@ -96,9 +96,9 @@ public class DetailFragment extends Fragment {
         tvClass = itemView.findViewById(R.id.tvClass);
         btnEquip = itemView.findViewById(R.id.btnAddEquip);
         btnTrait = itemView.findViewById(R.id.btnAddTrait);
-        isAuthor = ParseUser.getCurrentUser().getUsername().equals(charPost.getUser().getUsername());
 
         charPost = Parcels.unwrap(getArguments().getParcelable("post"));
+        isAuthor = ParseUser.getCurrentUser().getUsername().equals(charPost.getUser().getUsername());
         traits = new ArrayList<>();
         equipment = new ArrayList<>();
         traitAdapter = new TraitEquipAdapter(getContext(), traits, isAuthor);
