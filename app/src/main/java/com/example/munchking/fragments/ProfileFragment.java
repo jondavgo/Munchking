@@ -24,6 +24,8 @@ import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.parceler.Parcels;
 
 import java.util.List;
@@ -71,6 +73,24 @@ public class ProfileFragment extends HomeFragment {
         if(photo != null) {
             Glide.with(getContext()).load(photo.getUrl()).into(ivPfp);
         }
+        try {
+            tvFavs.setText(showFavs());
+        } catch (JSONException e) {
+            Log.e(TAG, "Error getting favs!!!", e);
+            tvFavs.setText(R.string.favorites);
+        }
+    }
+
+    private String showFavs() throws JSONException {
+        StringBuilder favs = new StringBuilder("Favorites: ");
+        JSONArray array = user.getJSONArray("favGames");
+        for (int i = 0; i < array.length(); i++) {
+            favs.append(array.getString(i));
+            if(i != array.length() - 1){
+                favs.append(", ");
+            }
+        }
+        return favs.toString();
     }
 
     @Override
