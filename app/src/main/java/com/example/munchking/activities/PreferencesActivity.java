@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.TextView;
 
 import com.example.munchking.R;
 import com.parse.ParseException;
@@ -15,22 +16,29 @@ import com.parse.SaveCallback;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.parceler.Parcels;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PreferencesActivity extends AppCompatActivity {
 
     public static final String TAG = "PreferencesActivity";
+    public static final String KEY_PREFERENCES = "favGames";
     private CheckBox[] checkBoxes;
     private String[] games;
     private Button btnCont;
     private Button btnSkip;
+    private TextView tvTitle;
+    private ParseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preferences);
         games = getResources().getStringArray(R.array.games_array);
+        tvTitle = findViewById(R.id.tvPreferences);
         checkBoxes = new CheckBox[games.length];
         // There has to be a better way to do this???
         checkBoxes[0] = findViewById(R.id.cbFirst);
@@ -43,11 +51,11 @@ public class PreferencesActivity extends AppCompatActivity {
         checkBoxes[7] = findViewById(R.id.cbEighth);
         btnCont = findViewById(R.id.btnContinue);
         btnSkip = findViewById(R.id.btnSkip);
+        user = Parcels.unwrap(getIntent().getParcelableExtra("user"));
 
         for (int i = 0; i < checkBoxes.length; i++) {
             checkBoxes[i].setText(games[i]);
         }
-
         // Make no changes, go back to main
         btnSkip.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,6 +70,24 @@ public class PreferencesActivity extends AppCompatActivity {
                 savePreferences();
             }
         });
+
+        if(user != null){
+            tvTitle.setText(String.format("%s's Favorites!", user.getUsername()));
+            try {
+                loadPreferences();
+            } catch (JSONException e) {
+                Log.e(TAG, "Error getting favs!!!", e);
+            }
+        }
+    }
+
+    private void loadPreferences() throws JSONException {
+        List<String> array = fromJSONArray(user.getJSONArray(KEY_PREFERENCES));
+        for (int i = 0; i < games.length; i++) {
+            if(array.contains(games[i])){
+                checkBoxes[i].setChecked(true);
+            }
+        }
     }
 
     private void savePreferences() {
@@ -72,7 +98,7 @@ public class PreferencesActivity extends AppCompatActivity {
                 preferences.add(games[i]);
             }
         }
-        user.put("favGames", new JSONArray(preferences));
+        user.put(KEY_PREFERENCES, new JSONArray(preferences));
         user.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -87,10 +113,10 @@ public class PreferencesActivity extends AppCompatActivity {
     }
 
     // For use when allowing user to edit their preferences
-    public static String[] fromJSONArray(JSONArray arr) throws JSONException {
-        String[] strings = new String[arr.length()];
+    public static List<String> fromJSONArray(JSONArray arr) throws JSONException {
+        ArrayList<String> strings = new ArrayList<>();
         for (int i = 0; i < arr.length(); i++) {
-            strings[i] = arr.getString(i);
+            strings.add(arr.getString(i));
         }
         return strings;
     }

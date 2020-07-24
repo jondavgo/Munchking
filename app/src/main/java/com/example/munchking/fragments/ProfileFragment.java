@@ -1,5 +1,6 @@
 package com.example.munchking.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,7 +17,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.munchking.R;
+import com.example.munchking.activities.PreferencesActivity;
 import com.example.munchking.models.CharPost;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -39,6 +42,7 @@ public class ProfileFragment extends HomeFragment {
     ImageView ivPfp;
     TextView tvUsername;
     TextView tvFavs;
+    FloatingActionButton fabEdit;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -66,6 +70,7 @@ public class ProfileFragment extends HomeFragment {
         ivPfp = view.findViewById(R.id.ivPfp);
         tvUsername = view.findViewById(R.id.tvUsername);
         tvFavs = view.findViewById(R.id.tvFavs);
+        fabEdit = view.findViewById(R.id.fabPreferences);
 
         tvUsername.setText(user.getUsername());
         ParseFile photo = user.getParseFile("profilePic");
@@ -78,11 +83,28 @@ public class ProfileFragment extends HomeFragment {
             Log.e(TAG, "Error getting favs!!!", e);
             tvFavs.setText(R.string.favorites);
         }
+
+        if(!user.getUsername().equals(ParseUser.getCurrentUser().getUsername())){
+            fabEdit.setVisibility(View.GONE);
+        }
+
+        fabEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toPreferences();
+            }
+        });
+    }
+
+    private void toPreferences() {
+        Intent intent = new Intent(getContext(), PreferencesActivity.class);
+        intent.putExtra("user", Parcels.wrap(user));
+        getContext().startActivity(intent);
     }
 
     private String showFavs() throws JSONException {
         StringBuilder favs = new StringBuilder("Favorites: ");
-        JSONArray array = user.getJSONArray("favGames");
+        JSONArray array = user.getJSONArray(PreferencesActivity.KEY_PREFERENCES);
         for (int i = 0; i < array.length(); i++) {
             favs.append(array.getString(i));
             if(i != array.length() - 1){

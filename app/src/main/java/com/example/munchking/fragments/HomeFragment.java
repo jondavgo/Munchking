@@ -73,7 +73,7 @@ public class HomeFragment extends Fragment {
         query.include(CharPost.KEY_USER);
         query.orderByDescending(CharPost.KEY_DATE);
         try {
-            query.whereContainedIn(CharPost.KEY_TTRPG, Arrays.asList(PreferencesActivity.fromJSONArray(array)));
+            query.whereContainedIn(CharPost.KEY_TTRPG, PreferencesActivity.fromJSONArray(array));
         } catch (JSONException e) {
             Log.e(TAG, "JSON Exception during home query!", e);
         }
