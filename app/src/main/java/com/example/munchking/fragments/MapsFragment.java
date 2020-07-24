@@ -50,7 +50,6 @@ public class MapsFragment extends Fragment {
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
     private static final int DEFAULT_ZOOM = 15;
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final String TAG = "MapsFragment";
 
     private GoogleMap map;
@@ -90,7 +89,6 @@ public class MapsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getLocationPermission();
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
@@ -112,40 +110,6 @@ public class MapsFragment extends Fragment {
         super.onSaveInstanceState(outState);
     }
 
-    private void getLocationPermission() {
-        /*
-         * Request location permission, so that we can get the location of the
-         * device. The result of the permission request is handled by a callback,
-         * onRequestPermissionsResult.
-         */
-        if (ContextCompat.checkSelfPermission(getContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            locationPermissionGranted = true;
-        } else {
-            ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        locationPermissionGranted = false;
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    locationPermissionGranted = true;
-                }
-            }
-        }
-        updateLocationUI();
-    }
-
     private void updateLocationUI() {
         if (map == null) {
             return;
@@ -158,17 +122,12 @@ public class MapsFragment extends Fragment {
                 map.setMyLocationEnabled(false);
                 map.getUiSettings().setMyLocationButtonEnabled(false);
                 lastKnownLocation = null;
-                getLocationPermission();
             }
         } catch (SecurityException e)  {
             Log.e("Exception: %s", e.getMessage());
         }
     }
     private void getDeviceLocation() {
-        /*
-         * Get the best and most recent location of the device, which may be null in rare
-         * cases when a location is not available.
-         */
         try {
             if (locationPermissionGranted) {
                 Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
@@ -179,7 +138,7 @@ public class MapsFragment extends Fragment {
                             // Set the map's camera position to the current location of the device.
                             lastKnownLocation = task.getResult();
                             if (lastKnownLocation != null) {
-                                saveLocation();
+                                saveLocation(lastKnownLocation);
                                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                         new LatLng(lastKnownLocation.getLatitude(),
                                                 lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
@@ -199,20 +158,20 @@ public class MapsFragment extends Fragment {
         }
     }
 
-    private void saveLocation() {
+    public static void saveLocation(Location lastKnownLocation) {
         ParseGeoPoint location = new ParseGeoPoint(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
         ParseUser.getCurrentUser().put(KEY_LOCATION, location);
         ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 Log.i(TAG, "Updated user location!");
-                query();
             }
         });
     }
 
     private void query(){
         ParseQuery<ParseUser> query = ParseQuery.getQuery(ParseUser.class);
+        query.whereNotEqualTo("username", ParseUser.getCurrentUser().getUsername());
         query.findInBackground(new FindCallback<ParseUser>() {
             @Override
             public void done(List<ParseUser> objects, ParseException e) {
