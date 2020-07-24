@@ -43,4 +43,6 @@
     <string name="favorites">Favorites:</string>
     <string name="google_maps_api_key">AIzaSyB1MIXvO7fiG-lsSZdEjMyuSQfSkSNc2Vo</string>
     <string name="map">Map</string>
+    <string name="cancel">Cancel</string>
+    <string name="save_favs">Save Favorites</string>
 </resources>

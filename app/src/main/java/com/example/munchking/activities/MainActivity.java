@@ -83,17 +83,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         bottomNav.setSelectedItemId(R.id.action_home);
-
-//        fusedLocationClient.getLastLocation()
-//                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-//                    @Override
-//                    public void onSuccess(Location location) {
-//                        // Got last known location. In some rare situations this can be null.
-//                        if (location != null) {
-//                            // Logic to handle location object
-//                        }
-//                    }
-//                });
     }
 
     private void signOut(){

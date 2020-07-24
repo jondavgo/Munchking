@@ -71,6 +71,7 @@ public class PreferencesActivity extends AppCompatActivity {
             }
         });
 
+        // If this is being accessed from Profile Fragment, edit passed in user
         if(user != null){
             tvTitle.setText(String.format("%s's Favorites!", user.getUsername()));
             try {
@@ -78,6 +79,14 @@ public class PreferencesActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 Log.e(TAG, "Error getting favs!!!", e);
             }
+            btnSkip.setText(R.string.cancel);
+            btnCont.setText(R.string.save_favs);
+            btnSkip.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    finish();
+                }
+            });
         }
     }
 
