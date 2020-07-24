@@ -33,7 +33,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
+import java.util.List;
 import java.util.concurrent.Executor;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
@@ -76,9 +83,7 @@ public class MapsFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_maps, container, false);
     }
 
@@ -95,6 +100,7 @@ public class MapsFragment extends Fragment {
             lastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             cameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
+        query();
     }
 
     @Override
@@ -173,6 +179,7 @@ public class MapsFragment extends Fragment {
                             // Set the map's camera position to the current location of the device.
                             lastKnownLocation = task.getResult();
                             if (lastKnownLocation != null) {
+                                saveLocation();
                                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                         new LatLng(lastKnownLocation.getLatitude(),
                                                 lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
@@ -188,8 +195,41 @@ public class MapsFragment extends Fragment {
                 });
             }
         } catch (SecurityException e)  {
-            Log.e("Exception: %s", e.getMessage(), e);
+            Log.e(TAG, e.getMessage(), e);
         }
     }
 
+    private void saveLocation() {
+        ParseGeoPoint location = new ParseGeoPoint(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+        ParseUser.getCurrentUser().put(KEY_LOCATION, location);
+        ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                Log.i(TAG, "Updated user location!");
+                query();
+            }
+        });
+    }
+
+    private void query(){
+        ParseQuery<ParseUser> query = ParseQuery.getQuery(ParseUser.class);
+        query.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> objects, ParseException e) {
+                if(e != null){
+                    Log.e(TAG, e.getMessage(), e);
+                    return;
+                }
+                for (ParseUser object : objects) {
+                    ParseGeoPoint point = object.getParseGeoPoint(KEY_LOCATION);
+                    if(point != null) {
+                        LatLng latLng = new LatLng(point.getLatitude(), point.getLongitude());
+                        map.addMarker(new MarkerOptions()
+                                .position(latLng)
+                                .title(object.getUsername()));
+                    }
+                }
+            }
+        });
+    }
 }

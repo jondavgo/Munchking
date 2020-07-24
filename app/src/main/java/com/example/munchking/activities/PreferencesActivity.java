@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.munchking.R;
@@ -31,6 +32,7 @@ public class PreferencesActivity extends AppCompatActivity {
     private Button btnCont;
     private Button btnSkip;
     private TextView tvTitle;
+    LinearLayout llBoxes;
     private ParseUser user;
 
     @Override
@@ -40,22 +42,20 @@ public class PreferencesActivity extends AppCompatActivity {
         games = getResources().getStringArray(R.array.games_array);
         tvTitle = findViewById(R.id.tvPreferences);
         checkBoxes = new CheckBox[games.length];
+        llBoxes = findViewById(R.id.llBoxes);
         // There has to be a better way to do this???
-        checkBoxes[0] = findViewById(R.id.cbFirst);
-        checkBoxes[1] = findViewById(R.id.cbSecond);
-        checkBoxes[2] = findViewById(R.id.cbThird);
-        checkBoxes[3] = findViewById(R.id.cbFourth);
-        checkBoxes[4] = findViewById(R.id.cbFifth);
-        checkBoxes[5] = findViewById(R.id.cbSixth);
-        checkBoxes[6] = findViewById(R.id.cbSeventh);
-        checkBoxes[7] = findViewById(R.id.cbEighth);
+//        checkBoxes[0] = findViewById(R.id.cbFirst);
+//        checkBoxes[1] = findViewById(R.id.cbSecond);
+//        checkBoxes[2] = findViewById(R.id.cbThird);
+//        checkBoxes[3] = findViewById(R.id.cbFourth);
+//        checkBoxes[4] = findViewById(R.id.cbFifth);
+//        checkBoxes[5] = findViewById(R.id.cbSixth);
+//        checkBoxes[6] = findViewById(R.id.cbSeventh);
+//        checkBoxes[7] = findViewById(R.id.cbEighth);
+        loadBoxes();
         btnCont = findViewById(R.id.btnContinue);
         btnSkip = findViewById(R.id.btnSkip);
         user = Parcels.unwrap(getIntent().getParcelableExtra("user"));
-
-        for (int i = 0; i < checkBoxes.length; i++) {
-            checkBoxes[i].setText(games[i]);
-        }
         // Make no changes, go back to main
         btnSkip.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,6 +87,14 @@ public class PreferencesActivity extends AppCompatActivity {
                     finish();
                 }
             });
+        }
+    }
+
+    private void loadBoxes() {
+        for (int i = 0; i < checkBoxes.length; i++) {
+            checkBoxes[i] = new CheckBox(getApplicationContext());
+            llBoxes.addView(checkBoxes[i]);
+            checkBoxes[i].setText(games[i]);
         }
     }
 
