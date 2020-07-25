@@ -48,7 +48,7 @@ import static com.google.android.gms.location.LocationServices.getFusedLocationP
 public class MapsFragment extends Fragment {
 
     private static final String KEY_CAMERA_POSITION = "camera_position";
-    private static final String KEY_LOCATION = "location";
+    public static final String KEY_LOCATION = "location";
     private static final int DEFAULT_ZOOM = 15;
     private static final String TAG = "MapsFragment";
 
