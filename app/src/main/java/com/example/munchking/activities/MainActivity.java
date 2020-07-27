@@ -50,9 +50,9 @@ public class MainActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private BottomNavigationView bottomNav;
-    private boolean locationPermissionGranted;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Location lastKnownLocation;
+    private boolean locationPermissionGranted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

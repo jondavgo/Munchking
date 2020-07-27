@@ -30,7 +30,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -41,6 +40,7 @@ public class HomeFragment extends Fragment {
     public static final String TAG = "HomeFragment";
     public static final String DATE = "Date";
     public static final String DIST = "Distance";
+    protected JSONArray array;
     protected CharactersAdapter adapter;
     protected List<CharPost> charPosts;
     private Switch swSort;
@@ -64,6 +64,7 @@ public class HomeFragment extends Fragment {
 
         charPosts = new ArrayList<>();
         adapter = new CharactersAdapter(charPosts, getContext());
+        array = ParseUser.getCurrentUser().getJSONArray("favGames");
 
         rvChars = view.findViewById(R.id.rvChars);
         swSort = view.findViewById(R.id.swSort);
@@ -73,7 +74,6 @@ public class HomeFragment extends Fragment {
 
         if(swSort != null) {
             swSort.setText(DATE);
-            swSort.setChecked(true);
             swSort.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -88,14 +88,13 @@ public class HomeFragment extends Fragment {
                     query();
                 }
             });
-            swSort.setChecked(false);
         }
     }
 
     protected void query() {
         ParseQuery<CharPost> query = ParseQuery.getQuery(CharPost.class);
-        JSONArray array = ParseUser.getCurrentUser().getJSONArray("favGames");
         query.include(CharPost.KEY_USER);
+        query.whereNotEqualTo(CharPost.KEY_USER, ParseUser.getCurrentUser());
         query.orderByDescending(CharPost.KEY_DATE);
         try {
             query.whereContainedIn(CharPost.KEY_TTRPG, PreferencesActivity.fromJSONArray(array));
@@ -118,6 +117,7 @@ public class HomeFragment extends Fragment {
     private void queryByDistance(){
         ParseQuery<ParseUser> userQuery = ParseQuery.getQuery(ParseUser.class);
         final ParseUser user = ParseUser.getCurrentUser();
+        userQuery.whereNotEqualTo("username", user.getUsername());
         // TODO: Uncomment below when ready for upscaling
         //userQuery.whereWithinMiles(MapsFragment.KEY_LOCATION, user.getParseGeoPoint(MapsFragment.KEY_LOCATION), 15);
         userQuery.findInBackground(new FindCallback<ParseUser>() {
@@ -142,21 +142,17 @@ public class HomeFragment extends Fragment {
         ParseQuery<CharPost> query = ParseQuery.getQuery(CharPost.class);
         query.include(CharPost.KEY_USER);
         query.orderByDescending(CharPost.KEY_DATE);
+        try {
+            query.whereContainedIn(CharPost.KEY_TTRPG, PreferencesActivity.fromJSONArray(array));
+        } catch (JSONException e) {
+            Log.e(TAG, "JSON Exception during home query!", e);
+        }
         query.whereEqualTo(CharPost.KEY_USER, user);
-//        query.findInBackground(new FindCallback<CharPost>() {
-//            @Override
-//            public void done(List<CharPost> objects, ParseException e) {
-//                if(e == null){
-//                    for(CharPost object: objects){
-//                        Log.d(TAG, "Added character " + object.getName() + " by: " + object.getUser().getUsername());
-//                    }
-//                    adapter.addAll(objects);
-//                } else {
-//                    Log.e(TAG, "Query error!", e);
-//                    Toast.makeText(getContext(), "Something went wrong while grabbing posts!", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
+        try {
+            query.whereContainedIn(CharPost.KEY_TTRPG, PreferencesActivity.fromJSONArray(array));
+        } catch (JSONException e) {
+            Log.e(TAG, "JSON Exception during home query!", e);
+        }
         try {
             List<CharPost> objects = query.find();
             for(CharPost object: objects){

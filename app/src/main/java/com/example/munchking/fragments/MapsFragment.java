@@ -51,6 +51,7 @@ public class MapsFragment extends Fragment {
     public static final String KEY_LOCATION = "location";
     private static final int DEFAULT_ZOOM = 15;
     private static final String TAG = "MapsFragment";
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
     private GoogleMap map;
     private CameraPosition cameraPosition;
@@ -90,6 +91,7 @@ public class MapsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        getLocationPermission();
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
         }
@@ -190,5 +192,22 @@ public class MapsFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void getLocationPermission() {
+        /*
+         * Request location permission, so that we can get the location of the
+         * device. The result of the permission request is handled by a callback,
+         * onRequestPermissionsResult.
+         */
+        if (ContextCompat.checkSelfPermission(getContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            locationPermissionGranted = true;
+        } else {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
     }
 }

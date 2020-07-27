@@ -70,6 +70,7 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.Vi
         TextView tvName;
         TextView tvTtrpg;
         TextView tvUser;
+        TextView tvDate;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

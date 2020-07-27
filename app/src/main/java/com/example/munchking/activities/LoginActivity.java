@@ -2,7 +2,6 @@ package com.example.munchking.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,7 +17,6 @@ import com.parse.ParseUser;
 import com.parse.ParseFacebookUtils;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
@@ -140,6 +138,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public static void goToMain(AppCompatActivity context){
         Intent intent = new Intent(context, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
         context.finish();
     }
