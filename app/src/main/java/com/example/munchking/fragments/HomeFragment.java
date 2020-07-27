@@ -102,6 +102,8 @@ public class HomeFragment extends Fragment {
                     // Code to sort users by distance
                     List<ParseUser> sorted = mergeSort(objects, user.getParseGeoPoint(MapsFragment.KEY_LOCATION));
                     for (ParseUser user : sorted) {
+                        Log.d(TAG, user.getUsername() + " is " + user.getParseGeoPoint("location")
+                                .distanceInMilesTo(ParseUser.getCurrentUser().getParseGeoPoint("location")) + " miles from here.");
                         queryByUser(user);
                     }
                 } else {

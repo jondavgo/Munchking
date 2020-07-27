@@ -1,6 +1,7 @@
 package com.example.munchking.adapters;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,19 +17,24 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.munchking.R;
 import com.example.munchking.activities.MainActivity;
 import com.example.munchking.dialogs.AddItemDialog;
+import com.example.munchking.fragments.DetailFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TraitEquipAdapter extends RecyclerView.Adapter<TraitEquipAdapter.ViewHolder> {
     Context context;
+    Fragment target;
     List<Pair<String, String>> items;
     boolean isAuthor;
+    boolean trait;
 
-    public TraitEquipAdapter(Context context, List<Pair<String, String>> items, boolean isAuthor) {
+    public TraitEquipAdapter(Context context, List<Pair<String, String>> items, boolean isAuthor, boolean trait, Fragment target) {
         this.context = context;
         this.items = items;
         this.isAuthor = isAuthor;
+        this.trait = trait;
+        this.target = target;
     }
 
     public void add(Pair<String, String> item){
@@ -39,6 +45,12 @@ public class TraitEquipAdapter extends RecyclerView.Adapter<TraitEquipAdapter.Vi
     public void remove(int pos){
         items.remove(pos);
         notifyItemRemoved(pos);
+    }
+
+    public void set(String name, String desc, int pos){
+        Pair<String, String> pair = new Pair<>(name, desc);
+        items.set(pos, pair);
+        notifyItemChanged(pos);
     }
 
     public void addAll(List<Pair<String, String>> i){
@@ -90,7 +102,8 @@ public class TraitEquipAdapter extends RecyclerView.Adapter<TraitEquipAdapter.Vi
         public boolean onLongClick(View view) {
             if(isAuthor) {
                 FragmentManager fragmentManager = ((MainActivity) context).getSupportFragmentManager();
-                AddItemDialog alertDialog = AddItemDialog.newInstance("Edit Me!!!");
+                AddItemDialog alertDialog = AddItemDialog.newInstance("Edit Me!!!", getAdapterPosition(), trait);
+                alertDialog.setTargetFragment(target, 27);
                 alertDialog.show(fragmentManager, "fragment_alert");
             }
             return true;

@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.example.munchking.R;
 import com.example.munchking.activities.MainActivity;
 import com.example.munchking.adapters.TraitEquipAdapter;
+import com.example.munchking.dialogs.AddItemDialog;
 import com.example.munchking.models.CharPost;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -41,7 +42,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DetailFragment extends Fragment {
+public class DetailFragment extends Fragment implements AddItemDialog.EditDialogListener {
 
     private final String TAG = "DetailFragment";
     private CharPost charPost;
@@ -101,8 +102,8 @@ public class DetailFragment extends Fragment {
         isAuthor = ParseUser.getCurrentUser().getUsername().equals(charPost.getUser().getUsername());
         traits = new ArrayList<>();
         equipment = new ArrayList<>();
-        traitAdapter = new TraitEquipAdapter(getContext(), traits, isAuthor);
-        equipAdapter = new TraitEquipAdapter(getContext(), equipment, isAuthor);
+        traitAdapter = new TraitEquipAdapter(getContext(), traits, isAuthor, true, this);
+        equipAdapter = new TraitEquipAdapter(getContext(), equipment, isAuthor, false, this);
 
         // Set RVs
         LinearLayoutManager Tmanager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
@@ -221,5 +222,20 @@ public class DetailFragment extends Fragment {
         } else {
             view.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onFinishEditDialog(String name, String desc, int pos, boolean deleted, boolean isTrait) {
+        TraitEquipAdapter adapter;
+        if(isTrait){
+            adapter = traitAdapter;
+        } else{
+            adapter = equipAdapter;
+        }
+        if(deleted){
+            adapter.remove(pos);
+            return;
+        }
+        adapter.set(name, desc, pos);
     }
 }

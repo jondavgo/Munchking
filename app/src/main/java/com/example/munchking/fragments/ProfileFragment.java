@@ -66,6 +66,8 @@ public class ProfileFragment extends HomeFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         user = Parcels.unwrap(getArguments().getParcelable("profile"));
+        adapter.clear();
+        query();
 
         ivPfp = view.findViewById(R.id.ivPfp);
         tvUsername = view.findViewById(R.id.tvUsername);
