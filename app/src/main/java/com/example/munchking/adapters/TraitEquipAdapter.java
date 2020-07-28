@@ -38,8 +38,8 @@ public class TraitEquipAdapter extends RecyclerView.Adapter<TraitEquipAdapter.Vi
     }
 
     public void add(Pair<String, String> item){
-        items.add(item);
-        notifyItemInserted(items.size()-1);
+        items.add(0, item);
+        notifyItemInserted(0);
     }
 
     public void remove(int pos){
@@ -47,8 +47,7 @@ public class TraitEquipAdapter extends RecyclerView.Adapter<TraitEquipAdapter.Vi
         notifyItemRemoved(pos);
     }
 
-    public void set(String name, String desc, int pos){
-        Pair<String, String> pair = new Pair<>(name, desc);
+    public void set(Pair<String, String> pair, int pos){
         items.set(pos, pair);
         notifyItemChanged(pos);
     }

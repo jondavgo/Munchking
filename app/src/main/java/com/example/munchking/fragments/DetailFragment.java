@@ -214,6 +214,13 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
             e.printStackTrace();
         }
         adapter.add(item);
+        if(trait){
+            rvTraits.setVisibility(View.VISIBLE);
+            rvTraits.smoothScrollToPosition(0);
+        } else{
+            rvEquipment.setVisibility(View.VISIBLE);
+            rvEquipment.smoothScrollToPosition(0);
+        }
     }
 
     private void toggleVisibility(View view){
@@ -234,8 +241,25 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
         }
         if(deleted){
             adapter.remove(pos);
-            return;
+            try {
+                charPost.removeTraitEquip(pos, isTrait);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Pair<String, String> pair = new Pair<>(name, desc);
+            try {
+                charPost.setTraitEquip(pos, pair, isTrait);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            adapter.set(pair, pos);
         }
-        adapter.set(name, desc, pos);
+        charPost.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                Log.i(TAG, "Item Successfully updated!");
+            }
+        });
     }
 }

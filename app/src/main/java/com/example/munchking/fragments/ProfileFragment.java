@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.munchking.R;
 import com.example.munchking.activities.PreferencesActivity;
+import com.example.munchking.adapters.CharactersAdapter;
 import com.example.munchking.models.CharPost;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.parse.FindCallback;
@@ -30,6 +32,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -64,15 +67,18 @@ public class ProfileFragment extends HomeFragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        charPosts = new ArrayList<>();
+        adapter = new CharactersAdapter(charPosts, getContext());
         user = Parcels.unwrap(getArguments().getParcelable("profile"));
-        query();
 
         ivPfp = view.findViewById(R.id.ivPfp);
         tvUsername = view.findViewById(R.id.tvUsername);
         tvFavs = view.findViewById(R.id.tvFavs);
         fabEdit = view.findViewById(R.id.fabPreferences);
+        rvChars = view.findViewById(R.id.rvChars);
 
+        rvChars.setAdapter(adapter);
+        rvChars.setLayoutManager(new LinearLayoutManager(getContext()));
         tvUsername.setText(user.getUsername());
         ParseFile photo = user.getParseFile("profilePic");
         if(photo != null) {
@@ -95,6 +101,7 @@ public class ProfileFragment extends HomeFragment {
                 toPreferences();
             }
         });
+        query();
     }
 
     private void toPreferences() {

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#7C4DFF"
     tools:context=".activities.MainActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -30,9 +31,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/colorPrimary"
         app:itemIconTint="#000000"
         app:itemTextColor="#000000"
-        app:labelVisibilityMode="unlabeled"
+        app:labelVisibilityMode="labeled"
         app:menu="@menu/menu_bottom_navigation" />
 </RelativeLayout>

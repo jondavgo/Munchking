@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,7 +15,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.munchking.R;
@@ -38,12 +42,15 @@ import java.util.List;
 public class HomeFragment extends Fragment {
 
     public static final String TAG = "HomeFragment";
-    public static final String DATE = "Date";
-    public static final String DIST = "Distance";
+    private int selectorPos;
     protected JSONArray array;
     protected CharactersAdapter adapter;
     protected List<CharPost> charPosts;
-    private Switch swSort;
+    private ImageView ivSelect;
+    private TextView tvSelDate;
+    private TextView tvSelDist;
+    private TextView tvSelMap;
+    private ConstraintLayout clConstraints;
 
     protected RecyclerView rvChars;
 
@@ -67,27 +74,70 @@ public class HomeFragment extends Fragment {
         array = ParseUser.getCurrentUser().getJSONArray("favGames");
 
         rvChars = view.findViewById(R.id.rvChars);
-        swSort = view.findViewById(R.id.swSort);
+        ivSelect = view.findViewById(R.id.ivSelect);
+        tvSelDate = view.findViewById(R.id.tvSelDate);
+        tvSelDist = view.findViewById(R.id.tvSelDist);
+        tvSelMap = view.findViewById(R.id.tvSelMap);
+        clConstraints = view.findViewById(R.id.clConstraints);
 
         rvChars.setAdapter(adapter);
         rvChars.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        if(swSort != null) {
-            swSort.setText(DATE);
-            swSort.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    if (b) {
-                        swSort.setText(DIST);
-                        adapter.clear();
-                        queryByDistance();
-                        return;
-                    }
-                    swSort.setText(DATE);
-                    adapter.clear();
-                    query();
-                }
-            });
+        tvSelDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toPosition(0, tvSelDate);
+            }
+        });
+
+        tvSelDist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toPosition(1, tvSelDist);
+            }
+        });
+
+        tvSelMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toPosition(2, tvSelMap);
+            }
+        });
+
+        checkPosition(selectorPos);
+    }
+
+    private void toPosition(int i, TextView textView) {
+        checkPosition(i);
+        selectorPos = i;
+        ConstraintSet set = new ConstraintSet();
+        set.clone(clConstraints);
+        set.connect(ivSelect.getId(), ConstraintSet.START, textView.getId(), ConstraintSet.START, 0);
+        set.connect(ivSelect.getId(), ConstraintSet.END, textView.getId(), ConstraintSet.END, 0);
+        set.applyTo(clConstraints);
+        resetColor();
+        textView.setTextColor(getResources().getColor(R.color.white));
+    }
+
+    private void resetColor() {
+        tvSelDate.setTextColor(getResources().getColor(R.color.black));
+        tvSelDist.setTextColor(getResources().getColor(R.color.black));
+        tvSelMap.setTextColor(getResources().getColor(R.color.black));
+    }
+
+    private void checkPosition(int i) {
+        adapter.clear();
+        switch (i){
+            case 0:
+                query();
+                break;
+            case 1:
+                queryByDistance();
+                break;
+            case 2:
+                //Code to load map
+                Log.i(TAG, "I will load the map someday!");
+                break;
         }
     }
 

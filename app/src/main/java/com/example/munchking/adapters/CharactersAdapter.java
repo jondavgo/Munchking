@@ -23,6 +23,8 @@ import com.parse.ParseFile;
 
 import org.parceler.Parcels;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.ViewHolder> {
@@ -78,13 +80,18 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.Vi
             tvName = itemView.findViewById(R.id.tvName);
             tvTtrpg = itemView.findViewById(R.id.tvTtrpg);
             tvUser = itemView.findViewById(R.id.tvUser);
+            tvDate = itemView.findViewById(R.id.tvDate);
             itemView.setOnClickListener(this);
         }
 
         public void bind(final CharPost charPost) {
             tvName.setText(charPost.getName());
             tvTtrpg.setText(charPost.getTtrpg());
-            tvUser.setText(charPost.getUser().getUsername());
+            tvUser.setText(String.format("By: %s", charPost.getUser().getUsername()));
+            Date date = charPost.getCreatedAt();
+            String pattern = "'Created' dd/MM/yyyy 'at' hh:mm a";
+            SimpleDateFormat format = new SimpleDateFormat(pattern);
+            tvDate.setText(format.format(date));
             ParseFile photo = charPost.getPhoto();
             if(photo != null) {
                 Glide.with(context).load(photo.getUrl()).into(ivPhoto);

@@ -7,27 +7,79 @@
     tools:context=".fragments.HomeFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clConstraints"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Switch
-            android:id="@+id/swSort"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="32dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Date" />
+        <FrameLayout
+            android:id="@+id/flMap"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/rvChars"
+            app:layout_constraintStart_toStartOf="@+id/rvChars"
+            app:layout_constraintTop_toTopOf="@+id/rvChars">
+
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/ivSelect"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:contentDescription="@string/selectionbubble"
+            android:src="@drawable/selection_bubble"
+            app:layout_constraintBottom_toBottomOf="@+id/tvSelDate"
+            app:layout_constraintEnd_toEndOf="@+id/tvSelDate"
+            app:layout_constraintStart_toStartOf="@+id/tvSelDate"
+            app:layout_constraintTop_toTopOf="@+id/tvSelDate" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvChars"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginTop="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/swSort" />
+            app:layout_constraintTop_toBottomOf="@+id/tvSelDate" />
+
+        <TextView
+            android:id="@+id/tvSelDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:padding="8dp"
+            android:text="@string/sort_by_date"
+            android:textColor="#FFFFFF"
+            app:layout_constraintEnd_toStartOf="@+id/tvSelDist"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvSelDist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:padding="8dp"
+            android:text="@string/sort_by_distance"
+            android:textColor="#000000"
+            app:layout_constraintEnd_toStartOf="@+id/tvSelMap"
+            app:layout_constraintStart_toEndOf="@+id/tvSelDate"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvSelMap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            android:padding="8dp"
+            android:text="@string/view_map"
+            android:textColor="#000000"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvSelDist"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -15,7 +15,7 @@
     <item
         android:id="@+id/action_new"
         android:icon="@android:drawable/ic_menu_add"
-        android:title="@string/create_a_character"
+        android:title="@string/create"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_profile"

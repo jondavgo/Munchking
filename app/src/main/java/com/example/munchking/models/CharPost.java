@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import org.parceler.Parcel;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Parcel(analyze={CharPost.class})
@@ -121,6 +122,27 @@ public class CharPost extends ParseObject {
         object.put("name", item.first);
         object.put("description", item.second);
         arr.put(object);
+
+        if(trait){
+            setTraits(arr);
+        } else {
+            setEquipment(arr);
+        }
+    }
+
+    public void setTraitEquip(int pos, Pair<String, String> item, boolean trait) throws JSONException{
+        JSONArray arr;
+        if(trait){
+            arr = getTraits();
+        } else {
+            arr = getEquipment();
+        }
+
+        JSONObject object = arr.getJSONObject(pos);
+        object.remove("name");
+        object.remove("description");
+        object.put("name", item.first);
+        object.put("description", item.second);
 
         if(trait){
             setTraits(arr);

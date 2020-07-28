@@ -45,4 +45,9 @@
     <string name="map">Map</string>
     <string name="cancel">Cancel</string>
     <string name="save_favs">Save Favorites</string>
+    <string name="selectionbubble">SelectionBubble</string>
+    <string name="create">Create</string>
+    <string name="view_map">View Map</string>
+    <string name="sort_by_date">Sort by Date</string>
+    <string name="sort_by_distance">Sort by Distance</string>
 </resources>
