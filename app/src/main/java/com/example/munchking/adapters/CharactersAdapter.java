@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.munchking.R;
 import com.example.munchking.activities.MainActivity;
 import com.example.munchking.fragments.DetailFragment;
@@ -94,7 +95,7 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.Vi
             tvDate.setText(format.format(date));
             ParseFile photo = charPost.getPhoto();
             if(photo != null) {
-                Glide.with(context).load(photo.getUrl()).into(ivPhoto);
+                Glide.with(context).load(photo.getUrl()).transform(new RoundedCorners(30)).into(ivPhoto);
             }
 
             tvUser.setOnClickListener(new View.OnClickListener() {

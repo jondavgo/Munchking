@@ -100,8 +100,10 @@ public class TraitEquipAdapter extends RecyclerView.Adapter<TraitEquipAdapter.Vi
         @Override
         public boolean onLongClick(View view) {
             if(isAuthor) {
+                String name = tvName.getText().toString();
+                String desc = tvDesc.getText().toString();
                 FragmentManager fragmentManager = ((MainActivity) context).getSupportFragmentManager();
-                AddItemDialog alertDialog = AddItemDialog.newInstance("Edit This Item!", getAdapterPosition(), trait);
+                AddItemDialog alertDialog = AddItemDialog.newInstance("Edit This Item!", getAdapterPosition(), trait, name, desc);
                 alertDialog.setTargetFragment(target, 27);
                 alertDialog.show(fragmentManager, "fragment_alert");
             }

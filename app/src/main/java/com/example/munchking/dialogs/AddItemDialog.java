@@ -33,10 +33,12 @@ public class AddItemDialog extends DialogFragment {
         // required empty constructor
     }
 
-    public static AddItemDialog newInstance(String title, int pos, boolean trait) {
+    public static AddItemDialog newInstance(String title, int pos, boolean trait, String name, String desc) {
         AddItemDialog frag = new AddItemDialog();
         Bundle args = new Bundle();
         args.putString("title", title);
+        args.putString("name", name);
+        args.putString("desc", desc);
         args.putInt("pos", pos);
         args.putBoolean("trait", trait);
         frag.setArguments(args);
@@ -46,6 +48,8 @@ public class AddItemDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         String title = getArguments().getString("title");
+        String name = getArguments().getString("name");
+        String desc = getArguments().getString("desc");
         pos = getArguments().getInt("pos");
         isTrait = getArguments().getBoolean("trait");
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
@@ -54,6 +58,8 @@ public class AddItemDialog extends DialogFragment {
         alertDialogBuilder.setView(v);
         etDesc = v.findViewById(R.id.etDesc);
         etName = v.findViewById(R.id.etName);
+        etName.setText(name);
+        etDesc.setText(desc);
         alertDialogBuilder.setPositiveButton("OK",  new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -65,7 +71,7 @@ public class AddItemDialog extends DialogFragment {
         alertDialogBuilder.setNeutralButton("Delete", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // on failure
+                // on delete
                 delete = true;
                 sendBackResult();
             }
