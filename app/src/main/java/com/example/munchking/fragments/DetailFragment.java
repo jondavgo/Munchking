@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,11 +60,11 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
     private Button btnComments;
     private Button btnTrait;
     private Button btnEquip;
-    private TextView tvDescName;
+    private LinearLayout llDesc;
     private TextView tvDescription;
-    private TextView tvTraitName;
+    private LinearLayout llTrait;
     private RecyclerView rvTraits;
-    private TextView tvEquipName;
+    private LinearLayout llEquip;
     private RecyclerView rvEquipment;
     private TextView tvRace;
     private TextView tvClass;
@@ -87,10 +88,10 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
         tvTtrpg = itemView.findViewById(R.id.tvTtrpg);
         tvUser = itemView.findViewById(R.id.tvUser);
         btnComments = itemView.findViewById(R.id.btnComments);
-        tvDescName = itemView.findViewById(R.id.tvWordDesc);
+        llDesc = itemView.findViewById(R.id.llDesc);
         tvDescription = itemView.findViewById(R.id.tvDesc);
-        tvTraitName = itemView.findViewById(R.id.tvTraits);
-        tvEquipName = itemView.findViewById(R.id.tvEquipment);
+        llTrait = itemView.findViewById(R.id.llTraits);
+        llEquip = itemView.findViewById(R.id.llEquipment);
         rvEquipment = itemView.findViewById(R.id.rvEquipment);
         rvTraits = itemView.findViewById(R.id.rvTraits);
         tvRace = itemView.findViewById(R.id.tvRace);
@@ -168,19 +169,19 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
                 fragmentTransaction.commit();
             }
         });
-        tvEquipName.setOnClickListener(new View.OnClickListener() {
+        llEquip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 toggleVisibility(rvEquipment);
             }
         });
-        tvTraitName.setOnClickListener(new View.OnClickListener() {
+        llTrait.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 toggleVisibility(rvTraits);
             }
         });
-        tvDescName.setOnClickListener(new View.OnClickListener() {
+        llDesc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 toggleVisibility(tvDescription);
