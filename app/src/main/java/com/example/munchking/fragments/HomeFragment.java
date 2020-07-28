@@ -45,7 +45,7 @@ public class HomeFragment extends Fragment {
 
     public static final String TAG = "HomeFragment";
     private final Fragment map = new MapsFragment();
-    //private FragmentManager fragMan = getActivity().getSupportFragmentManager();
+    private FragmentManager fragMan;
     private int selectorPos;
     protected JSONArray array;
     protected CharactersAdapter adapter;
@@ -76,6 +76,7 @@ public class HomeFragment extends Fragment {
         charPosts = new ArrayList<>();
         adapter = new CharactersAdapter(charPosts, getContext());
         array = ParseUser.getCurrentUser().getJSONArray("favGames");
+        fragMan = getActivity().getSupportFragmentManager();
 
         rvChars = view.findViewById(R.id.rvChars);
         ivSelect = view.findViewById(R.id.ivSelect);
@@ -131,27 +132,29 @@ public class HomeFragment extends Fragment {
 
     private void checkPosition(int i) {
         adapter.clear();
-        dismissMapFragment();
         switch (i){
             case 0:
+                dismissMapFragment();
                 query();
                 break;
             case 1:
+                dismissMapFragment();
                 queryByDistance();
                 break;
             case 2:
-                //Code to load map
                 loadMapFragment();
                 break;
         }
     }
 
     private void dismissMapFragment() {
-        //fragMan.beginTransaction().detach(map).commit();
+        fragMan.beginTransaction().remove(map).commit();
+        rvChars.setVisibility(View.VISIBLE);
     }
 
     private void loadMapFragment() {
-        //fragMan.beginTransaction().replace(R.id.flMap, map,"map").commit();
+        rvChars.setVisibility(View.INVISIBLE);
+        fragMan.beginTransaction().replace(R.id.flMap, map,"map").commit();
     }
 
     protected void query() {

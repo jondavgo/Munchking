@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
     final private Fragment fragment1 = new HomeFragment();
     final private Fragment fragment2 = new ComposeFragment();
     final private Fragment fragment3 = ProfileFragment.newInstance(ParseUser.getCurrentUser());
-    final private Fragment fragment4 = new MapsFragment();
 
     private Toolbar toolbar;
     private BottomNavigationView bottomNav;
@@ -88,9 +87,6 @@ public class MainActivity extends AppCompatActivity {
                         fragment = fragment3;
                         tag = "profile";
                         break;
-                    case R.id.action_map:
-                        fragment = fragment4;
-                        tag = "map";
                 }
                 fragMan.beginTransaction().replace(R.id.flContainer, fragment, tag).commit();
                 return true;
