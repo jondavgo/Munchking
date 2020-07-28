@@ -18,6 +18,10 @@ public class FBSignUpActivity extends SignupActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         etEmail.setVisibility(View.GONE);
+        etPassword.setText("Facebook");
+        etConfirm.setText("Facebook");
+        etPassword.setVisibility(View.GONE);
+        etConfirm.setVisibility(View.GONE);
     }
 
     @Override

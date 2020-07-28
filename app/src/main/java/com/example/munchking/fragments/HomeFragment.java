@@ -7,6 +7,8 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -42,6 +44,8 @@ import java.util.List;
 public class HomeFragment extends Fragment {
 
     public static final String TAG = "HomeFragment";
+    private final Fragment map = new MapsFragment();
+    //private FragmentManager fragMan = getActivity().getSupportFragmentManager();
     private int selectorPos;
     protected JSONArray array;
     protected CharactersAdapter adapter;
@@ -116,17 +120,18 @@ public class HomeFragment extends Fragment {
         set.connect(ivSelect.getId(), ConstraintSet.END, textView.getId(), ConstraintSet.END, 0);
         set.applyTo(clConstraints);
         resetColor();
-        textView.setTextColor(getResources().getColor(R.color.white));
+        textView.setTextColor(getResources().getColor(R.color.black));
     }
 
     private void resetColor() {
-        tvSelDate.setTextColor(getResources().getColor(R.color.black));
-        tvSelDist.setTextColor(getResources().getColor(R.color.black));
-        tvSelMap.setTextColor(getResources().getColor(R.color.black));
+        tvSelDate.setTextColor(getResources().getColor(R.color.colorAccent));
+        tvSelDist.setTextColor(getResources().getColor(R.color.colorAccent));
+        tvSelMap.setTextColor(getResources().getColor(R.color.colorAccent));
     }
 
     private void checkPosition(int i) {
         adapter.clear();
+        dismissMapFragment();
         switch (i){
             case 0:
                 query();
@@ -136,9 +141,17 @@ public class HomeFragment extends Fragment {
                 break;
             case 2:
                 //Code to load map
-                Log.i(TAG, "I will load the map someday!");
+                loadMapFragment();
                 break;
         }
+    }
+
+    private void dismissMapFragment() {
+        //fragMan.beginTransaction().detach(map).commit();
+    }
+
+    private void loadMapFragment() {
+        //fragMan.beginTransaction().replace(R.id.flMap, map,"map").commit();
     }
 
     protected void query() {
@@ -168,7 +181,6 @@ public class HomeFragment extends Fragment {
         ParseQuery<ParseUser> userQuery = ParseQuery.getQuery(ParseUser.class);
         final ParseUser user = ParseUser.getCurrentUser();
         userQuery.whereNotEqualTo("username", user.getUsername());
-        // TODO: Uncomment below when ready for upscaling
         //userQuery.whereWithinMiles(MapsFragment.KEY_LOCATION, user.getParseGeoPoint(MapsFragment.KEY_LOCATION), 15);
         userQuery.findInBackground(new FindCallback<ParseUser>() {
             @Override

@@ -51,6 +51,7 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
     private List<Pair<String, String>> equipment;
     private TraitEquipAdapter traitAdapter;
     private TraitEquipAdapter equipAdapter;
+    private FragmentManager fragmentManager;
     private boolean isAuthor;
 
     private ImageView ivPhoto;
@@ -105,6 +106,7 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
         equipment = new ArrayList<>();
         traitAdapter = new TraitEquipAdapter(getContext(), traits, isAuthor, true, this);
         equipAdapter = new TraitEquipAdapter(getContext(), equipment, isAuthor, false, this);
+        fragmentManager = getActivity().getSupportFragmentManager();
 
         // Set RVs
         LinearLayoutManager Tmanager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
@@ -151,22 +153,16 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
                 Bundle args = new Bundle();
                 args.putParcelable("post", Parcels.wrap(charPost));
                 fragment.setArguments(args);
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.flContainer, fragment,"comments");
-                fragmentTransaction.addToBackStack("details");
-                fragmentTransaction.commit();
+                fragmentManager.beginTransaction().replace(R.id.flContainer, fragment,"comments")
+                        .addToBackStack("details").commit();
             }
         });
         tvUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ProfileFragment fragment = ProfileFragment.newInstance(charPost.getUser());
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.flContainer, fragment,"profile");
-                fragmentTransaction.addToBackStack("details");
-                fragmentTransaction.commit();
+                fragmentManager.beginTransaction().replace(R.id.flContainer, fragment,"profile")
+                        .addToBackStack("details").commit();
             }
         });
         llEquip.setOnClickListener(new View.OnClickListener() {

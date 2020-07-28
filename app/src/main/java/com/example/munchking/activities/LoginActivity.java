@@ -40,7 +40,6 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         permissions = new ArrayList<>();
-        permissions.add("email");
 
         btnLogin = findViewById(R.id.btnLogin);
         btnSignup = findViewById(R.id.btnSignUp);
@@ -85,13 +84,6 @@ public class LoginActivity extends AppCompatActivity {
                 });
             }
         });
-
-        ParseUser currentUser = ParseUser.getCurrentUser();
-        if (currentUser != null) {
-            // do stuff with the user
-        } else {
-            // show the signup or login screen
-        }
     }
 
     private void toFBSignUp() {
@@ -108,6 +100,7 @@ public class LoginActivity extends AppCompatActivity {
         String username = etUser.getText().toString();
         ParseUser.logInInBackground(username, password, new LogInCallback() {
             public void done(ParseUser user, ParseException e) {
+                Log.d(TAG, "done: " + e.getCode());
                 if (user != null) {
                     // Hooray! The user is logged in.
                     goToMain(LoginActivity.this);
