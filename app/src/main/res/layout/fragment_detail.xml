@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#B388FF">
+    android:background="@color/colorPrimary">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -65,6 +65,7 @@
             android:layout_alignParentStart="true"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:backgroundTint="@color/colorAccent"
             android:text="@string/comments" />
 
         <TextView
@@ -75,6 +76,8 @@
             android:layout_alignParentStart="true"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/black"
             tools:text="Class: Fighter 11" />
 
         <TextView
@@ -85,6 +88,8 @@
             android:layout_alignParentStart="true"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/black"
             tools:text="Race: Protector Aasimar" />
 
         <LinearLayout
@@ -112,6 +117,8 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/black"
                 tools:text='Daniel "Dart" Solaire was born in Baycliff to an average family. On his 16th birthday, he awoke to a strange power within him, transforming him from a run of the mill farmhand to a knack with a longbow!'
                 tools:visibility="visible" />
 
@@ -204,6 +211,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_toEndOf="@+id/btnComments"
+            android:backgroundTint="@color/colorAccent"
             android:text="@string/add_trait" />
 
         <Button
@@ -214,6 +222,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_toEndOf="@id/btnAddTrait"
+            android:backgroundTint="@color/colorAccent"
             android:text="@string/add_equipment" />
 
     </RelativeLayout>

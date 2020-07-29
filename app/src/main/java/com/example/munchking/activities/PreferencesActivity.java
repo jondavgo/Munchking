@@ -2,6 +2,7 @@ package com.example.munchking.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -43,15 +44,6 @@ public class PreferencesActivity extends AppCompatActivity {
         tvTitle = findViewById(R.id.tvPreferences);
         checkBoxes = new CheckBox[games.length];
         llBoxes = findViewById(R.id.llBoxes);
-        // There has to be a better way to do this???
-//        checkBoxes[0] = findViewById(R.id.cbFirst);
-//        checkBoxes[1] = findViewById(R.id.cbSecond);
-//        checkBoxes[2] = findViewById(R.id.cbThird);
-//        checkBoxes[3] = findViewById(R.id.cbFourth);
-//        checkBoxes[4] = findViewById(R.id.cbFifth);
-//        checkBoxes[5] = findViewById(R.id.cbSixth);
-//        checkBoxes[6] = findViewById(R.id.cbSeventh);
-//        checkBoxes[7] = findViewById(R.id.cbEighth);
         loadBoxes();
         btnCont = findViewById(R.id.btnContinue);
         btnSkip = findViewById(R.id.btnSkip);

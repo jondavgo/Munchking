@@ -52,7 +52,7 @@ public class AddItemDialog extends DialogFragment {
         String desc = getArguments().getString("desc");
         pos = getArguments().getInt("pos");
         isTrait = getArguments().getBoolean("trait");
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.AlertDialogStyle);
         alertDialogBuilder.setTitle(title);
         View v = LayoutInflater.from(getContext()).inflate(R.layout.fragment_add_item_dialog, null);
         alertDialogBuilder.setView(v);

@@ -100,7 +100,6 @@ public class LoginActivity extends AppCompatActivity {
         String username = etUser.getText().toString();
         ParseUser.logInInBackground(username, password, new LogInCallback() {
             public void done(ParseUser user, ParseException e) {
-                Log.d(TAG, "done: " + e.getCode());
                 if (user != null) {
                     // Hooray! The user is logged in.
                     goToMain(LoginActivity.this);
