@@ -30,13 +30,12 @@ public class PreferencesActivity extends AppCompatActivity {
 
     public static final String TAG = "PreferencesActivity";
     public static final String KEY_PREFERENCES = "favGames";
-    private Chip[] checkBoxes;
+    private Chip[] chips;
+    private ChipGroup chipGroup;
     private String[] games;
     private Button btnCont;
     private Button btnSkip;
     private TextView tvTitle;
-    private LinearLayout llBoxes;
-    private ChipGroup chipGroup;
     private ParseUser user;
 
     @Override
@@ -45,8 +44,7 @@ public class PreferencesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_preferences);
         games = getResources().getStringArray(R.array.games_array);
         tvTitle = findViewById(R.id.tvPreferences);
-        checkBoxes = new Chip[games.length];
-        llBoxes = findViewById(R.id.llBoxes);
+        chips = new Chip[games.length];
         chipGroup = findViewById(R.id.cgChips);
         loadBoxes();
         btnCont = findViewById(R.id.btnContinue);
@@ -87,11 +85,12 @@ public class PreferencesActivity extends AppCompatActivity {
     }
 
     private void loadBoxes() {
-        for (int i = 0; i < checkBoxes.length; i++) {
-            checkBoxes[i] = new Chip(getApplicationContext());
-            //llBoxes.addView(checkBoxes[i]);
-            chipGroup.addView(checkBoxes[i]);
-            checkBoxes[i].setText(games[i]);
+        for (int i = 0; i < chips.length; i++) {
+            chips[i] = new Chip(this);
+            chips[i].setCheckable(true);
+            chips[i].setChipBackgroundColorResource(R.color.colorAccent);
+            chipGroup.addView(chips[i]);
+            chips[i].setText(games[i]);
         }
     }
 
@@ -99,7 +98,7 @@ public class PreferencesActivity extends AppCompatActivity {
         List<String> array = fromJSONArray(user.getJSONArray(KEY_PREFERENCES));
         for (int i = 0; i < games.length; i++) {
             if(array.contains(games[i])){
-                checkBoxes[i].setChecked(true);
+                chips[i].setChecked(true);
             }
         }
     }
@@ -107,8 +106,8 @@ public class PreferencesActivity extends AppCompatActivity {
     private void savePreferences() {
         ParseUser user = ParseUser.getCurrentUser();
         ArrayList<String> preferences = new ArrayList<>();
-        for (int i = 0; i < checkBoxes.length; i++) {
-            if(checkBoxes[i].isChecked()){
+        for (int i = 0; i < chips.length; i++) {
+            if(chips[i].isChecked()){
                 preferences.add(games[i]);
             }
         }
