@@ -12,6 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.munchking.R;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -28,12 +30,13 @@ public class PreferencesActivity extends AppCompatActivity {
 
     public static final String TAG = "PreferencesActivity";
     public static final String KEY_PREFERENCES = "favGames";
-    private CheckBox[] checkBoxes;
+    private Chip[] checkBoxes;
     private String[] games;
     private Button btnCont;
     private Button btnSkip;
     private TextView tvTitle;
-    LinearLayout llBoxes;
+    private LinearLayout llBoxes;
+    private ChipGroup chipGroup;
     private ParseUser user;
 
     @Override
@@ -42,8 +45,9 @@ public class PreferencesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_preferences);
         games = getResources().getStringArray(R.array.games_array);
         tvTitle = findViewById(R.id.tvPreferences);
-        checkBoxes = new CheckBox[games.length];
+        checkBoxes = new Chip[games.length];
         llBoxes = findViewById(R.id.llBoxes);
+        chipGroup = findViewById(R.id.cgChips);
         loadBoxes();
         btnCont = findViewById(R.id.btnContinue);
         btnSkip = findViewById(R.id.btnSkip);
@@ -84,8 +88,9 @@ public class PreferencesActivity extends AppCompatActivity {
 
     private void loadBoxes() {
         for (int i = 0; i < checkBoxes.length; i++) {
-            checkBoxes[i] = new CheckBox(getApplicationContext());
-            llBoxes.addView(checkBoxes[i]);
+            checkBoxes[i] = new Chip(getApplicationContext());
+            //llBoxes.addView(checkBoxes[i]);
+            chipGroup.addView(checkBoxes[i]);
             checkBoxes[i].setText(games[i]);
         }
     }
