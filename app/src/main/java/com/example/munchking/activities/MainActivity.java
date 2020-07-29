@@ -71,6 +71,11 @@ public class MainActivity extends AppCompatActivity {
         bottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                // Clear back stack
+                for(int i = 0; i < fragMan.getBackStackEntryCount(); ++i) {
+                    fragMan.popBackStack();
+                }
+                // Go to requested fragment
                 Fragment fragment;
                 String tag;
                 switch (item.getItemId()) {

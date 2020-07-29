@@ -12,10 +12,14 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.transition.ChangeBounds;
+import android.transition.Transition;
+import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnticipateOvershootInterpolator;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
@@ -116,12 +120,16 @@ public class HomeFragment extends Fragment {
         checkPosition(i);
         selectorPos = i;
         ConstraintSet set = new ConstraintSet();
+        Transition transition = new ChangeBounds();
+        transition.setInterpolator(new AnticipateOvershootInterpolator(1.0f));
+        transition.setDuration(750);
         set.clone(clConstraints);
         set.connect(ivSelect.getId(), ConstraintSet.START, textView.getId(), ConstraintSet.START, 0);
         set.connect(ivSelect.getId(), ConstraintSet.END, textView.getId(), ConstraintSet.END, 0);
-        set.applyTo(clConstraints);
+        TransitionManager.beginDelayedTransition(clConstraints, transition);
         resetColor();
         textView.setTextColor(getResources().getColor(R.color.black));
+        set.applyTo(clConstraints);
     }
 
     private void resetColor() {
@@ -181,20 +189,20 @@ public class HomeFragment extends Fragment {
     }
 
     private void queryByDistance(){
-        ParseQuery<ParseUser> userQuery = ParseQuery.getQuery(ParseUser.class);
-        final ParseUser user = ParseUser.getCurrentUser();
-        userQuery.whereNotEqualTo("username", user.getUsername());
-        //userQuery.whereWithinMiles(MapsFragment.KEY_LOCATION, user.getParseGeoPoint(MapsFragment.KEY_LOCATION), 15);
-        userQuery.findInBackground(new FindCallback<ParseUser>() {
+        ParseQuery<CharPost> query = ParseQuery.getQuery(CharPost.class);
+        query.include(CharPost.KEY_USER);
+        query.whereNotEqualTo(CharPost.KEY_USER, ParseUser.getCurrentUser());
+        try {
+            query.whereContainedIn(CharPost.KEY_TTRPG, PreferencesActivity.fromJSONArray(array));
+        } catch (JSONException e) {
+            Log.e(TAG, "JSON Exception during home query!", e);
+        }
+        query.findInBackground(new FindCallback<CharPost>() {
             @Override
-            public void done(List<ParseUser> objects, ParseException e) {
+            public void done(List<CharPost> objects, ParseException e) {
                 if(e == null){
-                    // Code to sort users by distance
-                    List<ParseUser> sorted = mergeSort(objects, user.getParseGeoPoint(MapsFragment.KEY_LOCATION));
-                    for (int i = 0; i < sorted.size(); i++) {
-                        Log.d(TAG, "Querying for: " + sorted.get(i).getUsername());
-                        queryByUser(sorted.get(i));
-                    }
+                    List<CharPost> sorted = mergeSort(objects, ParseUser.getCurrentUser().getParseGeoPoint(MapsFragment.KEY_LOCATION));
+                    adapter.addAll(sorted);
                 } else {
                     Log.e(TAG, "Query error!", e);
                     Toast.makeText(getContext(), "Something went wrong while grabbing posts!", Toast.LENGTH_SHORT).show();
@@ -203,40 +211,13 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void queryByUser(ParseUser user) {
-        ParseQuery<CharPost> query = ParseQuery.getQuery(CharPost.class);
-        query.include(CharPost.KEY_USER);
-        query.orderByDescending(CharPost.KEY_DATE);
-        try {
-            query.whereContainedIn(CharPost.KEY_TTRPG, PreferencesActivity.fromJSONArray(array));
-        } catch (JSONException e) {
-            Log.e(TAG, "JSON Exception during home query!", e);
-        }
-        query.whereEqualTo(CharPost.KEY_USER, user);
-        try {
-            query.whereContainedIn(CharPost.KEY_TTRPG, PreferencesActivity.fromJSONArray(array));
-        } catch (JSONException e) {
-            Log.e(TAG, "JSON Exception during home query!", e);
-        }
-        try {
-            List<CharPost> objects = query.find();
-            for(CharPost object: objects){
-                Log.d(TAG, "Added character " + object.getName() + " by: " + object.getUser().getUsername());
-            }
-            adapter.addAll(objects);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private List<ParseUser> mergeSort(List<ParseUser> list, ParseGeoPoint parseGeoPoint) {
+    private List<CharPost> mergeSort(List<CharPost> list, ParseGeoPoint parseGeoPoint) {
         if(list.size() == 1){
-            Log.d(TAG, "List (Base): " + printList(list));
             return list;
         }
         int mid = list.size()/2;
-        ArrayList<ParseUser> left = new ArrayList<>();
-        ArrayList<ParseUser> right = new ArrayList<>();
+        ArrayList<CharPost> left = new ArrayList<>();
+        ArrayList<CharPost> right = new ArrayList<>();
 
         for (int i = 0; i < mid; i++) {
             left.add(list.get(i));
@@ -245,25 +226,20 @@ public class HomeFragment extends Fragment {
             right.add(list.get(i));
         }
 
-        Log.d(TAG, "List: " + printList(list));
-        Log.d(TAG, "Left: " + printList(left));
-        Log.d(TAG, "Right: " + printList(right));
-
         mergeSort(left, parseGeoPoint);
         mergeSort(right, parseGeoPoint);
         merge(left, right, list, parseGeoPoint);
-        Log.d(TAG, "After Merge: " + printList(list));
         return list;
     }
 
-    private void merge(ArrayList<ParseUser> left, ArrayList<ParseUser> right, List<ParseUser> list, ParseGeoPoint parseGeoPoint) {
+    private void merge(ArrayList<CharPost> left, ArrayList<CharPost> right, List<CharPost> list, ParseGeoPoint parseGeoPoint) {
         int leftI = 0;
         int rightI = 0;
         int listI = 0;
 
         while (leftI < left.size() && rightI < right.size()){
-            double leftDist = parseGeoPoint.distanceInMilesTo(left.get(leftI).getParseGeoPoint(MapsFragment.KEY_LOCATION));
-            double rightDist = parseGeoPoint.distanceInMilesTo(right.get(rightI).getParseGeoPoint(MapsFragment.KEY_LOCATION));
+            double leftDist = parseGeoPoint.distanceInMilesTo(left.get(leftI).getUser().getParseGeoPoint(MapsFragment.KEY_LOCATION));
+            double rightDist = parseGeoPoint.distanceInMilesTo(right.get(rightI).getUser().getParseGeoPoint(MapsFragment.KEY_LOCATION));
 
             Log.d(TAG, "LeftDist: " + leftDist);
             Log.d(TAG, "RightDist: " + rightDist);
@@ -272,6 +248,17 @@ public class HomeFragment extends Fragment {
                 Log.d(TAG, "Added Left Item!!!");
                 list.set(listI, left.get(leftI));
                 leftI++;
+            } else if(leftDist == rightDist){
+                // Date is time breaker
+                if(left.get(leftI).getCreatedAt().before(right.get(rightI).getCreatedAt())){
+                    Log.d(TAG, "Added Left Item!!!");
+                    list.set(listI, left.get(leftI));
+                    leftI++;
+                } else {
+                    Log.d(TAG, "Added Right Item!!!");
+                    list.set(listI, right.get(rightI));
+                    rightI++;
+                }
             } else {
                 Log.d(TAG, "Added Right Item!!!");
                 list.set(listI, right.get(rightI));
@@ -279,7 +266,7 @@ public class HomeFragment extends Fragment {
             }
             listI++;
         }
-        ArrayList<ParseUser> rest;
+        ArrayList<CharPost> rest;
         int restI;
         if (leftI >= left.size()) {
             // The left ArrayList has been used up.
@@ -296,13 +283,5 @@ public class HomeFragment extends Fragment {
             list.set(listI, rest.get(i));
             listI++;
         }
-    }
-
-    public String printList(List<ParseUser> list){
-        StringBuilder userList = new StringBuilder("[ ");
-        for (ParseUser user : list) {
-            userList.append(String.format("%s ", user.getUsername()));
-        }
-        return userList + "]";
     }
 }

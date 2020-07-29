@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#B388FF"
+    android:background="@color/colorPrimary"
     tools:context=".fragments.CommentFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -57,5 +57,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Comments for: Daniel Solaire" />
+
+        <View
+            android:id="@+id/divider7"
+            android:layout_width="409dp"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintBottom_toTopOf="@+id/rvComments"
+            app:layout_constraintTop_toTopOf="@+id/rvComments"
+            tools:layout_editor_absoluteX="1dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

@@ -21,14 +21,14 @@
     <string name="type_your_comment">Type your comment…</string>
     <string name="description">DESCRIPTION</string>
     <string name="traits">TRAITS</string>
-    <string name="equipment">EQUIPMENT</string>
+    <string name="equipment">GEAR</string>
     <string name="class_and_level">Class and Level</string>
     <string name="race">Race</string>
     <string name="describe_your_character">Describe your Character…</string>
     <string name="edit_traits">Edit traits</string>
     <string name="edit_equipment">Edit equipment</string>
     <string name="add_trait">Add Trait</string>
-    <string name="add_equipment">Add Equipment</string>
+    <string name="add_equipment">Add Gear</string>
     <string name="name">NAME</string>
     <string name="name_ellipses">Name…</string>
     <string name="description_ellipses">Description…</string>
