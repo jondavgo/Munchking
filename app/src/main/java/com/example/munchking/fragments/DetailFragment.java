@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.munchking.R;
 import com.example.munchking.activities.MainActivity;
 import com.example.munchking.adapters.TraitEquipAdapter;
@@ -136,7 +137,7 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
         tvDescription.setText(charPost.getDesc());
         ParseFile photo = charPost.getPhoto();
         if(photo != null) {
-            Glide.with(getContext()).load(photo.getUrl()).into(ivPhoto);
+            Glide.with(getContext()).load(photo.getUrl()).transform(new RoundedCorners(30)).into(ivPhoto);
         }
         try {
             equipAdapter.addAll(charPost.toArrayList(false));

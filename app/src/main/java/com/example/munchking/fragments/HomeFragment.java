@@ -127,9 +127,9 @@ public class HomeFragment extends Fragment {
         set.connect(ivSelect.getId(), ConstraintSet.START, textView.getId(), ConstraintSet.START, 0);
         set.connect(ivSelect.getId(), ConstraintSet.END, textView.getId(), ConstraintSet.END, 0);
         TransitionManager.beginDelayedTransition(clConstraints, transition);
+        set.applyTo(clConstraints);
         resetColor();
         textView.setTextColor(getResources().getColor(R.color.black));
-        set.applyTo(clConstraints);
     }
 
     private void resetColor() {

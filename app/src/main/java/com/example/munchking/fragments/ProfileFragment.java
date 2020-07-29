@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.munchking.R;
 import com.example.munchking.activities.PreferencesActivity;
 import com.example.munchking.adapters.CharactersAdapter;
@@ -82,7 +83,7 @@ public class ProfileFragment extends HomeFragment {
         tvUsername.setText(user.getUsername());
         ParseFile photo = user.getParseFile("profilePic");
         if(photo != null) {
-            Glide.with(getContext()).load(photo.getUrl()).into(ivPfp);
+            Glide.with(getContext()).load(photo.getUrl()).transform(new RoundedCorners(30)).into(ivPfp);
         }
         try {
             tvFavs.setText(showFavs());
