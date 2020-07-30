@@ -131,7 +131,7 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
         // Fill view with data
         tvName.setText(charPost.getName());
         tvTtrpg.setText(charPost.getTtrpg());
-        tvUser.setText(charPost.getUser().getUsername());
+        tvUser.setText(String.format("By: %s", charPost.getUser().getUsername()));
         tvClass.setText(String.format("Class: %s", charPost.getClasses()));
         tvRace.setText(String.format("Race: %s", charPost.getRace()));
         tvDescription.setText(charPost.getDesc());
@@ -145,6 +145,9 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        // Set Transition names
+        itemView.setTransitionName(charPost.getObjectId());
 
         // Set clickables
         btnComments.setOnClickListener(new View.OnClickListener() {
@@ -212,6 +215,7 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
             e.printStackTrace();
         }
         adapter.add(item);
+        adapter.notifyDataSetChanged();
         if(trait){
             rvTraits.setVisibility(View.VISIBLE);
             rvTraits.smoothScrollToPosition(0);

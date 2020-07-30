@@ -2,6 +2,12 @@ package com.example.munchking.adapters;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.transition.ChangeBounds;
+import android.transition.ChangeClipBounds;
+import android.transition.Explode;
+import android.transition.Fade;
+import android.transition.Slide;
+import android.transition.Transition;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,6 +27,8 @@ import com.example.munchking.activities.MainActivity;
 import com.example.munchking.fragments.DetailFragment;
 import com.example.munchking.fragments.ProfileFragment;
 import com.example.munchking.models.CharPost;
+import com.google.android.material.transition.MaterialContainerTransform;
+import com.google.android.material.transition.MaterialElevationScale;
 import com.parse.ParseFile;
 
 import org.parceler.Parcels;
@@ -74,6 +83,7 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.Vi
         TextView tvTtrpg;
         TextView tvUser;
         TextView tvDate;
+        CardView cardView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -82,6 +92,7 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.Vi
             tvTtrpg = itemView.findViewById(R.id.tvTtrpg);
             tvUser = itemView.findViewById(R.id.tvUser);
             tvDate = itemView.findViewById(R.id.tvDate);
+            cardView = itemView.findViewById(R.id.cardView);
             itemView.setOnClickListener(this);
         }
 
@@ -104,11 +115,15 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.Vi
                     ProfileFragment fragment = ProfileFragment.newInstance(charPost.getUser());
                     FragmentManager fragmentManager = ((MainActivity)context).getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.setReorderingAllowed(true);
+                    fragmentTransaction.addSharedElement(ivPhoto, ivPhoto.getTransitionName());
                     fragmentTransaction.replace(R.id.flContainer, fragment,"profile");
                     fragmentTransaction.addToBackStack("home");
                     fragmentTransaction.commit();
                 }
             });
+
+            cardView.setTransitionName(charPost.getObjectId());
         }
 
         @Override
@@ -116,11 +131,15 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.Vi
             int pos = getAdapterPosition();
             CharPost post = charPosts.get(pos);
             DetailFragment fragment = new DetailFragment();
+            fragment.setSharedElementEnterTransition(new MaterialContainerTransform());
+            fragment.setExitTransition(new MaterialElevationScale(false));
+
             Bundle args = new Bundle();
             args.putParcelable("post", Parcels.wrap(post));
             fragment.setArguments(args);
             FragmentManager fragmentManager = ((MainActivity)context).getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.addSharedElement(cardView, cardView.getTransitionName());
             fragmentTransaction.replace(R.id.flContainer, fragment,"details");
             fragmentTransaction.addToBackStack("home");
             fragmentTransaction.commit();

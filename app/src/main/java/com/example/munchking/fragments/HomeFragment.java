@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.transition.ChangeBounds;
 import android.transition.Transition;
 import android.transition.TransitionManager;
+import android.transition.Visibility;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnticipateOvershootInterpolator;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,6 +61,7 @@ public class HomeFragment extends Fragment {
     private TextView tvSelDist;
     private TextView tvSelMap;
     private ConstraintLayout clConstraints;
+    private ProgressBar pbLoading;
 
     protected RecyclerView rvChars;
 
@@ -88,6 +91,7 @@ public class HomeFragment extends Fragment {
         tvSelDist = view.findViewById(R.id.tvSelDist);
         tvSelMap = view.findViewById(R.id.tvSelMap);
         clConstraints = view.findViewById(R.id.clConstraints);
+        pbLoading = view.findViewById(R.id.pbLoading);
 
         rvChars.setAdapter(adapter);
         rvChars.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -139,6 +143,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void checkPosition(int i) {
+        pbLoading.setVisibility(View.VISIBLE);
         adapter.clear();
         switch (i){
             case 0:
@@ -163,6 +168,7 @@ public class HomeFragment extends Fragment {
     private void loadMapFragment() {
         rvChars.setVisibility(View.INVISIBLE);
         fragMan.beginTransaction().replace(R.id.flMap, map,"map").commit();
+        pbLoading.setVisibility(View.INVISIBLE);
     }
 
     protected void query() {
@@ -180,6 +186,7 @@ public class HomeFragment extends Fragment {
             public void done(List<CharPost> objects, ParseException e) {
                 if(e == null){
                     adapter.addAll(objects);
+                    pbLoading.setVisibility(View.INVISIBLE);
                 } else {
                     Log.e(TAG, "Query error!", e);
                     Toast.makeText(getContext(), "Something went wrong while grabbing posts!", Toast.LENGTH_SHORT).show();
@@ -203,6 +210,7 @@ public class HomeFragment extends Fragment {
                 if(e == null){
                     List<CharPost> sorted = mergeSort(objects, ParseUser.getCurrentUser().getParseGeoPoint(MapsFragment.KEY_LOCATION));
                     adapter.addAll(sorted);
+                    pbLoading.setVisibility(View.INVISIBLE);
                 } else {
                     Log.e(TAG, "Query error!", e);
                     Toast.makeText(getContext(), "Something went wrong while grabbing posts!", Toast.LENGTH_SHORT).show();
@@ -241,26 +249,19 @@ public class HomeFragment extends Fragment {
             double leftDist = parseGeoPoint.distanceInMilesTo(left.get(leftI).getUser().getParseGeoPoint(MapsFragment.KEY_LOCATION));
             double rightDist = parseGeoPoint.distanceInMilesTo(right.get(rightI).getUser().getParseGeoPoint(MapsFragment.KEY_LOCATION));
 
-            Log.d(TAG, "LeftDist: " + leftDist);
-            Log.d(TAG, "RightDist: " + rightDist);
-
             if(leftDist < rightDist){
-                Log.d(TAG, "Added Left Item!!!");
                 list.set(listI, left.get(leftI));
                 leftI++;
             } else if(leftDist == rightDist){
                 // Date is time breaker
                 if(left.get(leftI).getCreatedAt().before(right.get(rightI).getCreatedAt())){
-                    Log.d(TAG, "Added Left Item!!!");
                     list.set(listI, left.get(leftI));
                     leftI++;
                 } else {
-                    Log.d(TAG, "Added Right Item!!!");
                     list.set(listI, right.get(rightI));
                     rightI++;
                 }
             } else {
-                Log.d(TAG, "Added Right Item!!!");
                 list.set(listI, right.get(rightI));
                 rightI++;
             }

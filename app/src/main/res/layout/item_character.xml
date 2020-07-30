@@ -2,9 +2,11 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
+    android:foreground="?android:attr/selectableItemBackground"
     app:cardBackgroundColor="@color/colorAccent">
 
     <RelativeLayout
@@ -21,6 +23,7 @@
             android:layout_marginTop="0dp"
             android:contentDescription="@string/character_image"
             android:padding="8dp"
+            android:transitionName="photo"
             tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
@@ -34,6 +37,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="#000000"
             android:textStyle="bold"
+            android:transitionName="name"
             tools:text="Daniel Solaire" />
 
         <TextView
@@ -46,6 +50,7 @@
             android:layout_toEndOf="@+id/ivPhoto"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#000000"
+            android:transitionName="game"
             tools:text="From: D&amp;D 5e" />
 
         <TextView
@@ -58,6 +63,7 @@
             android:layout_toEndOf="@+id/ivPhoto"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="#000000"
+            android:transitionName="username"
             tools:text="By: jondavgo" />
 
         <TextView

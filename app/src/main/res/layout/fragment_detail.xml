@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,26 +12,31 @@
 
         <ImageView
             android:id="@+id/ivPhoto"
-            android:layout_width="128dp"
-            android:layout_height="128dp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_below="@+id/tvName"
             android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:contentDescription="@string/character_image"
+            android:transitionName="photo"
             tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
             android:id="@+id/tvName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_toEndOf="@+id/ivPhoto"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:layout_marginEnd="8dp"
+            android:gravity="center_horizontal"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
             android:textColor="#000000"
             android:textStyle="bold"
+            android:transitionName="name"
             tools:text="Daniel Solaire" />
 
         <TextView
@@ -43,18 +49,20 @@
             android:layout_toEndOf="@+id/ivPhoto"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#000000"
-            tools:text="From: Dungeons &amp; Dragons 5e" />
+            android:transitionName="game"
+            tools:text="Dungeons &amp; Dragons 5e" />
 
         <TextView
             android:id="@+id/tvUser"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tvTtrpg"
+            android:layout_below="@+id/tvClass"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:layout_toEndOf="@+id/ivPhoto"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="#000000"
+            android:transitionName="username"
             tools:text="By: jondavgo" />
 
         <Button
@@ -74,9 +82,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvRace"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_toEndOf="@+id/ivPhoto"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/black"
             tools:text="Class: Fighter 11" />
@@ -85,10 +93,10 @@
             android:id="@+id/tvRace"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/ivPhoto"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
+            android:layout_below="@+id/tvTtrpg"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_toEndOf="@+id/ivPhoto"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/black"
             tools:text="Race: Protector Aasimar" />
@@ -97,7 +105,7 @@
             android:id="@+id/llDesc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tvClass"
+            android:layout_below="@+id/ivPhoto"
             android:layout_marginTop="16dp"
             android:orientation="vertical">
 
@@ -200,7 +208,7 @@
             android:id="@+id/divider3"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_below="@+id/tvClass"
+            android:layout_below="@+id/ivPhoto"
             android:layout_marginTop="8dp"
             android:background="?android:attr/listDivider" />
 
