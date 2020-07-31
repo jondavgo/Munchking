@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,19 +18,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.munchking.R;
-import com.example.munchking.activities.MainActivity;
 import com.example.munchking.adapters.TraitEquipAdapter;
 import com.example.munchking.dialogs.AddItemDialog;
 import com.example.munchking.models.CharPost;
-import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -70,6 +65,7 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
     private RecyclerView rvEquipment;
     private TextView tvRace;
     private TextView tvClass;
+    private ViewGroup parent;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -79,6 +75,7 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        parent = container;
         return inflater.inflate(R.layout.fragment_detail, container, false);
     }
 
@@ -226,10 +223,13 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
     }
 
     private void toggleVisibility(View view){
-        if(view.getVisibility() == View.GONE){
-            view.setVisibility(View.VISIBLE);
-        } else {
-            view.setVisibility(View.GONE);
+        switch (view.getVisibility()){
+            case View.VISIBLE:
+                view.setVisibility(View.GONE);
+                break;
+            case View.GONE:
+                view.setVisibility(View.VISIBLE);
+                break;
         }
     }
 
