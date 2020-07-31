@@ -59,9 +59,11 @@ public class MainActivity extends AppCompatActivity {
         fragMan = getSupportFragmentManager();
         fragment1.setEnterTransition(new Slide(Gravity.LEFT));
         fragment1.setExitTransition(new Slide(Gravity.LEFT));
+        fragment1.setReenterTransition(new MaterialElevationScale(true));
         fragment2.setEnterTransition(new MaterialElevationScale(true));
         fragment2.setExitTransition(new MaterialElevationScale(false));
         fragment3.setEnterTransition(new Slide(Gravity.RIGHT));
+        fragment3.setReenterTransition(new MaterialElevationScale(true));
         fragment3.setExitTransition(new Slide(Gravity.RIGHT));
 
         toolbar = findViewById(R.id.toolbar);

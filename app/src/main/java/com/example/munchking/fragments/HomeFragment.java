@@ -83,11 +83,11 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         charPosts = new ArrayList<>();
         adapter = new CharactersAdapter(charPosts, getContext());
         array = ParseUser.getCurrentUser().getJSONArray("favGames");
         fragMan = getActivity().getSupportFragmentManager();
+        Log.d(TAG, "View Created!");
 
         map.setExitTransition(new Slide(Gravity.RIGHT));
 
@@ -105,31 +105,32 @@ public class HomeFragment extends Fragment {
         tvSelDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toPosition(0, tvSelDate);
+                selectorPos = 0;
+                checkPosition();
             }
         });
 
         tvSelDist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toPosition(1, tvSelDist);
+                selectorPos = 1;
+                checkPosition();
             }
         });
 
         tvSelMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toPosition(2, tvSelMap);
+                selectorPos = 2;
+                checkPosition();
             }
         });
 
-        checkPosition(selectorPos);
+        checkPosition();
         setReenterTransition(new MaterialElevationScale(true));
     }
 
-    private void toPosition(int i, TextView textView) {
-        checkPosition(i);
-        selectorPos = i;
+    private void toPosition(TextView textView) {
         ConstraintSet set = new ConstraintSet();
         Transition transition = new ChangeBounds();
         transition.setInterpolator(new AnticipateOvershootInterpolator(1.0f));
@@ -149,22 +150,26 @@ public class HomeFragment extends Fragment {
         tvSelMap.setTextColor(getResources().getColor(R.color.colorAccent));
     }
 
-    private void checkPosition(int i) {
+    private void checkPosition() {
         pbLoading.setVisibility(View.VISIBLE);
         adapter.clear();
-        switch (i){
+        switch(selectorPos){
             case 0:
                 dismissMapFragment();
                 query();
+                toPosition(tvSelDate);
                 break;
             case 1:
                 dismissMapFragment();
                 queryByDistance();
+                toPosition(tvSelDist);
                 break;
             case 2:
                 loadMapFragment();
+                toPosition(tvSelMap);
                 break;
         }
+        Log.d(TAG, "Selected: " + selectorPos);
     }
 
     private void dismissMapFragment() {
@@ -174,6 +179,7 @@ public class HomeFragment extends Fragment {
 
     private void loadMapFragment() {
         rvChars.setVisibility(View.INVISIBLE);
+        Log.d(TAG, "Map Fragment Loading...");
         fragMan.beginTransaction().replace(R.id.flMap, map,"map").commit();
         pbLoading.setVisibility(View.INVISIBLE);
     }

@@ -99,7 +99,6 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.Vi
         }
 
         public void bind(final CharPost charPost) {
-            // TODO replace date with distance when sorted by distance
             tvName.setText(charPost.getName());
             tvTtrpg.setText(charPost.getTtrpg());
             tvUser.setText(String.format("By: %s", charPost.getUser().getUsername()));

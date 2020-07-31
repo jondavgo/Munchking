@@ -5,37 +5,34 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
-import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Looper;
-import android.transition.Slide;
-import android.transition.Transition;
+import androidx.transition.Fade;
+import androidx.transition.Slide;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.example.munchking.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
@@ -43,18 +40,17 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import java.text.DecimalFormat;
 import java.util.List;
-import java.util.concurrent.Executor;
 
-import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
-
-public class MapsFragment extends Fragment {
+public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickListener{
 
     private static final String KEY_CAMERA_POSITION = "camera_position";
     public static final String KEY_LOCATION = "location";
     private static final int DEFAULT_ZOOM = 15;
     private static final String TAG = "MapsFragment";
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    private LinearLayout linearLayout;
 
     private GoogleMap map;
     private boolean locationPermissionGranted;
@@ -78,6 +74,7 @@ public class MapsFragment extends Fragment {
         @Override
         public void onMapReady(GoogleMap googleMap) {
             map = googleMap;
+            map.setOnMarkerClickListener(MapsFragment.this);
             updateLocationUI();
             getDeviceLocation();
         }
@@ -92,6 +89,7 @@ public class MapsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        linearLayout = view.findViewById(R.id.dummy_layout_for_snackbar);
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         getLocationPermission();
         if (mapFragment != null) {
@@ -187,9 +185,8 @@ public class MapsFragment extends Fragment {
                     ParseGeoPoint point = object.getParseGeoPoint(KEY_LOCATION);
                     if(point != null) {
                         LatLng latLng = new LatLng(point.getLatitude(), point.getLongitude());
-                        map.addMarker(new MarkerOptions()
-                                .position(latLng)
-                                .title(object.getUsername()));
+                        Marker marker = map.addMarker(new MarkerOptions().position(latLng).title(object.getUsername()));
+                        marker.setTag(object);
                     }
                 }
             }
@@ -211,5 +208,30 @@ public class MapsFragment extends Fragment {
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        final ParseUser user = (ParseUser) marker.getTag();
+        double distance = ParseUser.getCurrentUser().getParseGeoPoint(MapsFragment.KEY_LOCATION)
+                .distanceInMilesTo(user.getParseGeoPoint(MapsFragment.KEY_LOCATION));
+        String pattern = "###,###,###.## 'miles away'";
+        DecimalFormat format = new DecimalFormat(pattern);
+        Snackbar.make(linearLayout, user.getUsername() + " is " + format.format(distance), Snackbar.LENGTH_LONG)
+                .setAction("VIEW", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        toProfile(user);
+                    }
+                }).show();
+        return false;
+    }
+
+    private void toProfile(ParseUser user) {
+        FragmentManager fragmentManager = getFragmentManager();
+        Fragment fragment = ProfileFragment.newInstance(user);
+        fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
+        fragment.setExitTransition(new Fade());
+        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment, "profile").addToBackStack("main").commit();
     }
 }
