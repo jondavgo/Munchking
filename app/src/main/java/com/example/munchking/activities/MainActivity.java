@@ -1,17 +1,17 @@
 package com.example.munchking.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import androidx.transition.Slide;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -19,19 +19,16 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.munchking.R;
-import com.example.munchking.dialogs.AddItemDialog;
 import com.example.munchking.fragments.ComposeFragment;
 import com.example.munchking.fragments.HomeFragment;
 import com.example.munchking.fragments.MapsFragment;
 import com.example.munchking.fragments.ProfileFragment;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.transition.MaterialElevationScale;
 import com.parse.LogOutCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -60,6 +57,12 @@ public class MainActivity extends AppCompatActivity {
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         fragMan = getSupportFragmentManager();
+        fragment1.setEnterTransition(new Slide(Gravity.LEFT));
+        fragment1.setExitTransition(new Slide(Gravity.LEFT));
+        fragment2.setEnterTransition(new MaterialElevationScale(true));
+        fragment2.setExitTransition(new MaterialElevationScale(false));
+        fragment3.setEnterTransition(new Slide(Gravity.RIGHT));
+        fragment3.setExitTransition(new Slide(Gravity.RIGHT));
 
         toolbar = findViewById(R.id.toolbar);
         bottomNav = findViewById(R.id.bottomNav);

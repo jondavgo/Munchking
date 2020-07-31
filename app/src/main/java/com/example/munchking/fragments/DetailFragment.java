@@ -166,6 +166,8 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
             @Override
             public void onClick(View view) {
                 ProfileFragment fragment = ProfileFragment.newInstance(charPost.getUser());
+                fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
+                fragment.setReturnTransition(new Slide(Gravity.BOTTOM));
                 fragmentManager.beginTransaction().replace(R.id.flContainer, fragment,"profile")
                         .addToBackStack("details").commit();
             }

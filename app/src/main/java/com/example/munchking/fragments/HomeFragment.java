@@ -89,6 +89,8 @@ public class HomeFragment extends Fragment {
         array = ParseUser.getCurrentUser().getJSONArray("favGames");
         fragMan = getActivity().getSupportFragmentManager();
 
+        map.setExitTransition(new Slide(Gravity.RIGHT));
+
         rvChars = view.findViewById(R.id.rvChars);
         ivSelect = view.findViewById(R.id.ivSelect);
         tvSelDate = view.findViewById(R.id.tvSelDate);
