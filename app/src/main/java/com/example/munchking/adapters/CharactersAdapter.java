@@ -19,14 +19,17 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.munchking.R;
 import com.example.munchking.activities.MainActivity;
 import com.example.munchking.fragments.DetailFragment;
+import com.example.munchking.fragments.MapsFragment;
 import com.example.munchking.fragments.ProfileFragment;
 import com.example.munchking.models.CharPost;
 import com.google.android.material.transition.MaterialContainerTransform;
 import com.google.android.material.transition.MaterialElevationScale;
 import com.parse.ParseFile;
+import com.parse.ParseUser;
 
 import org.parceler.Parcels;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -35,10 +38,15 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.Vi
 
     List<CharPost> charPosts;
     Context context;
+    boolean distanceSort;
 
     public CharactersAdapter(List<CharPost> charPosts, Context context) {
         this.charPosts = charPosts;
         this.context = context;
+    }
+
+    public void setDistanceSort(boolean distanceSort) {
+        this.distanceSort = distanceSort;
     }
 
     @NonNull
@@ -95,10 +103,18 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.Vi
             tvName.setText(charPost.getName());
             tvTtrpg.setText(charPost.getTtrpg());
             tvUser.setText(String.format("By: %s", charPost.getUser().getUsername()));
-            Date date = charPost.getCreatedAt();
-            String pattern = "'Created' dd/MM/yyyy 'at' hh:mm a";
-            SimpleDateFormat format = new SimpleDateFormat(pattern);
-            tvDate.setText(format.format(date));
+            if(!distanceSort) {
+                Date date = charPost.getCreatedAt();
+                String pattern = "'Created' dd/MM/yyyy 'at' hh:mm a";
+                SimpleDateFormat format = new SimpleDateFormat(pattern);
+                tvDate.setText(format.format(date));
+            } else{
+                double distance = ParseUser.getCurrentUser().getParseGeoPoint(MapsFragment.KEY_LOCATION)
+                        .distanceInMilesTo(charPost.getUser().getParseGeoPoint(MapsFragment.KEY_LOCATION));
+                String pattern = "###,###,###.## 'miles away'";
+                DecimalFormat format = new DecimalFormat(pattern);
+                tvDate.setText(format.format(distance));
+            }
             ParseFile photo = charPost.getPhoto();
             if(photo != null) {
                 Glide.with(context).load(photo.getUrl()).transform(new RoundedCorners(30)).into(ivPhoto);

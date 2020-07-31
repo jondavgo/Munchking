@@ -179,6 +179,7 @@ public class HomeFragment extends Fragment {
     }
 
     protected void query() {
+        adapter.setDistanceSort(false);
         ParseQuery<CharPost> query = ParseQuery.getQuery(CharPost.class);
         query.include(CharPost.KEY_USER);
         query.whereNotEqualTo(CharPost.KEY_USER, ParseUser.getCurrentUser());
@@ -203,6 +204,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void queryByDistance(){
+        adapter.setDistanceSort(true);
         ParseQuery<CharPost> query = ParseQuery.getQuery(CharPost.class);
         query.include(CharPost.KEY_USER);
         query.whereNotEqualTo(CharPost.KEY_USER, ParseUser.getCurrentUser());
