@@ -93,6 +93,7 @@
             android:clickable="true"
             android:focusable="true"
             android:src="@drawable/ic_baseline_build_24"
+            android:transitionName="preferences"
             app:layout_constraintBottom_toBottomOf="@+id/rvChars"
             app:layout_constraintEnd_toEndOf="@+id/rvChars" />
     </androidx.constraintlayout.widget.ConstraintLayout>

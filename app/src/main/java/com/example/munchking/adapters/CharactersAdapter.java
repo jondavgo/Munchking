@@ -97,6 +97,7 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.Vi
         }
 
         public void bind(final CharPost charPost) {
+            // TODO replace date with distance when sorted by distance
             tvName.setText(charPost.getName());
             tvTtrpg.setText(charPost.getTtrpg());
             tvUser.setText(String.format("By: %s", charPost.getUser().getUsername()));
@@ -108,22 +109,21 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.Vi
             if(photo != null) {
                 Glide.with(context).load(photo.getUrl()).transform(new RoundedCorners(30)).into(ivPhoto);
             }
+            cardView.setTransitionName(charPost.getObjectId());
 
             tvUser.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     ProfileFragment fragment = ProfileFragment.newInstance(charPost.getUser());
+                    fragment.setSharedElementEnterTransition(new MaterialContainerTransform());
                     FragmentManager fragmentManager = ((MainActivity)context).getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.setReorderingAllowed(true);
-                    fragmentTransaction.addSharedElement(ivPhoto, ivPhoto.getTransitionName());
+                    fragmentTransaction.addSharedElement(cardView, cardView.getTransitionName());
                     fragmentTransaction.replace(R.id.flContainer, fragment,"profile");
                     fragmentTransaction.addToBackStack("home");
                     fragmentTransaction.commit();
                 }
             });
-
-            cardView.setTransitionName(charPost.getObjectId());
         }
 
         @Override
@@ -137,6 +137,7 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.Vi
             Bundle args = new Bundle();
             args.putParcelable("post", Parcels.wrap(post));
             fragment.setArguments(args);
+
             FragmentManager fragmentManager = ((MainActivity)context).getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.addSharedElement(cardView, cardView.getTransitionName());

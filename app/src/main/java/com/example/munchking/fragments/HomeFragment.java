@@ -32,6 +32,8 @@ import com.example.munchking.R;
 import com.example.munchking.activities.PreferencesActivity;
 import com.example.munchking.adapters.CharactersAdapter;
 import com.example.munchking.models.CharPost;
+import com.google.android.material.transition.MaterialElevationScale;
+import com.google.android.material.transition.MaterialSharedAxis;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
@@ -118,6 +120,7 @@ public class HomeFragment extends Fragment {
         });
 
         checkPosition(selectorPos);
+        setReenterTransition(new MaterialElevationScale(true));
     }
 
     private void toPosition(int i, TextView textView) {

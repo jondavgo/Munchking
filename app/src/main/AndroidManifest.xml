@@ -24,22 +24,27 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
 
-        <activity android:name=".activities.PreferencesActivity" />
+        <activity android:name=".activities.PreferencesActivity"
+            android:screenOrientation="nosensor"/>
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <activity android:name=".activities.SignupActivity" />
-        <activity android:name=".activities.FBSignUpActivity" />
-        <activity android:name=".activities.LoginActivity">
+        <activity android:name=".activities.SignupActivity"
+            android:screenOrientation="nosensor"/>
+        <activity android:name=".activities.FBSignUpActivity"
+            android:screenOrientation="nosensor"/>
+        <activity android:name=".activities.LoginActivity"
+            android:screenOrientation="nosensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.MainActivity" />
+        <activity android:name=".activities.MainActivity"
+            android:screenOrientation="nosensor"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"
