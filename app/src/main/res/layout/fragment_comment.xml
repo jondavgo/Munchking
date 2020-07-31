@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etComment"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -64,7 +64,8 @@
             android:layout_height="1dp"
             android:background="?android:attr/listDivider"
             app:layout_constraintBottom_toTopOf="@+id/rvComments"
-            app:layout_constraintTop_toTopOf="@+id/rvComments"
-            tools:layout_editor_absoluteX="1dp" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/rvComments" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

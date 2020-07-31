@@ -21,6 +21,7 @@ import com.example.munchking.R;
 import com.example.munchking.adapters.CommentsAdapter;
 import com.example.munchking.models.CharPost;
 import com.example.munchking.models.Comment;
+import com.google.android.material.textfield.TextInputEditText;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -42,7 +43,7 @@ public class CommentFragment extends Fragment {
     CharPost post;
     RecyclerView rvComments;
     Button btnCPost;
-    EditText etComment;
+    TextInputEditText etComment;
     TextView tvCharName;
 
     public CommentFragment() {
