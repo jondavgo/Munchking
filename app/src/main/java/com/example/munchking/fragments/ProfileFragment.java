@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,9 +49,19 @@ public class ProfileFragment extends HomeFragment {
     TextView tvUsername;
     TextView tvFavs;
     FloatingActionButton fabEdit;
+    FrameLayout flProfile;
 
     public ProfileFragment() {
         // Required empty public constructor
+    }
+
+    public static ProfileFragment newInstance(CharPost post) {
+        ProfileFragment frag = new ProfileFragment();
+        Bundle args = new Bundle();
+        args.putParcelable("profile", Parcels.wrap(post.getUser()));
+        args.putString("objID", post.getObjectId());
+        frag.setArguments(args);
+        return frag;
     }
 
     public static ProfileFragment newInstance(ParseUser user) {
@@ -78,6 +89,9 @@ public class ProfileFragment extends HomeFragment {
         tvFavs = view.findViewById(R.id.tvFavs);
         fabEdit = view.findViewById(R.id.fabPreferences);
         rvChars = view.findViewById(R.id.rvChars);
+        flProfile = view.findViewById(R.id.flProfile);
+
+        flProfile.setTransitionName(getArguments().getString("objID"));
 
         rvChars.setAdapter(adapter);
         rvChars.setLayoutManager(new LinearLayoutManager(getContext()));

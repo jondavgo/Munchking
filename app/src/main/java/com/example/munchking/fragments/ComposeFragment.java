@@ -20,7 +20,9 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Environment;
 import android.provider.MediaStore;
+import androidx.transition.Slide;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -240,6 +242,8 @@ public class ComposeFragment extends Fragment {
         Bundle args = new Bundle();
         args.putParcelable("post", Parcels.wrap(post));
         fragment.setArguments(args);
+        fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
+        fragment.setExitTransition(new Slide(Gravity.BOTTOM));
         FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.flContainer, fragment,"details");

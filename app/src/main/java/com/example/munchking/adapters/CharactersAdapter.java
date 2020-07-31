@@ -108,7 +108,7 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.Vi
             tvUser.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ProfileFragment fragment = ProfileFragment.newInstance(charPost.getUser());
+                    ProfileFragment fragment = ProfileFragment.newInstance(charPost);
                     fragment.setSharedElementEnterTransition(new MaterialContainerTransform());
                     FragmentManager fragmentManager = ((MainActivity)context).getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

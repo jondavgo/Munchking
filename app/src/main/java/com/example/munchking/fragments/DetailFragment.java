@@ -10,7 +10,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import androidx.transition.Slide;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -154,6 +156,8 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
                 Bundle args = new Bundle();
                 args.putParcelable("post", Parcels.wrap(charPost));
                 fragment.setArguments(args);
+                fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
+                fragment.setReturnTransition(new Slide(Gravity.BOTTOM));
                 fragmentManager.beginTransaction().replace(R.id.flContainer, fragment,"comments")
                         .addToBackStack("details").commit();
             }
