@@ -54,7 +54,7 @@ import java.util.List;
 public class HomeFragment extends Fragment {
 
     public static final String TAG = "HomeFragment";
-    private final Fragment map = new MapsFragment();
+    private Fragment map;
     private FragmentManager fragMan;
     private int selectorPos;
     protected JSONArray array;
@@ -86,10 +86,8 @@ public class HomeFragment extends Fragment {
         charPosts = new ArrayList<>();
         adapter = new CharactersAdapter(charPosts, getContext());
         array = ParseUser.getCurrentUser().getJSONArray("favGames");
-        fragMan = getActivity().getSupportFragmentManager();
-        Log.d(TAG, "View Created!");
-
-        map.setExitTransition(new Slide(Gravity.RIGHT));
+        fragMan = getFragmentManager();
+        map = new MapsFragment();
 
         rvChars = view.findViewById(R.id.rvChars);
         ivSelect = view.findViewById(R.id.ivSelect);
@@ -169,7 +167,6 @@ public class HomeFragment extends Fragment {
                 toPosition(tvSelMap);
                 break;
         }
-        Log.d(TAG, "Selected: " + selectorPos);
     }
 
     private void dismissMapFragment() {
@@ -298,6 +295,14 @@ public class HomeFragment extends Fragment {
         for (int i=restI; i<rest.size(); i++) {
             list.set(listI, rest.get(i));
             listI++;
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if(selectorPos == 2 && fragMan != null) {
+            dismissMapFragment();
         }
     }
 }

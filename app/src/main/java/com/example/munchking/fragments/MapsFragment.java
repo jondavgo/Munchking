@@ -75,6 +75,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         public void onMapReady(GoogleMap googleMap) {
             map = googleMap;
             map.setOnMarkerClickListener(MapsFragment.this);
+            Log.d(TAG, "Map is ready");
             updateLocationUI();
             getDeviceLocation();
         }
@@ -89,10 +90,11 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.d(TAG, "View Created!!!");
         linearLayout = view.findViewById(R.id.dummy_layout_for_snackbar);
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         getLocationPermission();
-        if (mapFragment != null) {
+        if(mapFragment != null) {
             mapFragment.getMapAsync(callback);
         }
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
@@ -101,6 +103,13 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
             CameraPosition cameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
         query();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d(TAG, "View Destroyed");
+        map = null;
     }
 
     @Override
@@ -232,6 +241,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         Fragment fragment = ProfileFragment.newInstance(user);
         fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
         fragment.setExitTransition(new Fade());
+        fragmentManager.beginTransaction().remove(this).commit();
         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment, "profile").addToBackStack("main").commit();
     }
 }
