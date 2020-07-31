@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.munchking.R;
+import com.google.android.material.textfield.TextInputEditText;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -26,8 +27,8 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnLogin;
     private Button btnSignup;
     private Button btnFacebook;
-    private EditText etUser;
-    private EditText etPassword;
+    private TextInputEditText etUser;
+    private TextInputEditText etPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

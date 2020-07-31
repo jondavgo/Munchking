@@ -36,6 +36,7 @@ import android.widget.Toast;
 
 import com.example.munchking.R;
 import com.example.munchking.models.CharPost;
+import com.google.android.material.textfield.TextInputEditText;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -71,10 +72,10 @@ public class ComposeFragment extends Fragment {
     private Button btnPost;
     private ImageView ivPreview;
     private Spinner spinner;
-    private EditText etCharName;
-    private EditText etClass;
-    private EditText etRace;
-    private EditText etDesc;
+    private TextInputEditText etCharName;
+    private TextInputEditText etClass;
+    private TextInputEditText etRace;
+    private TextInputEditText etDesc;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

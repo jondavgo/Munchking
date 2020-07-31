@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.munchking.R;
+import com.google.android.material.textfield.TextInputEditText;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
@@ -19,10 +20,10 @@ public class SignupActivity extends AppCompatActivity {
 
     public static final String TAG = "SignupActivity";
     Button btnSignup;
-    EditText etUsername;
-    EditText etEmail;
-    EditText etPassword;
-    EditText etConfirm;
+    TextInputEditText etUsername;
+    TextInputEditText etEmail;
+    TextInputEditText etPassword;
+    TextInputEditText etConfirm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

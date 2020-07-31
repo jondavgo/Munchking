@@ -17,14 +17,15 @@ import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.example.munchking.R;
+import com.google.android.material.textfield.TextInputEditText;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class AddItemDialog extends DialogFragment {
 
-    private EditText etName;
-    private EditText etDesc;
+    private TextInputEditText etName;
+    private TextInputEditText etDesc;
     private int pos;
     private boolean delete;
     private boolean isTrait;
