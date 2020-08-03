@@ -51,4 +51,5 @@
     <string name="sort_by_date">Sort by Date</string>
     <string name="sort_by_distance">Sort by Distance</string>
     <string name="sign_up_with_facebook">Continue With Facebook</string>
+    <string name="score">Average Rating:</string>
 </resources>

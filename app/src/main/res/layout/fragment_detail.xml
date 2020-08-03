@@ -70,10 +70,10 @@
             android:id="@+id/btnComments"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/llEquipment"
+            android:layout_below="@+id/rbRatings"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginStart="56dp"
+            android:layout_marginTop="8dp"
             android:backgroundTint="@color/colorAccent"
             android:text="@string/comments"
             android:textColor="@color/black" />
@@ -221,9 +221,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/llEquipment"
-            android:layout_marginStart="8dp"
+            android:layout_alignParentEnd="true"
             android:layout_marginTop="16dp"
-            android:layout_toEndOf="@+id/btnComments"
+            android:layout_marginEnd="8dp"
             android:backgroundTint="@color/colorAccent"
             android:text="@string/add_trait"
             android:textColor="@color/black" />
@@ -232,15 +232,38 @@
             android:id="@+id/btnAddEquip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/llEquipment"
+            android:layout_below="@+id/btnAddTrait"
             android:layout_alignParentEnd="true"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
-            android:layout_toEndOf="@id/btnAddTrait"
             android:backgroundTint="@color/colorAccent"
             android:text="@string/add_equipment"
             android:textColor="@color/black" />
+
+        <RatingBar
+            android:id="@+id/rbRatings"
+            style="@android:style/Widget.Material.RatingBar.Indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvRatings"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:isIndicator="false"
+            android:numStars="6"
+            android:stepSize="1" />
+
+        <TextView
+            android:id="@+id/tvRatings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/llEquipment"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/black"
+            tools:text="Rating Score: 162" />
 
     </RelativeLayout>
 </ScrollView>

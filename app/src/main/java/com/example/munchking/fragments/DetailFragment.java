@@ -19,7 +19,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
@@ -32,9 +34,12 @@ import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.parceler.Parcels;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +56,7 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
     private TraitEquipAdapter equipAdapter;
     private FragmentManager fragmentManager;
     private boolean isAuthor;
+    private int ratingPos;
 
     private ImageView ivPhoto;
     private TextView tvName;
@@ -67,17 +73,16 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
     private RecyclerView rvEquipment;
     private TextView tvRace;
     private TextView tvClass;
-    private ViewGroup parent;
+    private RatingBar rbRatings;
+    private TextView tvRatings;
 
     public DetailFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        parent = container;
         return inflater.inflate(R.layout.fragment_detail, container, false);
     }
 
@@ -99,6 +104,8 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
         tvClass = itemView.findViewById(R.id.tvClass);
         btnEquip = itemView.findViewById(R.id.btnAddEquip);
         btnTrait = itemView.findViewById(R.id.btnAddTrait);
+        rbRatings = itemView.findViewById(R.id.rbRatings);
+        tvRatings = itemView.findViewById(R.id.tvRatings);
 
         charPost = Parcels.unwrap(getArguments().getParcelable("post"));
         isAuthor = ParseUser.getCurrentUser().getUsername().equals(charPost.getUser().getUsername());
@@ -107,6 +114,7 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
         traitAdapter = new TraitEquipAdapter(getContext(), traits, isAuthor, true, this);
         equipAdapter = new TraitEquipAdapter(getContext(), equipment, isAuthor, false, this);
         fragmentManager = getActivity().getSupportFragmentManager();
+        ratingPos = -1;
 
         // Set RVs
         LinearLayoutManager Tmanager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
@@ -141,6 +149,7 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
         try {
             equipAdapter.addAll(charPost.toArrayList(false));
             traitAdapter.addAll(charPost.toArrayList(true));
+            getRatings();
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -202,6 +211,66 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
                 addItem(traitAdapter, true);
             }
         });
+        rbRatings.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
+                if(b){
+                    try {
+                        setRating((int) v);
+                    } catch (JSONException e) {
+                        Log.e(TAG, "Exception getting ratings", e);
+                    }
+                }
+            }
+        });
+    }
+
+    private void setRating(int v) throws JSONException {
+        if(ratingPos == -1){
+            ratingPos = charPost.addRating();
+        }
+        if(v == 0){
+            charPost.removeRating(ratingPos);
+            ratingPos = -1;
+        } else {
+            charPost.setRating(v, ratingPos);
+        }
+        updateText();
+        charPost.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if(e != null){
+                    Log.e(TAG, "Exception saving rating", e);
+                }
+                Log.i(TAG, "rating updated!");
+            }
+        });
+    }
+
+    private void updateText() {
+        double score;
+        if(charPost.getRatingCount() != 0) {
+            score = ((double) charPost.getRatingScore()) / ((double)charPost.getRatingCount());
+        } else {
+            score = 0;
+        }
+        String pattern = "#.##";
+        DecimalFormat format = new DecimalFormat(pattern);
+        String scoreText = getResources().getString(R.string.score) + " "+ format.format(score) + "/6";
+        tvRatings.setText(scoreText);
+    }
+
+    private void getRatings() throws JSONException {
+        updateText();
+        JSONArray ratings = charPost.getRatings();
+        for (int i = 0; i < ratings.length(); i++) {
+            if (ratings.getJSONObject(i).getString("name").equals(ParseUser.getCurrentUser().getUsername())) {
+                ratingPos = i;
+            }
+        }
+        if(ratingPos != -1){
+            rbRatings.setRating(ratings.getJSONObject(ratingPos).getInt("rating"));
+        }
     }
 
     private void addItem(TraitEquipAdapter adapter, final boolean trait) {
@@ -219,7 +288,6 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
         }
         adapter.add(item);
         adapter.notifyDataSetChanged();
-        boolean isEmpty = adapter.getItemCount() == 0;
         if(trait){
             rvTraits.setVisibility(View.VISIBLE);
         } else{
@@ -251,11 +319,7 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
         }
         if(deleted){
             adapter.remove(pos);
-            try {
-                charPost.removeTraitEquip(pos, isTrait);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            charPost.removeTraitEquip(pos, isTrait);
         } else {
             Pair<String, String> pair = new Pair<>(name, desc);
             try {
