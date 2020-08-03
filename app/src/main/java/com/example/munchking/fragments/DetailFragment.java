@@ -219,12 +219,11 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
         }
         adapter.add(item);
         adapter.notifyDataSetChanged();
+        boolean isEmpty = adapter.getItemCount() == 0;
         if(trait){
             rvTraits.setVisibility(View.VISIBLE);
-            rvTraits.smoothScrollToPosition(0);
         } else{
             rvEquipment.setVisibility(View.VISIBLE);
-            rvEquipment.smoothScrollToPosition(0);
         }
     }
 
@@ -232,6 +231,9 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
         switch (view.getVisibility()){
             case View.VISIBLE:
                 view.setVisibility(View.GONE);
+                if(view.getClass().equals(RecyclerView.class)){
+                    ((RecyclerView)view).scrollToPosition(0);
+                }
                 break;
             case View.GONE:
                 view.setVisibility(View.VISIBLE);
