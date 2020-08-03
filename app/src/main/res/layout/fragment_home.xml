@@ -28,10 +28,10 @@
             android:id="@+id/flMap"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="@id/rvChars"
-            app:layout_constraintEnd_toEndOf="@+id/rvChars"
-            app:layout_constraintStart_toStartOf="@+id/rvChars"
-            app:layout_constraintTop_toTopOf="@+id/rvChars">
+            app:layout_constraintBottom_toBottomOf="@id/swipeContainer"
+            app:layout_constraintEnd_toEndOf="@+id/swipeContainer"
+            app:layout_constraintStart_toStartOf="@+id/swipeContainer"
+            app:layout_constraintTop_toTopOf="@+id/swipeContainer">
 
         </FrameLayout>
 
@@ -46,15 +46,23 @@
             app:layout_constraintStart_toStartOf="@+id/tvSelDate"
             app:layout_constraintTop_toTopOf="@+id/tvSelDate" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvChars"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeContainer"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvSelDate" />
+            app:layout_constraintTop_toBottomOf="@+id/tvSelDate">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvChars"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <TextView
             android:id="@+id/tvSelDate"
@@ -99,7 +107,7 @@
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:background="?android:attr/listDivider"
-            app:layout_constraintBottom_toTopOf="@+id/rvChars"
+            app:layout_constraintBottom_toTopOf="@+id/swipeContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 

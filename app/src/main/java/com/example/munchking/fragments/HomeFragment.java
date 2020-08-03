@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.transition.Slide;
 
 import android.transition.ChangeBounds;
@@ -66,6 +67,7 @@ public class HomeFragment extends Fragment {
     private TextView tvSelMap;
     private ConstraintLayout clConstraints;
     private ProgressBar pbLoading;
+    private SwipeRefreshLayout swipeContainer;
 
     protected RecyclerView rvChars;
 
@@ -96,9 +98,25 @@ public class HomeFragment extends Fragment {
         tvSelMap = view.findViewById(R.id.tvSelMap);
         clConstraints = view.findViewById(R.id.clConstraints);
         pbLoading = view.findViewById(R.id.pbLoading);
+        swipeContainer = view.findViewById(R.id.swipeContainer);
 
         rvChars.setAdapter(adapter);
         rvChars.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                fetchTimelineAsync(0);
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(R.color.colorPrimaryDark,
+                R.color.colorAccent,
+                R.color.colorPurpAccent,
+                R.color.colorPrimary);
 
         tvSelDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,6 +144,11 @@ public class HomeFragment extends Fragment {
 
         checkPosition();
         setReenterTransition(new MaterialElevationScale(true));
+    }
+
+    private void fetchTimelineAsync(int i) {
+        checkPosition();
+        swipeContainer.setRefreshing(false);
     }
 
     private void toPosition(TextView textView) {
@@ -172,10 +195,12 @@ public class HomeFragment extends Fragment {
     private void dismissMapFragment() {
         fragMan.beginTransaction().remove(map).commit();
         rvChars.setVisibility(View.VISIBLE);
+        swipeContainer.setVisibility(View.VISIBLE);
     }
 
     private void loadMapFragment() {
         rvChars.setVisibility(View.INVISIBLE);
+        swipeContainer.setVisibility(View.INVISIBLE);
         Log.d(TAG, "Map Fragment Loading...");
         fragMan.beginTransaction().replace(R.id.flMap, map,"map").commit();
         pbLoading.setVisibility(View.INVISIBLE);
