@@ -55,6 +55,7 @@ import java.util.List;
 public class HomeFragment extends Fragment {
 
     public static final String TAG = "HomeFragment";
+    public static final int CHAR_MAX = 10;
     private Fragment map;
     private FragmentManager fragMan;
     private int selectorPos;
@@ -110,6 +111,7 @@ public class HomeFragment extends Fragment {
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
                 fetchTimelineAsync(0);
+                rvChars.scrollToPosition(0);
             }
         });
         // Configure the refreshing colors
