@@ -27,6 +27,7 @@ import com.google.android.material.transition.MaterialElevationScale;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 
+import org.json.JSONArray;
 import org.parceler.Parcels;
 
 import java.text.DecimalFormat;
@@ -38,15 +39,11 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.Vi
 
     List<CharPost> charPosts;
     Context context;
-    boolean distanceSort;
+    int sort;
 
     public CharactersAdapter(List<CharPost> charPosts, Context context) {
         this.charPosts = charPosts;
         this.context = context;
-    }
-
-    public void setDistanceSort(boolean distanceSort) {
-        this.distanceSort = distanceSort;
     }
 
     @NonNull
@@ -78,6 +75,10 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.Vi
         notifyDataSetChanged();
     }
 
+    public void setSort(int i) {
+        sort = i;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         ImageView ivPhoto;
@@ -102,18 +103,7 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.Vi
             tvName.setText(charPost.getName());
             tvTtrpg.setText(charPost.getTtrpg());
             tvUser.setText(String.format("By: %s", charPost.getUser().getUsername()));
-            if(!distanceSort) {
-                Date date = charPost.getCreatedAt();
-                String pattern = "'Created' dd/MM/yyyy 'at' hh:mm a";
-                SimpleDateFormat format = new SimpleDateFormat(pattern);
-                tvDate.setText(format.format(date));
-            } else{
-                double distance = ParseUser.getCurrentUser().getParseGeoPoint(MapsFragment.KEY_LOCATION)
-                        .distanceInMilesTo(charPost.getUser().getParseGeoPoint(MapsFragment.KEY_LOCATION));
-                String pattern = "###,###,###.## 'miles away'";
-                DecimalFormat format = new DecimalFormat(pattern);
-                tvDate.setText(format.format(distance));
-            }
+            tvDate.setText(getFormat(charPost));
             ParseFile photo = charPost.getPhoto();
             if(photo != null) {
                 Glide.with(context).load(photo.getUrl()).transform(new RoundedCorners(30)).into(ivPhoto);
@@ -154,5 +144,38 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.Vi
             fragmentTransaction.addToBackStack("home");
             fragmentTransaction.commit();
         }
+    }
+
+    private String getFormat(CharPost charPost) {
+        String text;
+        String pattern;
+        switch (sort){
+            case 0:
+            default:
+                Date date = charPost.getCreatedAt();
+                pattern = "'Created' dd/MM/yyyy 'at' hh:mm a";
+                SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
+                text = dateFormat.format(date);
+                break;
+            case 1:
+                double distance = ParseUser.getCurrentUser().getParseGeoPoint(MapsFragment.KEY_LOCATION)
+                        .distanceInMilesTo(charPost.getUser().getParseGeoPoint(MapsFragment.KEY_LOCATION));
+                pattern = "###,###,###.## 'miles away'";
+                DecimalFormat distFormat = new DecimalFormat(pattern);
+                text = distFormat.format(distance);
+                break;
+            case 2:
+                double score;
+                JSONArray arr = charPost.getRatings();
+                if(arr.length() != 0) {
+                    score = ((double) charPost.getRatingScore()) / ((double)arr.length());
+                } else {
+                    score = 0;
+                }
+                pattern = "#.##";
+                DecimalFormat format = new DecimalFormat(pattern);
+                text = context.getResources().getString(R.string.score) + " "+ format.format(score) + "/6";
+        }
+        return text;
     }
 }

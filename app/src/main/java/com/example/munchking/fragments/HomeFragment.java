@@ -243,7 +243,7 @@ public class HomeFragment extends Fragment {
     }
 
     protected void query(int i) {
-        adapter.setDistanceSort(false);
+        adapter.setSort(0);
         ParseQuery<CharPost> query = ParseQuery.getQuery(CharPost.class);
         query.include(CharPost.KEY_USER);
         query.whereNotEqualTo(CharPost.KEY_USER, ParseUser.getCurrentUser());
@@ -270,7 +270,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void queryByDistance(){
-        adapter.setDistanceSort(true);
+        adapter.setSort(1);
         ParseQuery<CharPost> query = ParseQuery.getQuery(CharPost.class);
         query.include(CharPost.KEY_USER);
         query.whereNotEqualTo(CharPost.KEY_USER, ParseUser.getCurrentUser());
@@ -295,7 +295,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void queryByRating(){
-        adapter.setDistanceSort(false);
+        adapter.setSort(2);
         ParseQuery<CharPost> query = ParseQuery.getQuery(CharPost.class);
         query.include(CharPost.KEY_USER);
         query.whereNotEqualTo(CharPost.KEY_USER, ParseUser.getCurrentUser());
