@@ -48,8 +48,9 @@
     <string name="selectionbubble">SelectionBubble</string>
     <string name="create">Create</string>
     <string name="view_map">View Map</string>
-    <string name="sort_by_date">Sort by Date</string>
-    <string name="sort_by_distance">Sort by Distance</string>
+    <string name="sort_by_date">Recently Made</string>
+    <string name="sort_by_distance">People Nearby</string>
     <string name="sign_up_with_facebook">Continue With Facebook</string>
     <string name="score">Average Rating:</string>
+    <string name="top_rated">Top Rated</string>
 </resources>

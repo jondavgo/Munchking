@@ -297,14 +297,15 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
     }
 
     private void toggleVisibility(View view){
-        switch (view.getVisibility()){
+        switch (view.getVisibility()) {
             case View.VISIBLE:
                 view.setVisibility(View.GONE);
-                if(view.getClass().equals(RecyclerView.class)){
-                    ((RecyclerView)view).scrollToPosition(0);
+                if (view.getClass().equals(RecyclerView.class)) {
+                    ((RecyclerView) view).scrollToPosition(0);
                 }
                 break;
             case View.GONE:
+            case View.INVISIBLE:
                 view.setVisibility(View.VISIBLE);
                 break;
         }

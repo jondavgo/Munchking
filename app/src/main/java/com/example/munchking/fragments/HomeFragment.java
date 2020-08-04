@@ -67,6 +67,7 @@ public class HomeFragment extends Fragment {
     private TextView tvSelDate;
     private TextView tvSelDist;
     private TextView tvSelMap;
+    private TextView tvSelRating;
     private ConstraintLayout clConstraints;
     private ProgressBar pbLoading;
     private SwipeRefreshLayout swipeContainer;
@@ -99,6 +100,7 @@ public class HomeFragment extends Fragment {
         tvSelDate = view.findViewById(R.id.tvSelDate);
         tvSelDist = view.findViewById(R.id.tvSelDist);
         tvSelMap = view.findViewById(R.id.tvSelMap);
+        tvSelRating = view.findViewById(R.id.tvSelRating);
         clConstraints = view.findViewById(R.id.clConstraints);
         pbLoading = view.findViewById(R.id.pbLoading);
         swipeContainer = view.findViewById(R.id.swipeContainer);
@@ -128,7 +130,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        tvSelDist.setOnClickListener(new View.OnClickListener() {
+        tvSelRating.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 selectorPos = 1;
@@ -136,10 +138,18 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        tvSelMap.setOnClickListener(new View.OnClickListener() {
+        tvSelDist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 selectorPos = 2;
+                checkPosition();
+            }
+        });
+
+        tvSelMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectorPos = 3;
                 checkPosition();
             }
         });
@@ -187,6 +197,7 @@ public class HomeFragment extends Fragment {
         tvSelDate.setTextColor(getResources().getColor(R.color.colorAccent));
         tvSelDist.setTextColor(getResources().getColor(R.color.colorAccent));
         tvSelMap.setTextColor(getResources().getColor(R.color.colorAccent));
+        tvSelRating.setTextColor(getResources().getColor(R.color.colorAccent));
     }
 
     private void checkPosition() {
@@ -201,13 +212,19 @@ public class HomeFragment extends Fragment {
                 break;
             case 1:
                 dismissMapFragment();
+                queryByRating();
+                toPosition(tvSelRating);
+                break;
+            case 2:
+                dismissMapFragment();
                 queryByDistance();
                 toPosition(tvSelDist);
                 break;
-            case 2:
+            case 3:
                 loadMapFragment();
                 toPosition(tvSelMap);
                 break;
+
         }
     }
 
@@ -266,7 +283,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void done(List<CharPost> objects, ParseException e) {
                 if(e == null){
-                    List<CharPost> sorted = mergeSort(objects, ParseUser.getCurrentUser().getParseGeoPoint(MapsFragment.KEY_LOCATION));
+                    List<CharPost> sorted = mergeSort(objects, ParseUser.getCurrentUser().getParseGeoPoint(MapsFragment.KEY_LOCATION), false);
                     adapter.addAll(sorted);
                     pbLoading.setVisibility(View.INVISIBLE);
                 } else {
@@ -277,7 +294,32 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private List<CharPost> mergeSort(List<CharPost> list, ParseGeoPoint parseGeoPoint) {
+    private void queryByRating(){
+        adapter.setDistanceSort(false);
+        ParseQuery<CharPost> query = ParseQuery.getQuery(CharPost.class);
+        query.include(CharPost.KEY_USER);
+        query.whereNotEqualTo(CharPost.KEY_USER, ParseUser.getCurrentUser());
+        try {
+            query.whereContainedIn(CharPost.KEY_TTRPG, PreferencesActivity.fromJSONArray(array));
+        } catch (JSONException e) {
+            Log.e(TAG, "JSON Exception during home query!", e);
+        }
+        query.findInBackground(new FindCallback<CharPost>() {
+            @Override
+            public void done(List<CharPost> objects, ParseException e) {
+                if(e == null){
+                    List<CharPost> sorted = mergeSort(objects, ParseUser.getCurrentUser().getParseGeoPoint(MapsFragment.KEY_LOCATION), true);
+                    adapter.addAll(sorted);
+                    pbLoading.setVisibility(View.INVISIBLE);
+                } else {
+                    Log.e(TAG, "Query error!", e);
+                    Toast.makeText(getContext(), "Something went wrong while grabbing posts!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private List<CharPost> mergeSort(List<CharPost> list, ParseGeoPoint parseGeoPoint, boolean rating) {
         if(list.size() == 1){
             return list;
         }
@@ -292,27 +334,33 @@ public class HomeFragment extends Fragment {
             right.add(list.get(i));
         }
 
-        mergeSort(left, parseGeoPoint);
-        mergeSort(right, parseGeoPoint);
-        merge(left, right, list, parseGeoPoint);
+        mergeSort(left, parseGeoPoint, rating);
+        mergeSort(right, parseGeoPoint, rating);
+        merge(left, right, list, parseGeoPoint, rating);
         return list;
     }
 
-    private void merge(ArrayList<CharPost> left, ArrayList<CharPost> right, List<CharPost> list, ParseGeoPoint parseGeoPoint) {
+    private void merge(ArrayList<CharPost> left, ArrayList<CharPost> right, List<CharPost> list, ParseGeoPoint parseGeoPoint, boolean rating) {
         int leftI = 0;
         int rightI = 0;
         int listI = 0;
 
         while (leftI < left.size() && rightI < right.size()){
-            double leftDist = parseGeoPoint.distanceInMilesTo(left.get(leftI).getUser().getParseGeoPoint(MapsFragment.KEY_LOCATION));
-            double rightDist = parseGeoPoint.distanceInMilesTo(right.get(rightI).getUser().getParseGeoPoint(MapsFragment.KEY_LOCATION));
-
+            double leftDist;
+            double rightDist;
+            if(!rating) {
+                leftDist = parseGeoPoint.distanceInMilesTo(left.get(leftI).getUser().getParseGeoPoint(MapsFragment.KEY_LOCATION));
+                rightDist = parseGeoPoint.distanceInMilesTo(right.get(rightI).getUser().getParseGeoPoint(MapsFragment.KEY_LOCATION));
+            } else {
+                leftDist = getScore(left.get(leftI)) * -1;
+                rightDist = getScore(right.get(rightI)) * -1;
+            }
             if(leftDist < rightDist){
                 list.set(listI, left.get(leftI));
                 leftI++;
             } else if(leftDist == rightDist){
                 // Date is time breaker
-                if(left.get(leftI).getCreatedAt().before(right.get(rightI).getCreatedAt())){
+                if(left.get(leftI).getCreatedAt().after(right.get(rightI).getCreatedAt())){
                     list.set(listI, left.get(leftI));
                     leftI++;
                 } else {
@@ -342,6 +390,15 @@ public class HomeFragment extends Fragment {
             list.set(listI, rest.get(i));
             listI++;
         }
+    }
+
+    private double getScore(CharPost charPost) {
+        double score = 0;
+        JSONArray arr = charPost.getRatings();
+        if(arr.length() != 0) {
+            score = ((double) charPost.getRatingScore()) / ((double)arr.length());
+        }
+        return score;
     }
 
     @Override

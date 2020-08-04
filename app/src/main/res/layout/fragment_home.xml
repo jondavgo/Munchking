@@ -68,12 +68,11 @@
             android:id="@+id/tvSelDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:padding="8dp"
             android:text="@string/sort_by_date"
             android:textColor="@color/black"
-            app:layout_constraintEnd_toStartOf="@+id/tvSelDist"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -86,7 +85,7 @@
             android:text="@string/sort_by_distance"
             android:textColor="@color/colorAccent"
             app:layout_constraintEnd_toStartOf="@+id/tvSelMap"
-            app:layout_constraintStart_toEndOf="@+id/tvSelDate"
+            app:layout_constraintStart_toEndOf="@+id/tvSelRating"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -94,12 +93,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="24dp"
+            android:layout_marginEnd="8dp"
             android:padding="8dp"
             android:text="@string/view_map"
             android:textColor="@color/colorAccent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tvSelDist"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvSelRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:padding="8dp"
+            android:text="@string/top_rated"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintEnd_toStartOf="@+id/tvSelDist"
+            app:layout_constraintStart_toEndOf="@+id/tvSelDate"
             app:layout_constraintTop_toTopOf="parent" />
 
         <View
