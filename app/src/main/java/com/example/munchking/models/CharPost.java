@@ -32,7 +32,6 @@ public class CharPost extends ParseObject {
     public static final String KEY_DATE = "createdAt";
     public static final String KEY_RATING = "ratings";
     public static final String KEY_SCORE = "ratingScore";
-    public static final String KEY_COUNT = "ratingCount";
 
     // Required empty constructor
     public CharPost(){}
@@ -82,10 +81,6 @@ public class CharPost extends ParseObject {
         return getInt(KEY_SCORE);
     }
 
-    public int getRatingCount(){
-        return getInt(KEY_COUNT);
-    }
-
     // Setters
     public void setName(String name){
         put(KEY_NAME, name);
@@ -129,10 +124,6 @@ public class CharPost extends ParseObject {
 
     public void setRatingScore(int score){
         put(KEY_SCORE, score);
-    }
-
-    public void setRatingCount(int count){
-        put(KEY_COUNT, count);
     }
 
     // Misc. Methods
@@ -216,7 +207,6 @@ public class CharPost extends ParseObject {
         object.put("name", ParseUser.getCurrentUser().getUsername());
         object.put("rating", 0);
         arr.put(object);
-        setRatingCount(getRatingCount()+1);
         setRatings(arr);
         return arr.length()-1;
     }
@@ -236,7 +226,6 @@ public class CharPost extends ParseObject {
     public void removeRating(int ratingPos) throws JSONException {
         JSONArray arr = getRatings();
         JSONObject object = (JSONObject) arr.remove(ratingPos);
-        setRatingCount(getRatingCount()-1);
         setRatingScore(getRatingScore()- object.getInt("rating"));
         setRatings(arr);
     }

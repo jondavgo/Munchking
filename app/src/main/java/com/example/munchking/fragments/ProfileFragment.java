@@ -118,7 +118,7 @@ public class ProfileFragment extends HomeFragment {
                 toPreferences();
             }
         });
-        query();
+        query(0);
     }
 
     private void toPreferences() {
@@ -140,7 +140,7 @@ public class ProfileFragment extends HomeFragment {
     }
 
     @Override
-    protected void query() {
+    protected void query(int i) {
         ParseQuery<CharPost> query = ParseQuery.getQuery(CharPost.class);
         query.include(CharPost.KEY_USER);
         query.orderByDescending(CharPost.KEY_DATE);

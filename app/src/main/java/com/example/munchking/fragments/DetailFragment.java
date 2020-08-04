@@ -249,8 +249,9 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
 
     private void updateText() {
         double score;
-        if(charPost.getRatingCount() != 0) {
-            score = ((double) charPost.getRatingScore()) / ((double)charPost.getRatingCount());
+        JSONArray arr = charPost.getRatings();
+        if(arr.length() != 0) {
+            score = ((double) charPost.getRatingScore()) / ((double)arr.length());
         } else {
             score = 0;
         }

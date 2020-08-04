@@ -31,6 +31,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.munchking.EndlessRecyclerViewScrollListener;
 import com.example.munchking.R;
 import com.example.munchking.activities.PreferencesActivity;
 import com.example.munchking.adapters.CharactersAdapter;
@@ -69,6 +70,7 @@ public class HomeFragment extends Fragment {
     private ConstraintLayout clConstraints;
     private ProgressBar pbLoading;
     private SwipeRefreshLayout swipeContainer;
+    private EndlessRecyclerViewScrollListener scrollListener;
 
     protected RecyclerView rvChars;
 
@@ -102,14 +104,12 @@ public class HomeFragment extends Fragment {
         swipeContainer = view.findViewById(R.id.swipeContainer);
 
         rvChars.setAdapter(adapter);
-        rvChars.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager manager = new LinearLayoutManager(getContext());
+        rvChars.setLayoutManager(manager);
 
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                // Your code to refresh the list here.
-                // Make sure you call swipeContainer.setRefreshing(false)
-                // once the network request has completed successfully.
                 fetchTimelineAsync(0);
                 rvChars.scrollToPosition(0);
             }
@@ -144,8 +144,24 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        scrollListener = new EndlessRecyclerViewScrollListener(manager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                loadNextDataFromApi(page);
+            }
+        };
+        rvChars.addOnScrollListener(scrollListener);
+
         checkPosition();
         setReenterTransition(new MaterialElevationScale(true));
+    }
+
+    private void loadNextDataFromApi(int page) {
+        if(selectorPos == 0) {
+            query(page);
+        }
     }
 
     private void fetchTimelineAsync(int i) {
@@ -176,10 +192,11 @@ public class HomeFragment extends Fragment {
     private void checkPosition() {
         pbLoading.setVisibility(View.VISIBLE);
         adapter.clear();
+        scrollListener.resetState();
         switch(selectorPos){
             case 0:
                 dismissMapFragment();
-                query();
+                query(0);
                 toPosition(tvSelDate);
                 break;
             case 1:
@@ -208,12 +225,14 @@ public class HomeFragment extends Fragment {
         pbLoading.setVisibility(View.INVISIBLE);
     }
 
-    protected void query() {
+    protected void query(int i) {
         adapter.setDistanceSort(false);
         ParseQuery<CharPost> query = ParseQuery.getQuery(CharPost.class);
         query.include(CharPost.KEY_USER);
         query.whereNotEqualTo(CharPost.KEY_USER, ParseUser.getCurrentUser());
         query.orderByDescending(CharPost.KEY_DATE);
+        query.setLimit(CHAR_MAX);
+        query.setSkip(i * CHAR_MAX);
         try {
             query.whereContainedIn(CharPost.KEY_TTRPG, PreferencesActivity.fromJSONArray(array));
         } catch (JSONException e) {
