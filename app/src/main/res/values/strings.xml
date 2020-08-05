@@ -53,4 +53,8 @@
     <string name="sign_up_with_facebook">Continue With Facebook</string>
     <string name="score">Average Rating:</string>
     <string name="top_rated">Top Rated</string>
+    <string name="inbox">Inbox</string>
+    <string name="friends">Friends: %d</string>
+    <string name="remove">Remove</string>
+    <string name="accept">Accept</string>
 </resources>
