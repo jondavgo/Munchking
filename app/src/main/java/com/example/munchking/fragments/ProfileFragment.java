@@ -63,6 +63,7 @@ public class ProfileFragment extends HomeFragment {
     private FrameLayout flProfile;
     private TextView tvFriends;
     private boolean isFriend;
+    private boolean sentRequest;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -109,6 +110,7 @@ public class ProfileFragment extends HomeFragment {
         flProfile.setTransitionName(getArguments().getString("objID"));
         setFriendStatus();
         getFriendCount();
+        checkRequest();
 
         rvChars.setAdapter(adapter);
         rvChars.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -148,6 +150,20 @@ public class ProfileFragment extends HomeFragment {
             });
         }
         query(0);
+    }
+
+    private void checkRequest() {
+        ParseQuery<FriendRequest> query = ParseQuery.getQuery(FriendRequest.class);
+        query.whereEqualTo(FriendRequest.KEY_FROM, ParseUser.getCurrentUser());
+        query.whereEqualTo(FriendRequest.KEY_TO, user);
+        query.countInBackground(new CountCallback() {
+            @Override
+            public void done(int count, ParseException e) {
+                if(e == null && count != 0){
+                    sentRequest = true;
+                }
+            }
+        });
     }
 
     private void setFriendStatus() {
@@ -204,22 +220,27 @@ public class ProfileFragment extends HomeFragment {
     }
 
     private void sendFriendRequest() {
-        FriendRequest request = new FriendRequest();
-        request.setSender(ParseUser.getCurrentUser());
-        request.setReceiver(user);
-        request.setStatus("pending");
-        request.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if(e != null){
-                    Log.e(TAG, "Error sending friend request!", e);
-                    Toast.makeText(getContext(), R.string.request_error, Toast.LENGTH_SHORT);
-                    return;
+        if(!sentRequest) {
+            FriendRequest request = new FriendRequest();
+            request.setSender(ParseUser.getCurrentUser());
+            request.setReceiver(user);
+            request.setStatus("pending");
+            request.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e != null) {
+                        Log.e(TAG, "Error sending friend request!", e);
+                        Toast.makeText(getContext(), R.string.request_error, Toast.LENGTH_SHORT);
+                        return;
+                    }
+                    Log.i(TAG, "Request sent to " + user.getUsername());
+                    Toast.makeText(getContext(), "Request sent to " + user.getUsername() + "!", Toast.LENGTH_SHORT);
                 }
-                Log.i(TAG, "Request sent to " + user.getUsername());
-                Toast.makeText(getContext(), "Request sent to " + user.getUsername() + "!", Toast.LENGTH_SHORT);
-            }
-        });
+            });
+            sentRequest = true;
+        } else {
+            Toast.makeText(getContext(), "You already sent " + user.getUsername() + " a friend request!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private int checkFriends() {
