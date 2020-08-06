@@ -43,7 +43,7 @@
             tools:text="jondavgo" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/btnRemove"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvName"
@@ -51,17 +51,17 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="10dp"
             android:text="@string/remove"
-            app:layout_constraintStart_toEndOf="@+id/button3"
+            app:layout_constraintStart_toEndOf="@+id/btnAccept"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/btnAccept"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvName"
             android:layout_marginStart="8dp"
             android:layout_marginTop="10dp"
-            android:layout_toStartOf="@+id/button2"
+            android:layout_toStartOf="@+id/btnRemove"
             android:text="@string/accept"
             app:layout_constraintStart_toEndOf="@+id/tvName"
             app:layout_constraintTop_toTopOf="parent" />

@@ -25,11 +25,14 @@ import com.example.munchking.R;
 import com.example.munchking.activities.PreferencesActivity;
 import com.example.munchking.adapters.CharactersAdapter;
 import com.example.munchking.models.CharPost;
+import com.example.munchking.models.FriendRequest;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.parse.CountCallback;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseQuery;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -47,8 +50,7 @@ import java.util.List;
 public class ProfileFragment extends HomeFragment {
 
     public static final String TAG = "ProfileFragment";
-    public static final String KEY_FRIEND = "friendList";
-    private JSONArray friends;
+    int friendCount;
     private ParseUser user;
     private ImageView ivPfp;
     private TextView tvUsername;
@@ -100,7 +102,7 @@ public class ProfileFragment extends HomeFragment {
         tvFriends = view.findViewById(R.id.tvFriends);
 
         flProfile.setTransitionName(getArguments().getString("objID"));
-        friends = user.getJSONArray(KEY_FRIEND);
+        getFriendCount();
 
         rvChars.setAdapter(adapter);
         rvChars.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -115,28 +117,19 @@ public class ProfileFragment extends HomeFragment {
             Log.e(TAG, "Error getting favs!!!", e);
             tvFavs.setText(R.string.favorites);
         }
-        tvFriends.setText(String.format(getString(R.string.friends), friends.length()));
+        tvFriends.setText(String.format(getString(R.string.friends), friendCount));
 
         if(!user.getUsername().equals(ParseUser.getCurrentUser().getUsername())){
             fabEdit.setImageResource(checkFriends());
             fabEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(isFriend) {
-                        try {
-                            sendFriendRequest();
-                        } catch (JSONException e) {
-                            Log.e(TAG, "Unable to send friend request", e);
-                            Toast.makeText(getContext(), "Unable to send friend request", Toast.LENGTH_SHORT).show();
-                        }
+                    if(!isFriend) {
+                        sendFriendRequest();
                     } else {
-                        try {
-                            removeFriend();
-                        } catch (JSONException e) {
-                            Log.e(TAG, "Unable to send friend request", e);
-                            Toast.makeText(getContext(), "Unable to send friend request", Toast.LENGTH_SHORT).show();
-                        }
+                        removeFriend();
                     }
+                    fabEdit.setImageResource(checkFriends());
                 }
             });
         } else {
@@ -151,49 +144,77 @@ public class ProfileFragment extends HomeFragment {
         query(0);
     }
 
-    private void removeFriend() throws JSONException{
-        JSONObject current;
-        for (int i = 0; i < friends.length(); i++) {
-            current = friends.getJSONObject(i);
-            if(current.getString("name").equals(ParseUser.getCurrentUser().getUsername())){
-                friends.remove(i);
-            }
-        }
-        user.put(KEY_FRIEND, friends);
-        user.saveInBackground(new SaveCallback() {
+    private void getFriendCount() {
+        ParseQuery<FriendRequest> query = ParseQuery.getQuery(FriendRequest.class);
+        query.whereEqualTo(FriendRequest.KEY_FROM, user);
+        query.whereEqualTo(FriendRequest.KEY_STATUS, FriendRequest.ACCEPTED);
+        query.countInBackground(new CountCallback() {
             @Override
-            public void done(ParseException e) {
-                Log.i(TAG, "Friend removed.");
-                Toast.makeText(getContext(), "Friend removed.", Toast.LENGTH_SHORT).show();
-                friends = user.getJSONArray(KEY_FRIEND);
+            public void done(int count, ParseException e) {
+                if(e != null){
+                    Log.e(TAG, "Error getting friend count", e);
+                    friendCount = 0;
+                    return;
+                }
+                friendCount = count;
             }
         });
     }
 
-    private void sendFriendRequest() throws JSONException {
-        user.getJSONArray(KEY_FRIEND);
-        JSONObject object = new JSONObject();
-        object.put("name", ParseUser.getCurrentUser().getUsername());
-        object.put("status", 0);
-        friends.put(object);
-        user.put(KEY_FRIEND, friends);
-        user.saveInBackground(new SaveCallback() {
+    private void removeFriend(){
+        ParseQuery<FriendRequest> query = ParseQuery.getQuery(FriendRequest.class);
+        query.whereEqualTo(FriendRequest.KEY_FROM, ParseUser.getCurrentUser());
+        query.whereEqualTo(FriendRequest.KEY_TO, user);
+        query.findInBackground(new FindCallback<FriendRequest>() {
+            @Override
+            public void done(List<FriendRequest> objects, ParseException e) {
+                if(e != null){
+                    Log.e(TAG, "Error removing friend!", e);
+                    Toast.makeText(getContext(), "Error removing " + user.getUsername() + " from friends!", Toast.LENGTH_SHORT);
+                    return;
+                }
+                // There will only be one object
+                objects.get(0).deleteInBackground();
+            }
+        });
+    }
+
+    private void sendFriendRequest() {
+        FriendRequest request = new FriendRequest();
+        request.setSender(ParseUser.getCurrentUser());
+        request.setReceiver(user);
+        request.setStatus("pending");
+        request.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
-                Log.i(TAG, "Friend request sent!");
-                Toast.makeText(getContext(), "Friend request sent!", Toast.LENGTH_SHORT).show();
-                friends = user.getJSONArray(KEY_FRIEND);
+                if(e != null){
+                    Log.e(TAG, "Error sending friend request!", e);
+                    Toast.makeText(getContext(), R.string.request_error, Toast.LENGTH_SHORT);
+                    return;
+                }
+                Log.i(TAG, "Request sent to " + user.getUsername());
+                Toast.makeText(getContext(), "Request sent to " + user.getUsername() + "!", Toast.LENGTH_SHORT);
             }
         });
     }
 
     private int checkFriends() {
-        if(user.getJSONArray(KEY_FRIEND).toString().contains(ParseUser.getCurrentUser().getUsername())){
-            isFriend = true;
+        ParseQuery<ParseUser> query = friends.getQuery();
+        query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
+        query.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> objects, ParseException e) {
+                if(!objects.isEmpty()){
+                    isFriend = true;
+                }
+                isFriend = false;
+            }
+        });
+        if(isFriend){
             return R.drawable.ic_baseline_group_add_24;
+        } else {
+            return R.drawable.ic_outline_group_add_24;
         }
-        isFriend = false;
-        return R.drawable.ic_outline_group_add_24;
     }
 
     private void toPreferences() {
