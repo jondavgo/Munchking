@@ -26,8 +26,10 @@ import com.example.munchking.activities.PreferencesActivity;
 import com.example.munchking.adapters.CharactersAdapter;
 import com.example.munchking.models.CharPost;
 import com.example.munchking.models.FriendRequest;
+import com.example.munchking.models.Friends;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.parse.CountCallback;
+import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -50,6 +52,8 @@ import java.util.List;
 public class ProfileFragment extends HomeFragment {
 
     public static final String TAG = "ProfileFragment";
+    public static final String KEY_FRIEND = "friendList";
+    ParseRelation<Friends> friendList;
     int friendCount;
     private ParseUser user;
     private ImageView ivPfp;
@@ -92,6 +96,7 @@ public class ProfileFragment extends HomeFragment {
         charPosts = new ArrayList<>();
         adapter = new CharactersAdapter(charPosts, getContext());
         user = Parcels.unwrap(getArguments().getParcelable("profile"));
+        friendList = user.getRelation(KEY_FRIEND);
 
         ivPfp = view.findViewById(R.id.ivPfp);
         tvUsername = view.findViewById(R.id.tvUsername);
@@ -102,6 +107,7 @@ public class ProfileFragment extends HomeFragment {
         tvFriends = view.findViewById(R.id.tvFriends);
 
         flProfile.setTransitionName(getArguments().getString("objID"));
+        setFriendStatus();
         getFriendCount();
 
         rvChars.setAdapter(adapter);
@@ -144,10 +150,23 @@ public class ProfileFragment extends HomeFragment {
         query(0);
     }
 
+    private void setFriendStatus() {
+        isFriend = false;
+        ParseQuery<Friends> query = friendList.getQuery();
+        query.findInBackground(new FindCallback<Friends>() {
+            @Override
+            public void done(List<Friends> objects, ParseException e) {
+                for (int i = 0; i < objects.size(); i++) {
+                    if (objects.get(i).getFriends().toString().contains(ParseUser.getCurrentUser().getUsername())) {
+                        isFriend = true;
+                    }
+                }
+            }
+        });
+    }
+
     private void getFriendCount() {
-        ParseQuery<FriendRequest> query = ParseQuery.getQuery(FriendRequest.class);
-        query.whereEqualTo(FriendRequest.KEY_FROM, user);
-        query.whereEqualTo(FriendRequest.KEY_STATUS, FriendRequest.ACCEPTED);
+        ParseQuery<Friends> query = friendList.getQuery();
         query.countInBackground(new CountCallback() {
             @Override
             public void done(int count, ParseException e) {
@@ -162,19 +181,24 @@ public class ProfileFragment extends HomeFragment {
     }
 
     private void removeFriend(){
-        ParseQuery<FriendRequest> query = ParseQuery.getQuery(FriendRequest.class);
-        query.whereEqualTo(FriendRequest.KEY_FROM, ParseUser.getCurrentUser());
-        query.whereEqualTo(FriendRequest.KEY_TO, user);
-        query.findInBackground(new FindCallback<FriendRequest>() {
+        ParseQuery<Friends> query = friendList.getQuery();
+        query.findInBackground(new FindCallback<Friends>() {
             @Override
-            public void done(List<FriendRequest> objects, ParseException e) {
-                if(e != null){
-                    Log.e(TAG, "Error removing friend!", e);
-                    Toast.makeText(getContext(), "Error removing " + user.getUsername() + " from friends!", Toast.LENGTH_SHORT);
-                    return;
+            public void done(List<Friends> objects, ParseException e) {
+                for (int i = 0; i < objects.size(); i++) {
+                    if(objects.get(i).getFriends().toString().contains(ParseUser.getCurrentUser().getUsername())){
+                        objects.get(i).deleteInBackground(new DeleteCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if(e != null){
+                                    Log.e(TAG, "Error removing friend!", e);
+                                    Toast.makeText(getContext(), "Error removing friend from friends list!", Toast.LENGTH_SHORT).show();
+                                }
+                                Log.i(TAG, "Removed friend successfully!");
+                            }
+                        });
+                    }
                 }
-                // There will only be one object
-                objects.get(0).deleteInBackground();
             }
         });
     }
@@ -199,22 +223,10 @@ public class ProfileFragment extends HomeFragment {
     }
 
     private int checkFriends() {
-        ParseQuery<ParseUser> query = friends.getQuery();
-        query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
-        query.findInBackground(new FindCallback<ParseUser>() {
-            @Override
-            public void done(List<ParseUser> objects, ParseException e) {
-                if(!objects.isEmpty()){
-                    isFriend = true;
-                }
-                isFriend = false;
-            }
-        });
         if(isFriend){
             return R.drawable.ic_baseline_group_add_24;
-        } else {
-            return R.drawable.ic_outline_group_add_24;
         }
+        return R.drawable.ic_outline_group_add_24;
     }
 
     private void toPreferences() {

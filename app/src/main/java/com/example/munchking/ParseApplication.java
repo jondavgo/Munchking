@@ -5,6 +5,7 @@ import android.app.Application;
 import com.example.munchking.models.CharPost;
 import com.example.munchking.models.Comment;
 import com.example.munchking.models.FriendRequest;
+import com.example.munchking.models.Friends;
 import com.parse.Parse;
 import com.parse.ParseObject;
 import com.parse.ParseFacebookUtils;
@@ -19,6 +20,7 @@ public class ParseApplication extends Application {
 
         ParseObject.registerSubclass(CharPost.class);
         ParseObject.registerSubclass(FriendRequest.class);
+        ParseObject.registerSubclass(Friends.class);
         ParseObject.registerSubclass(Comment.class);
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("gomez-munchking") // should correspond to APP_ID env variable
