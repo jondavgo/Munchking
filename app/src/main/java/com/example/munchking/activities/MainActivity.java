@@ -112,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
                         fragment = fragment4;
                         tag = "inbox";
                 }
+                updateFriends();
                 fragMan.beginTransaction().replace(R.id.flContainer, fragment, tag).commit();
                 return true;
             }

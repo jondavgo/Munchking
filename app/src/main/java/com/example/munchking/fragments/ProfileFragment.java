@@ -149,6 +149,7 @@ public class ProfileFragment extends HomeFragment {
                 }
             });
         } else {
+            fabEdit.setVisibility(View.VISIBLE);
             fabEdit.setImageResource(R.drawable.ic_baseline_build_24);
             fabEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -188,7 +189,7 @@ public class ProfileFragment extends HomeFragment {
                         @Override
                         public void done(List<ParseUser> objects, ParseException e) {
                             for (ParseUser person : objects) {
-                                if (person.getUsername().equals(user.getUsername())) {
+                                if (person.getUsername().equals(user.getUsername()) && !user.getUsername().equals(ParseUser.getCurrentUser().getUsername())) {
                                     fabEdit.setVisibility(View.INVISIBLE);
                                 }
                             }

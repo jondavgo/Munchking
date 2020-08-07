@@ -9,18 +9,8 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
-import androidx.exifinterface.media.ExifInterface;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.os.Environment;
 import android.provider.MediaStore;
-import androidx.transition.Slide;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -29,10 +19,18 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
+import androidx.exifinterface.media.ExifInterface;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.transition.Slide;
 
 import com.example.munchking.R;
 import com.example.munchking.models.CharPost;
@@ -214,23 +212,25 @@ public class ComposeFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(data != null && resultCode == RESULT_OK){
-            switch (requestCode){
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
                 case CAMERA_REQUEST_CODE:
                     Bitmap takenImage = rotateBitmapOrientation(photoFile.getAbsolutePath());
                     ivPreview.setImageBitmap(takenImage);
                     file = new ParseFile(photoFile);
                     break;
                 case GALLERY_REQUEST_CODE:
-                    Uri photoUri = data.getData();
-                    // Load the image located at photoUri into selectedImage
-                    Bitmap selectedImage = loadFromUri(photoUri);
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    selectedImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    byte[] image = stream.toByteArray();
-                    file = new ParseFile(photoFileName, image);
-                    // Load the selected image into a preview
-                    ivPreview.setImageBitmap(selectedImage);
+                    if (data != null) {
+                        Uri photoUri = data.getData();
+                        // Load the image located at photoUri into selectedImage
+                        Bitmap selectedImage = loadFromUri(photoUri);
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        selectedImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                        byte[] image = stream.toByteArray();
+                        file = new ParseFile(photoFileName, image);
+                        // Load the selected image into a preview
+                        ivPreview.setImageBitmap(selectedImage);
+                    }
                     break;
             }
         } else {
