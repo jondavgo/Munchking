@@ -22,10 +22,9 @@ import com.example.munchking.models.Friends;
 import com.parse.DeleteCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-
-import org.json.JSONArray;
 
 import java.util.List;
 
@@ -89,7 +88,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
             ivPhoto = itemView.findViewById(R.id.ivPhoto);
         }
 
-        public void bind(FriendRequest request, final int position) {
+        public void bind(final FriendRequest request, final int position) {
             this.request = request;
             tvUser.setText(request.getSender().getUsername());
             tvUser.setOnClickListener(new View.OnClickListener() {
@@ -106,10 +105,9 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
                 @Override
                 public void onClick(View view) {
                     Friends friends = new Friends();
-                    JSONArray arr = new JSONArray();
-                    arr.put(ViewHolder.this.request.getReceiver());
-                    arr.put(ViewHolder.this.request.getSender());
-                    friends.setFriends(arr);
+                    ParseRelation relation = friends.getFriends();
+                    relation.add(ViewHolder.this.request.getSender());
+                    relation.add(ViewHolder.this.request.getReceiver());
                     friends.setUser(ViewHolder.this.request.getSender());
                     try {
                         friends.save();

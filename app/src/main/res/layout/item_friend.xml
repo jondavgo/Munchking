@@ -15,8 +15,8 @@
 
         <ImageView
             android:id="@+id/ivPhoto"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:contentDescription="@string/character_image"
@@ -28,16 +28,18 @@
 
         <TextView
             android:id="@+id/tvName"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="18dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:layout_toEndOf="@+id/ivPhoto"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="#000000"
             android:textStyle="bold"
             android:transitionName="name"
+            app:layout_constraintEnd_toStartOf="@+id/btnAccept"
             app:layout_constraintStart_toEndOf="@+id/ivPhoto"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="jondavgo" />
@@ -48,10 +50,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvName"
             android:layout_alignParentEnd="true"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginEnd="8dp"
             android:text="@string/remove"
-            app:layout_constraintStart_toEndOf="@+id/btnAccept"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
@@ -59,11 +60,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvName"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginEnd="8dp"
             android:layout_toStartOf="@+id/btnRemove"
             android:text="@string/accept"
-            app:layout_constraintStart_toEndOf="@+id/tvName"
+            app:layout_constraintEnd_toStartOf="@+id/btnRemove"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

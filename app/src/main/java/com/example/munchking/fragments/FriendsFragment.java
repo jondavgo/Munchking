@@ -14,6 +14,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.munchking.R;
 import com.example.munchking.adapters.FriendsAdapter;
 import com.example.munchking.models.Friends;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
+import com.parse.ParseRelation;
+import com.parse.ParseUser;
+
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +34,7 @@ public class FriendsFragment extends Fragment {
     private RecyclerView rvFriends;
     private List<Friends> friends;
     private FriendsAdapter adapter;
+    private ParseUser user;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,12 +46,26 @@ public class FriendsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        user = Parcels.unwrap(getArguments().getParcelable("user"));
         friends = new ArrayList<>();
-        adapter = new FriendsAdapter(getContext(), friends);
+        adapter = new FriendsAdapter(getContext(), friends, user);
 
         rvFriends = view.findViewById(R.id.rvFriends);
 
         rvFriends.setAdapter(adapter);
         rvFriends.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        queryFriends();
+    }
+
+    private void queryFriends() {
+        ParseRelation<Friends> relation = user.getRelation(ProfileFragment.KEY_FRIEND);
+        ParseQuery<Friends> query = relation.getQuery();
+        query.findInBackground(new FindCallback<Friends>() {
+            @Override
+            public void done(List<Friends> objects, ParseException e) {
+                adapter.addAll(objects);
+            }
+        });
     }
 }

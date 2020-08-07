@@ -2,9 +2,9 @@ package com.example.munchking.models;
 
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
 
-import org.json.JSONArray;
 import org.parceler.Parcel;
 
 @Parcel(analyze = {Friends.class})
@@ -14,8 +14,8 @@ public class Friends extends ParseObject {
     public static final String KEY_USER = "otherUser";
     public static final String KEY_CONNECT = "connected";
 
-    public JSONArray getFriends() {
-        return getJSONArray(KEY_FRIENDS);
+    public ParseRelation getFriends() {
+        return getRelation(KEY_FRIENDS);
     }
 
     public ParseUser getUser() {
@@ -26,8 +26,8 @@ public class Friends extends ParseObject {
         put(KEY_USER, user);
     }
 
-    public void setFriends(JSONArray arr) {
-        put(KEY_FRIENDS, arr);
+    public void setFriends(ParseRelation relation) {
+        put(KEY_FRIENDS, relation);
     }
 
     public boolean getConnection() {

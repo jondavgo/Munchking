@@ -24,10 +24,9 @@ import com.example.munchking.models.Friends;
 import com.parse.DeleteCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseQuery;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.util.List;
 
@@ -36,10 +35,12 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
     public static final String TAG = "FriendsAdapter";
     Context context;
     List<Friends> friends;
+    ParseUser profileUser;
 
-    public FriendsAdapter(Context context, List<Friends> friends) {
+    public FriendsAdapter(Context context, List<Friends> friends, ParseUser profileUser) {
         this.context = context;
         this.friends = friends;
+        this.profileUser = profileUser;
     }
 
     public void addAll(List<Friends> c){
@@ -70,7 +71,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
         return friends.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView tvUser;
         private Button btnRemove;
@@ -84,34 +85,29 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
             btnAccept = itemView.findViewById(R.id.btnAccept);
             btnRemove = itemView.findViewById(R.id.btnRemove);
             ivPhoto = itemView.findViewById(R.id.ivPhoto);
+            itemView.setOnClickListener(this);
         }
 
         public void bind(final Friends friend) {
-            JSONArray array = friend.getFriends();
+            ParseRelation relation = friend.getFriends();
             btnAccept.setVisibility(View.INVISIBLE);
             user = null;
-            for (int i = 0; i < array.length(); i++) {
-                try {
-                    if(array.get(i).equals(ParseUser.getCurrentUser())){
-                        user = (ParseUser) array.get(i);
-                    }
-                } catch (JSONException e) {
-                    Log.e("FriendsAdapter", "Exception getting Friends", e);
-                }
+            if (!profileUser.getUsername().equals(ParseUser.getCurrentUser().getUsername())) {
+                btnRemove.setVisibility(View.INVISIBLE);
             }
-            if(user != null) {
-                tvUser.setText(user.getUsername());
-                tvUser.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        ProfileFragment fragment = ProfileFragment.newInstance(user);
-                        FragmentManager fragmentManager = ((MainActivity) context).getSupportFragmentManager();
-                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                        fragmentTransaction.replace(R.id.flContainer, fragment, "profile");
-                        fragmentTransaction.addToBackStack("home");
-                        fragmentTransaction.commit();
+            ParseQuery<ParseUser> query = relation.getQuery();
+            try {
+                List<ParseUser> users = query.find();
+                for (ParseUser obj : users) {
+                    if (!obj.getUsername().equals(profileUser.getUsername())) {
+                        user = obj;
                     }
-                });
+                }
+            } catch (ParseException e) {
+                Log.e(TAG, "Error getting user");
+            }
+            if (user != null) {
+                tvUser.setText(user.getUsername());
                 btnRemove.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -130,6 +126,18 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                 if (photo != null) {
                     Glide.with(context).load(photo.getUrl()).transform(new RoundedCorners(30)).into(ivPhoto);
                 }
+            }
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (user != null) {
+                ProfileFragment fragment = ProfileFragment.newInstance(user);
+                FragmentManager fragmentManager = ((MainActivity) context).getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.flContainer, fragment, "profile");
+                fragmentTransaction.addToBackStack("home");
+                fragmentTransaction.commit();
             }
         }
     }

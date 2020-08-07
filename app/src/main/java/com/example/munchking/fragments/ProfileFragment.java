@@ -27,7 +27,6 @@ import com.example.munchking.models.Friends;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.transition.MaterialElevationScale;
 import com.parse.CountCallback;
-import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -50,8 +49,9 @@ public class ProfileFragment extends HomeFragment {
 
     public static final String TAG = "ProfileFragment";
     public static final String KEY_FRIEND = "friendList";
-    ParseRelation<Friends> friendList;
-    int friendCount;
+    private ParseRelation<Friends> friendList;
+    private int friendCount;
+    private int friendPos;
     private ParseUser user;
     private ImageView ivPfp;
     private TextView tvUsername;
@@ -129,6 +129,9 @@ public class ProfileFragment extends HomeFragment {
                 FriendsFragment fragment = new FriendsFragment();
                 fragment.setEnterTransition(new MaterialElevationScale(true));
                 fragment.setExitTransition(new MaterialElevationScale(false));
+                Bundle args = new Bundle();
+                args.putParcelable("user", Parcels.wrap(user));
+                fragment.setArguments(args);
                 getFragmentManager().beginTransaction()
                         .replace(R.id.flContainer, fragment, "friends")
                         .addToBackStack("profile")
@@ -137,14 +140,15 @@ public class ProfileFragment extends HomeFragment {
         });
 
         if (!user.getUsername().equals(ParseUser.getCurrentUser().getUsername())) {
-            fabEdit.setImageResource(checkFriends());
             fabEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (!isFriend) {
                         sendFriendRequest();
+                        Log.d(TAG, "Sending Friend Request");
                     } else {
                         removeFriend();
+                        Log.d(TAG, "Removing Friend");
                     }
                     fabEdit.setImageResource(checkFriends());
                 }
@@ -177,14 +181,25 @@ public class ProfileFragment extends HomeFragment {
 
     private void setFriendStatus() {
         isFriend = false;
-        ParseQuery<Friends> query = friendList.getQuery();
+        ParseRelation<Friends> relation = ParseUser.getCurrentUser().getRelation(KEY_FRIEND);
+        ParseQuery<Friends> query = relation.getQuery();
         query.findInBackground(new FindCallback<Friends>() {
             @Override
             public void done(List<Friends> objects, ParseException e) {
                 for (int i = 0; i < objects.size(); i++) {
-                    if (objects.get(i).getFriends().toString().contains(ParseUser.getCurrentUser().getUsername())) {
-                        isFriend = true;
-                    }
+                    objects.get(i).getFriends().getQuery().whereEqualTo("username", user.getUsername());
+                    objects.get(i).getFriends().getQuery().findInBackground(new FindCallback<ParseUser>() {
+                        @Override
+                        public void done(List<ParseUser> objects, ParseException e) {
+                            for (ParseUser person : objects) {
+                                if (person.getUsername().equals(user.getUsername())) {
+                                    isFriend = true;
+                                    Log.i(TAG, "Found a friend!");
+                                    fabEdit.setImageResource(checkFriends());
+                                }
+                            }
+                        }
+                    });
                 }
             }
         });
@@ -206,18 +221,13 @@ public class ProfileFragment extends HomeFragment {
             @Override
             public void done(List<Friends> objects, ParseException e) {
                 for (int i = 0; i < objects.size(); i++) {
-                    if(objects.get(i).getFriends().toString().contains(ParseUser.getCurrentUser().getUsername())){
-                        objects.get(i).deleteInBackground(new DeleteCallback() {
-                            @Override
-                            public void done(ParseException e) {
-                                if(e != null){
-                                    Log.e(TAG, "Error removing friend!", e);
-                                    Toast.makeText(getContext(), "Error removing friend from friends list!", Toast.LENGTH_SHORT).show();
-                                }
-                                Log.i(TAG, "Removed friend successfully!");
-                            }
-                        });
+                    objects.get(i).getFriends().getQuery().whereEqualTo("username", user.getUsername());
+                    objects.get(i).getFriends().getQuery().findInBackground();
+                    if (e != null) {
+                        Log.e(TAG, "Error removing friend!", e);
+                        Toast.makeText(getContext(), "Error removing friend from friends list!", Toast.LENGTH_SHORT).show();
                     }
+                    Log.i(TAG, "Removed friend successfully!");
                 }
             }
         });
