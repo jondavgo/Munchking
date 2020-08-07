@@ -2,14 +2,6 @@ package com.example.munchking.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityOptionsCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +10,11 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
@@ -28,6 +25,7 @@ import com.example.munchking.models.CharPost;
 import com.example.munchking.models.FriendRequest;
 import com.example.munchking.models.Friends;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.transition.MaterialElevationScale;
 import com.parse.CountCallback;
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
@@ -40,7 +38,6 @@ import com.parse.SaveCallback;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
@@ -116,7 +113,7 @@ public class ProfileFragment extends HomeFragment {
         rvChars.setLayoutManager(new LinearLayoutManager(getContext()));
         tvUsername.setText(user.getUsername());
         ParseFile photo = user.getParseFile("profilePic");
-        if(photo != null) {
+        if (photo != null) {
             Glide.with(getContext()).load(photo.getUrl()).transform(new RoundedCorners(30)).into(ivPfp);
         }
         try {
@@ -126,13 +123,25 @@ public class ProfileFragment extends HomeFragment {
             tvFavs.setText(R.string.favorites);
         }
         tvFriends.setText(String.format(getString(R.string.friends), friendCount));
+        tvFriends.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FriendsFragment fragment = new FriendsFragment();
+                fragment.setEnterTransition(new MaterialElevationScale(true));
+                fragment.setExitTransition(new MaterialElevationScale(false));
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.flContainer, fragment, "friends")
+                        .addToBackStack("profile")
+                        .commit();
+            }
+        });
 
-        if(!user.getUsername().equals(ParseUser.getCurrentUser().getUsername())){
+        if (!user.getUsername().equals(ParseUser.getCurrentUser().getUsername())) {
             fabEdit.setImageResource(checkFriends());
             fabEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(!isFriend) {
+                    if (!isFriend) {
                         sendFriendRequest();
                     } else {
                         removeFriend();
@@ -183,17 +192,12 @@ public class ProfileFragment extends HomeFragment {
 
     private void getFriendCount() {
         ParseQuery<Friends> query = friendList.getQuery();
-        query.countInBackground(new CountCallback() {
-            @Override
-            public void done(int count, ParseException e) {
-                if(e != null){
-                    Log.e(TAG, "Error getting friend count", e);
-                    friendCount = 0;
-                    return;
-                }
-                friendCount = count;
-            }
-        });
+        try {
+            friendCount = query.count();
+        } catch (ParseException e) {
+            Log.e(TAG, "Error getting friend count", e);
+            friendCount = 0;
+        }
     }
 
     private void removeFriend(){
@@ -244,7 +248,7 @@ public class ProfileFragment extends HomeFragment {
     }
 
     private int checkFriends() {
-        if(isFriend){
+        if (isFriend || sentRequest) {
             return R.drawable.ic_baseline_group_add_24;
         }
         return R.drawable.ic_outline_group_add_24;

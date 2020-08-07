@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import androidx.transition.Slide;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -17,22 +16,30 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.transition.Slide;
 
 import com.example.munchking.R;
 import com.example.munchking.fragments.ComposeFragment;
 import com.example.munchking.fragments.HomeFragment;
+import com.example.munchking.fragments.InboxFragment;
 import com.example.munchking.fragments.MapsFragment;
 import com.example.munchking.fragments.ProfileFragment;
+import com.example.munchking.models.Friends;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.transition.MaterialElevationScale;
+import com.parse.FindCallback;
 import com.parse.LogOutCallback;
 import com.parse.ParseException;
+import com.parse.ParseQuery;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
+import java.util.List;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
@@ -42,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager fragMan;
     final private Fragment fragment1 = new HomeFragment();
     final private Fragment fragment2 = new ComposeFragment();
+    final private Fragment fragment4 = new InboxFragment();
     final private Fragment fragment3 = ProfileFragment.newInstance(ParseUser.getCurrentUser());
 
     private Toolbar toolbar;
@@ -65,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
         fragment3.setEnterTransition(new Slide(Gravity.RIGHT));
         fragment3.setReenterTransition(new MaterialElevationScale(true));
         fragment3.setExitTransition(new Slide(Gravity.RIGHT));
+        fragment4.setEnterTransition(new MaterialElevationScale(true));
+        fragment4.setExitTransition(new MaterialElevationScale(false));
 
         toolbar = findViewById(R.id.toolbar);
         bottomNav = findViewById(R.id.bottomNav);
@@ -72,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getLocationPermission();
         getLocation();
+        updateFriends();
 
         bottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -97,6 +108,9 @@ public class MainActivity extends AppCompatActivity {
                         fragment = fragment3;
                         tag = "profile";
                         break;
+                    case R.id.action_inbox:
+                        fragment = fragment4;
+                        tag = "inbox";
                 }
                 fragMan.beginTransaction().replace(R.id.flContainer, fragment, tag).commit();
                 return true;
@@ -105,11 +119,39 @@ public class MainActivity extends AppCompatActivity {
         bottomNav.setSelectedItemId(R.id.action_home);
     }
 
-    private void signOut(){
+    private void updateFriends() {
+        ParseQuery<Friends> query = ParseQuery.getQuery(Friends.class);
+        query.whereEqualTo(Friends.KEY_USER, ParseUser.getCurrentUser());
+        query.whereEqualTo(Friends.KEY_CONNECT, false);
+        query.findInBackground(new FindCallback<Friends>() {
+            @Override
+            public void done(List<Friends> objects, ParseException e) {
+                for (int i = 0; i < objects.size(); i++) {
+                    ParseRelation<Friends> relation = ParseUser.getCurrentUser().getRelation(ProfileFragment.KEY_FRIEND);
+                    Friends friend = objects.get(i);
+                    friend.setConnection(true);
+                    relation.add(friend);
+                    friend.saveInBackground();
+                    ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e != null) {
+                                Log.e(TAG, "Error trying to add objects to relation.", e);
+                                return;
+                            }
+                            Log.i(TAG, "Added background object to friends' list.");
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private void signOut() {
         ParseUser.logOutInBackground(new LogOutCallback() {
             @Override
             public void done(ParseException e) {
-                if(e == null){
+                if (e == null) {
                     Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                     startActivity(intent);
                     finish();
