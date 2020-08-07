@@ -22,8 +22,11 @@ import com.example.munchking.fragments.DetailFragment;
 import com.example.munchking.fragments.MapsFragment;
 import com.example.munchking.fragments.ProfileFragment;
 import com.example.munchking.models.CharPost;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.transition.MaterialContainerTransform;
 import com.google.android.material.transition.MaterialElevationScale;
+import com.parse.DeleteCallback;
+import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 
@@ -40,6 +43,8 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.Vi
     List<CharPost> charPosts;
     Context context;
     int sort;
+    private int recentDeletePos;
+    private CharPost recentDeletePost;
 
     public CharactersAdapter(List<CharPost> charPosts, Context context) {
         this.charPosts = charPosts;
@@ -65,18 +70,41 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.Vi
         return charPosts.size();
     }
 
-    public void addAll(List<CharPost> c){
+    public void addAll(List<CharPost> c) {
         charPosts.addAll(c);
         notifyDataSetChanged();
     }
 
-    public void clear(){
+    public void clear() {
         charPosts.clear();
         notifyDataSetChanged();
     }
 
+    public Context getContext() {
+        return context;
+    }
+
     public void setSort(int i) {
         sort = i;
+    }
+
+    public void delete(int position) {
+        recentDeletePost = charPosts.remove(position);
+        recentDeletePos = position;
+        notifyItemRemoved(position);
+        recentDeletePost.deleteInBackground(new DeleteCallback() {
+            @Override
+            public void done(ParseException e) {
+                showSnackbar();
+            }
+        });
+    }
+
+    private void showSnackbar() {
+        View view = ((MainActivity) context).findViewById(R.id.flContainer);
+        Snackbar snackbar = Snackbar.make(view, R.string.snack_bar_text,
+                Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
