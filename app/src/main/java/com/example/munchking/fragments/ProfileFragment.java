@@ -53,7 +53,6 @@ public class ProfileFragment extends HomeFragment {
     public static final String KEY_FRIEND = "friendList";
     private ParseRelation<Friends> friendList;
     private int friendCount;
-    private int friendPos;
     private ParseUser user;
     private ImageView ivPfp;
     private TextView tvUsername;
@@ -61,7 +60,6 @@ public class ProfileFragment extends HomeFragment {
     private FloatingActionButton fabEdit;
     private FrameLayout flProfile;
     private TextView tvFriends;
-    private boolean isFriend;
     private boolean sentRequest;
 
     public ProfileFragment() {
@@ -140,18 +138,13 @@ public class ProfileFragment extends HomeFragment {
                         .commit();
             }
         });
-
         if (!user.getUsername().equals(ParseUser.getCurrentUser().getUsername())) {
+            fabEdit.setImageResource(checkFriends());
             fabEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (!isFriend) {
-                        sendFriendRequest();
-                        Log.d(TAG, "Sending Friend Request");
-                    } else {
-                        removeFriend();
-                        Log.d(TAG, "Removing Friend");
-                    }
+                    sendFriendRequest();
+                    Log.d(TAG, "Sending Friend Request");
                     fabEdit.setImageResource(checkFriends());
                 }
             });
@@ -184,7 +177,6 @@ public class ProfileFragment extends HomeFragment {
     }
 
     private void setFriendStatus() {
-        isFriend = false;
         ParseRelation<Friends> relation = ParseUser.getCurrentUser().getRelation(KEY_FRIEND);
         ParseQuery<Friends> query = relation.getQuery();
         query.findInBackground(new FindCallback<Friends>() {
@@ -197,9 +189,7 @@ public class ProfileFragment extends HomeFragment {
                         public void done(List<ParseUser> objects, ParseException e) {
                             for (ParseUser person : objects) {
                                 if (person.getUsername().equals(user.getUsername())) {
-                                    isFriend = true;
-                                    Log.i(TAG, "Found a friend!");
-                                    fabEdit.setImageResource(checkFriends());
+                                    fabEdit.setVisibility(View.INVISIBLE);
                                 }
                             }
                         }
@@ -217,24 +207,6 @@ public class ProfileFragment extends HomeFragment {
             Log.e(TAG, "Error getting friend count", e);
             friendCount = 0;
         }
-    }
-
-    private void removeFriend(){
-        ParseQuery<Friends> query = friendList.getQuery();
-        query.findInBackground(new FindCallback<Friends>() {
-            @Override
-            public void done(List<Friends> objects, ParseException e) {
-                for (int i = 0; i < objects.size(); i++) {
-                    objects.get(i).getFriends().getQuery().whereEqualTo("username", user.getUsername());
-                    objects.get(i).getFriends().getQuery().findInBackground();
-                    if (e != null) {
-                        Log.e(TAG, "Error removing friend!", e);
-                        Toast.makeText(getContext(), "Error removing friend from friends list!", Toast.LENGTH_SHORT).show();
-                    }
-                    Log.i(TAG, "Removed friend successfully!");
-                }
-            }
-        });
     }
 
     private void sendFriendRequest() {
@@ -262,7 +234,7 @@ public class ProfileFragment extends HomeFragment {
     }
 
     private int checkFriends() {
-        if (isFriend || sentRequest) {
+        if (sentRequest) {
             return R.drawable.ic_baseline_group_add_24;
         }
         return R.drawable.ic_outline_group_add_24;

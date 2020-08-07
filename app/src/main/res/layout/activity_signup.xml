@@ -32,6 +32,8 @@
         android:hint="@string/username"
         app:boxBackgroundMode="outline"
         app:boxStrokeColor="@color/colorAccent"
+        app:counterEnabled="true"
+        app:counterMaxLength="13"
         app:hintAnimationEnabled="true"
         app:hintEnabled="true"
         app:hintTextColor="@color/colorAccent"

@@ -43,14 +43,19 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
         this.profileUser = profileUser;
     }
 
-    public void addAll(List<Friends> c){
+    public void addAll(List<Friends> c) {
         friends.addAll(c);
         notifyDataSetChanged();
     }
 
-    public void clear(){
+    public void clear() {
         friends.clear();
         notifyDataSetChanged();
+    }
+
+    private void delete(int pos) {
+        friends.remove(pos);
+        notifyItemRemoved(pos);
     }
 
     @NonNull
@@ -63,7 +68,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Friends friend = friends.get(position);
-        holder.bind(friend);
+        holder.bind(friend, position);
     }
 
     @Override
@@ -88,7 +93,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
             itemView.setOnClickListener(this);
         }
 
-        public void bind(final Friends friend) {
+        public void bind(final Friends friend, final int pos) {
             ParseRelation relation = friend.getFriends();
             btnAccept.setVisibility(View.INVISIBLE);
             user = null;
@@ -120,6 +125,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                                 }
                             }
                         });
+                        delete(pos);
                     }
                 });
                 ParseFile photo = user.getParseFile("profilePic");
