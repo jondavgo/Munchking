@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.munchking.R;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -27,7 +28,12 @@ public class FBSignUpActivity extends SignupActivity {
     @Override
     protected void signUp(String username, String password, String email) {
         ParseUser user = ParseUser.getCurrentUser();
-        user.setUsername(username);
+        if (username.length() > 13) {
+            Toast.makeText(this, R.string.too_long, Toast.LENGTH_SHORT).show();
+            return;
+        } else {
+            user.setUsername(username);
+        }
         user.setPassword(password);
         user.saveInBackground(new SaveCallback() {
             @Override
