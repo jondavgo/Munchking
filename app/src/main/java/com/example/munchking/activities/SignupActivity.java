@@ -69,7 +69,12 @@ public class SignupActivity extends AppCompatActivity {
         // Create the ParseUser
         ParseUser user = new ParseUser();
         // Set core properties
-        user.setUsername(username);
+        if (username.length() > 13) {
+            Toast.makeText(this, R.string.too_long, Toast.LENGTH_SHORT).show();
+            return;
+        } else {
+            user.setUsername(username);
+        }
         user.setPassword(password);
         user.setEmail(email);
         // Set custom properties

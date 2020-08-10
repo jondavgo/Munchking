@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,7 +53,10 @@ public class PreferencesActivity extends AppCompatActivity {
     public static final String TAG = "PreferencesActivity";
     public static final String KEY_PREFERENCES = "favGames";
     private Chip[] chips;
+    private RadioButton[] radioButtons;
+    private String[] filters;
     private ChipGroup chipGroup;
+    private RadioGroup radioGroup;
     private String[] games;
     private Button btnCont;
     private Button btnSkip;
@@ -110,6 +115,11 @@ public class PreferencesActivity extends AppCompatActivity {
                 chips[i].setChecked(true);
             }
         }
+        if (ParseUser.getCurrentUser().getBoolean("filterFriends")) {
+            radioButtons[1].setChecked(true);
+        } else {
+            radioButtons[0].setChecked(true);
+        }
     }
 
     @Override
@@ -123,6 +133,7 @@ public class PreferencesActivity extends AppCompatActivity {
         ivPfp = findViewById(R.id.ivPfp);
         chips = new Chip[games.length];
         chipGroup = findViewById(R.id.cgChips);
+        radioGroup = findViewById(R.id.rgFilter);
         etUsername = findViewById(R.id.etUsername);
         loadBoxes();
         btnCont = findViewById(R.id.btnContinue);
@@ -135,6 +146,15 @@ public class PreferencesActivity extends AppCompatActivity {
                 LoginActivity.goToMain(PreferencesActivity.this);
             }
         });
+        filters = getResources().getStringArray(R.array.filter_array);
+        radioButtons = new RadioButton[filters.length];
+
+        for (int i = 0; i < radioButtons.length; i++) {
+            radioButtons[i] = new RadioButton(this);
+            radioButtons[i].setText(filters[i]);
+            radioGroup.addView(radioButtons[i]);
+        }
+
 
         btnCont.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -209,11 +229,22 @@ public class PreferencesActivity extends AppCompatActivity {
                 preferences.add(games[i]);
             }
         }
+        if (radioButtons[1].isChecked()) {
+            user.put("filterFriends", true);
+        } else {
+            user.put("filterFriends", false);
+        }
         user.put(KEY_PREFERENCES, new JSONArray(preferences));
         if (file != null) {
             user.put("profilePic", file);
         }
-        user.setUsername(etUsername.getText().toString());
+        String username = etUsername.getText().toString();
+        if (username.length() > 13) {
+            Toast.makeText(this, R.string.too_long, Toast.LENGTH_SHORT).show();
+            return;
+        } else {
+            user.setUsername(username);
+        }
         Toast.makeText(this, "Saving...please wait.", Toast.LENGTH_SHORT).show();
         user.saveInBackground(new SaveCallback() {
             @Override
