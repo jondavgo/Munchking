@@ -30,6 +30,7 @@ import com.example.munchking.R;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -52,6 +53,7 @@ public class PreferencesActivity extends AppCompatActivity {
 
     public static final String TAG = "PreferencesActivity";
     public static final String KEY_PREFERENCES = "favGames";
+    private TextInputLayout textInputLayout;
     private Chip[] chips;
     private RadioButton[] radioButtons;
     private String[] filters;
@@ -127,6 +129,7 @@ public class PreferencesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preferences);
         games = getResources().getStringArray(R.array.games_array);
+        textInputLayout = findViewById(R.id.tilUsername);
         btnCam = findViewById(R.id.btnCam);
         btnGallery = findViewById(R.id.btnGallery);
         tvTitle = findViewById(R.id.tvPreferences);
@@ -178,6 +181,7 @@ public class PreferencesActivity extends AppCompatActivity {
         });
 
         etUsername.setVisibility(View.GONE);
+        textInputLayout.setVisibility(View.GONE);
 
         // If this is being accessed from Profile Fragment, edit passed in user
         if (user != null) {
@@ -186,6 +190,7 @@ public class PreferencesActivity extends AppCompatActivity {
                 Glide.with(this).load(file.getUrl()).transform(new RoundedCorners(30)).into(ivPfp);
             }
             etUsername.setVisibility(View.VISIBLE);
+            textInputLayout.setVisibility(View.VISIBLE);
             etUsername.setText(user.getUsername());
             tvTitle.setText(String.format("%s's Settings", user.getUsername()));
             try {
