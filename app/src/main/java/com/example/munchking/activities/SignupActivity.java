@@ -73,7 +73,7 @@ public class SignupActivity extends AppCompatActivity {
         user.setPassword(password);
         user.setEmail(email);
         // Set custom properties
-
+        user.put("filterFriends", false);
         // Invoke signUpInBackground
         user.signUpInBackground(new SignUpCallback() {
             public void done(ParseException e) {

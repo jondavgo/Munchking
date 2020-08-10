@@ -1,6 +1,18 @@
 package com.example.munchking.fragments;
 
 import android.os.Bundle;
+import android.transition.ChangeBounds;
+import android.transition.Transition;
+import android.transition.TransitionManager;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AnticipateOvershootInterpolator;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -8,40 +20,22 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.transition.Slide;
-
-import android.transition.ChangeBounds;
-import android.transition.Transition;
-import android.transition.TransitionManager;
-import android.transition.Visibility;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.AnticipateOvershootInterpolator;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.Switch;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.munchking.EndlessRecyclerViewScrollListener;
 import com.example.munchking.R;
 import com.example.munchking.activities.PreferencesActivity;
 import com.example.munchking.adapters.CharactersAdapter;
 import com.example.munchking.models.CharPost;
+import com.example.munchking.models.Friends;
 import com.google.android.material.transition.MaterialElevationScale;
-import com.google.android.material.transition.MaterialSharedAxis;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
 
 import org.json.JSONArray;
@@ -63,6 +57,9 @@ public class HomeFragment extends Fragment {
     protected JSONArray array;
     protected CharactersAdapter adapter;
     protected List<CharPost> charPosts;
+    private boolean filterFriends;
+    private ParseQuery<CharPost> query;
+
     private ImageView ivSelect;
     private TextView tvSelDate;
     private TextView tvSelDist;
@@ -72,7 +69,6 @@ public class HomeFragment extends Fragment {
     private ProgressBar pbLoading;
     private SwipeRefreshLayout swipeContainer;
     private EndlessRecyclerViewScrollListener scrollListener;
-
     protected RecyclerView rvChars;
 
     public HomeFragment() {
@@ -94,6 +90,8 @@ public class HomeFragment extends Fragment {
         array = ParseUser.getCurrentUser().getJSONArray("favGames");
         fragMan = getFragmentManager();
         map = new MapsFragment();
+        filterFriends = ParseUser.getCurrentUser().getBoolean("filterFriends");
+        Log.i(TAG, "filter by friends is " + filterFriends);
 
         rvChars = view.findViewById(R.id.rvChars);
         ivSelect = view.findViewById(R.id.ivSelect);
@@ -105,6 +103,36 @@ public class HomeFragment extends Fragment {
         pbLoading = view.findViewById(R.id.pbLoading);
         swipeContainer = view.findViewById(R.id.swipeContainer);
 
+        query = ParseQuery.getQuery(CharPost.class);
+        query.include(CharPost.KEY_USER);
+        query.whereNotEqualTo(CharPost.KEY_USER, ParseUser.getCurrentUser());
+        if (!filterFriends) {
+            try {
+                query.whereContainedIn(CharPost.KEY_TTRPG, PreferencesActivity.fromJSONArray(array));
+            } catch (JSONException e) {
+                Log.e(TAG, "JSON Exception during home query!", e);
+            }
+        } else {
+            ParseRelation<Friends> friends = ParseUser.getCurrentUser().getRelation(ProfileFragment.KEY_FRIEND);
+            ParseQuery<Friends> friendsQuery = friends.getQuery();
+            try {
+                List<ParseUser> userList = new ArrayList<>();
+                List<Friends> friendsList = friendsQuery.find();
+                for (Friends friend : friendsList) {
+                    ParseQuery<ParseUser> userQuery = friend.getFriends().getQuery();
+                    List<ParseUser> users = userQuery.find();
+                    for (ParseUser obj : users) {
+                        if (!obj.getUsername().equals(ParseUser.getCurrentUser().getUsername())) {
+                            userList.add(obj);
+                        }
+                    }
+                }
+                query.whereContainedIn(CharPost.KEY_USER, userList);
+            } catch (ParseException e) {
+                Log.e(TAG, "Query error!", e);
+            }
+        }
+
         rvChars.setAdapter(adapter);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         rvChars.setLayoutManager(manager);
@@ -112,7 +140,7 @@ public class HomeFragment extends Fragment {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                fetchTimelineAsync(0);
+                fetchTimelineAsync();
                 rvChars.scrollToPosition(0);
             }
         });
@@ -174,7 +202,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private void fetchTimelineAsync(int i) {
+    private void fetchTimelineAsync() {
         checkPosition();
         swipeContainer.setRefreshing(false);
     }
@@ -244,21 +272,13 @@ public class HomeFragment extends Fragment {
 
     protected void query(int i) {
         adapter.setSort(0);
-        ParseQuery<CharPost> query = ParseQuery.getQuery(CharPost.class);
-        query.include(CharPost.KEY_USER);
-        query.whereNotEqualTo(CharPost.KEY_USER, ParseUser.getCurrentUser());
         query.orderByDescending(CharPost.KEY_DATE);
         query.setLimit(CHAR_MAX);
         query.setSkip(i * CHAR_MAX);
-        try {
-            query.whereContainedIn(CharPost.KEY_TTRPG, PreferencesActivity.fromJSONArray(array));
-        } catch (JSONException e) {
-            Log.e(TAG, "JSON Exception during home query!", e);
-        }
         query.findInBackground(new FindCallback<CharPost>() {
             @Override
             public void done(List<CharPost> objects, ParseException e) {
-                if(e == null){
+                if (e == null) {
                     adapter.addAll(objects);
                     pbLoading.setVisibility(View.INVISIBLE);
                 } else {
@@ -267,18 +287,12 @@ public class HomeFragment extends Fragment {
                 }
             }
         });
+        query.setSkip(0);
+        query.setLimit(-1);
     }
 
     private void queryByDistance(){
         adapter.setSort(1);
-        ParseQuery<CharPost> query = ParseQuery.getQuery(CharPost.class);
-        query.include(CharPost.KEY_USER);
-        query.whereNotEqualTo(CharPost.KEY_USER, ParseUser.getCurrentUser());
-        try {
-            query.whereContainedIn(CharPost.KEY_TTRPG, PreferencesActivity.fromJSONArray(array));
-        } catch (JSONException e) {
-            Log.e(TAG, "JSON Exception during home query!", e);
-        }
         query.findInBackground(new FindCallback<CharPost>() {
             @Override
             public void done(List<CharPost> objects, ParseException e) {
@@ -296,14 +310,6 @@ public class HomeFragment extends Fragment {
 
     private void queryByRating(){
         adapter.setSort(2);
-        ParseQuery<CharPost> query = ParseQuery.getQuery(CharPost.class);
-        query.include(CharPost.KEY_USER);
-        query.whereNotEqualTo(CharPost.KEY_USER, ParseUser.getCurrentUser());
-        try {
-            query.whereContainedIn(CharPost.KEY_TTRPG, PreferencesActivity.fromJSONArray(array));
-        } catch (JSONException e) {
-            Log.e(TAG, "JSON Exception during home query!", e);
-        }
         query.findInBackground(new FindCallback<CharPost>() {
             @Override
             public void done(List<CharPost> objects, ParseException e) {
@@ -320,7 +326,7 @@ public class HomeFragment extends Fragment {
     }
 
     private List<CharPost> mergeSort(List<CharPost> list, ParseGeoPoint parseGeoPoint, boolean rating) {
-        if(list.size() == 1){
+        if (list.size() <= 1) {
             return list;
         }
         int mid = list.size()/2;
