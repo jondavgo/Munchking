@@ -1,16 +1,6 @@
 package com.example.munchking.fragments;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.util.Pair;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import androidx.transition.Slide;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,7 +11,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.util.Pair;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.transition.Fade;
+import androidx.transition.Slide;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
@@ -29,6 +29,7 @@ import com.example.munchking.R;
 import com.example.munchking.adapters.TraitEquipAdapter;
 import com.example.munchking.dialogs.AddItemDialog;
 import com.example.munchking.models.CharPost;
+import com.google.android.material.transition.MaterialElevationScale;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -36,7 +37,6 @@ import com.parse.SaveCallback;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.text.DecimalFormat;
@@ -65,6 +65,7 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
     private Button btnComments;
     private Button btnTrait;
     private Button btnEquip;
+    private Button btnDetail;
     private LinearLayout llDesc;
     private TextView tvDescription;
     private LinearLayout llTrait;
@@ -106,6 +107,7 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
         btnTrait = itemView.findViewById(R.id.btnAddTrait);
         rbRatings = itemView.findViewById(R.id.rbRatings);
         tvRatings = itemView.findViewById(R.id.tvRatings);
+        btnDetail = itemView.findViewById(R.id.btnEdit);
 
         charPost = Parcels.unwrap(getArguments().getParcelable("post"));
         isAuthor = ParseUser.getCurrentUser().getUsername().equals(charPost.getUser().getUsername());
@@ -133,6 +135,7 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
         if(!isAuthor){
             btnEquip.setVisibility(View.GONE);
             btnTrait.setVisibility(View.GONE);
+            btnDetail.setVisibility(View.GONE);
         }
 
         // Fill view with data
@@ -211,10 +214,16 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
                 addItem(traitAdapter, true);
             }
         });
+        btnDetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editThis();
+            }
+        });
         rbRatings.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
-                if(b){
+                if (b) {
                     try {
                         setRating((int) v);
                     } catch (JSONException e) {
@@ -225,11 +234,22 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
         });
     }
 
+    private void editThis() {
+        Fragment fragment = ComposeFragment.newInstance(charPost);
+        fragment.setEnterTransition(new MaterialElevationScale(true));
+        fragment.setExitTransition(new Fade());
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.flContainer, fragment, "edit");
+        fragmentTransaction.addToBackStack("details");
+        fragmentTransaction.commit();
+    }
+
     private void setRating(int v) throws JSONException {
-        if(ratingPos == -1){
+        if (ratingPos == -1) {
             ratingPos = charPost.addRating();
         }
-        if(v == 0){
+        if (v == 0) {
             charPost.removeRating(ratingPos);
             ratingPos = -1;
         } else {

@@ -26,12 +26,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
+import androidx.core.util.Pair;
 import androidx.exifinterface.media.ExifInterface;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.transition.Slide;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.munchking.R;
 import com.example.munchking.models.CharPost;
 import com.google.android.material.textfield.TextInputEditText;
@@ -41,6 +44,7 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.parceler.Parcels;
 
 import java.io.ByteArrayOutputStream;
@@ -74,6 +78,15 @@ public class ComposeFragment extends Fragment {
     private TextInputEditText etClass;
     private TextInputEditText etRace;
     private TextInputEditText etDesc;
+    private CharPost post;
+
+    public static ComposeFragment newInstance(CharPost post) {
+        ComposeFragment frag = new ComposeFragment();
+        Bundle args = new Bundle();
+        args.putParcelable("post", Parcels.wrap(post));
+        frag.setArguments(args);
+        return frag;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -121,7 +134,11 @@ public class ComposeFragment extends Fragment {
                 String classes = etClass.getText().toString();
                 String race = etRace.getText().toString();
                 String description = etDesc.getText().toString();
-                savePost(name, selectedGame, ParseUser.getCurrentUser(), file, classes, race, description);
+                if (post != null) {
+                    updatePost(name, selectedGame, file, classes, race, description);
+                } else {
+                    savePost(name, selectedGame, ParseUser.getCurrentUser(), file, classes, race, description);
+                }
             }
         });
 
@@ -141,13 +158,65 @@ public class ComposeFragment extends Fragment {
                 Log.i(TAG, "Nothing to report.");
             }
         });
+
+        if (getArguments() != null) {
+            post = Parcels.unwrap(getArguments().getParcelable("post"));
+        }
+        if (post != null) {
+            loadPost();
+            btnPost.setText(R.string.save);
+        }
+    }
+
+    private void updatePost(String name, String ttrpg, ParseFile myFile, String classes, String race, String description) {
+        post.setName(name);
+        post.setTtrpg(ttrpg);
+        if (myFile != null) {
+            post.setPhoto(myFile);
+        }
+        post.setClasses(classes);
+        post.setRace(race);
+        post.setDesc(description);
+        post.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Error while saving", e);
+                    Toast.makeText(getContext(), "Error while saving!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Toast.makeText(getContext(), R.string.edits_saved, Toast.LENGTH_SHORT).show();
+                etCharName.setText("");
+                etClass.setText("");
+                etRace.setText("");
+                etDesc.setText("");
+                ivPreview.setImageResource(0);
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
+    }
+
+    private void loadPost() {
+        etCharName.setText(post.getName());
+        etDesc.setText(post.getDesc());
+        etClass.setText(post.getClasses());
+        etRace.setText(post.getRace());
+        ParseFile photo = post.getPhoto();
+        if (photo != null) {
+            Glide.with(context).load(photo.getUrl()).transform(new RoundedCorners(30)).into(ivPreview);
+        }
+        for (int i = 0; i < games.length; i++) {
+            if (games[i].equals(post.getTtrpg())) {
+                spinner.setSelection(i);
+            }
+        }
     }
 
     private void savePost(String name, String ttrpg, ParseUser user, ParseFile myFile, String classes, String race, String description) {
         final CharPost post = new CharPost();
         post.setName(name);
         post.setTtrpg(ttrpg);
-        if(myFile != null) {
+        if (myFile != null) {
             post.setPhoto(myFile);
         }
         post.setUser(user);
@@ -156,15 +225,24 @@ public class ComposeFragment extends Fragment {
         post.setDesc(description);
         post.setTraits(new JSONArray());
         post.setEquipment(new JSONArray());
+        Pair<String, String> item = new Pair<>("New Item", "Press and hold onto me to edit what's inside!");
+        try {
+            post.addTraitEquip(item, true);
+            post.addTraitEquip(item, false);
+        } catch (JSONException e) {
+            Log.e(TAG, "Error while saving", e);
+            Toast.makeText(getContext(), "Error while saving!", Toast.LENGTH_SHORT).show();
+            return;
+        }
         post.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
-                if(e != null){
+                if (e != null) {
                     Log.e(TAG, "Error while saving", e);
                     Toast.makeText(getContext(), "Error while saving!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Toast.makeText(getContext(), "Post saved!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.posts_saved, Toast.LENGTH_SHORT).show();
                 etCharName.setText("");
                 etClass.setText("");
                 etRace.setText("");
@@ -234,7 +312,7 @@ public class ComposeFragment extends Fragment {
                     break;
             }
         } else {
-            Toast.makeText(getContext(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.pic_not_taken, Toast.LENGTH_SHORT).show();
         }
     }
 

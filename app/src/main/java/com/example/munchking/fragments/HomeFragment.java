@@ -91,7 +91,6 @@ public class HomeFragment extends Fragment {
         fragMan = getFragmentManager();
         map = new MapsFragment();
         filterFriends = ParseUser.getCurrentUser().getBoolean("filterFriends");
-        Log.i(TAG, "filter by friends is " + filterFriends);
 
         rvChars = view.findViewById(R.id.rvChars);
         ivSelect = view.findViewById(R.id.ivSelect);

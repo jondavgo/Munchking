@@ -63,4 +63,9 @@
     <string name="snack_bar_text">Character successfully deleted</string>
     <string name="invalid_email">Invalid email address!</string>
     <string name="too_long">Your username is too long!</string>
+    <string name="edit_details">Edit Details</string>
+    <string name="save">Save</string>
+    <string name="edits_saved">Edits saved!</string>
+    <string name="posts_saved">Post saved!</string>
+    <string name="pic_not_taken">Picture wasn\'t taken!</string>
 </resources>
