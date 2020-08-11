@@ -412,5 +412,6 @@ public class HomeFragment extends Fragment {
         if(selectorPos == 2 && fragMan != null) {
             dismissMapFragment();
         }
+        selectorPos = 0;
     }
 }
