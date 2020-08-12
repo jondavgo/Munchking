@@ -298,13 +298,9 @@ public class DetailFragment extends Fragment implements AddItemDialog.EditDialog
         Pair<String, String> item = new Pair<>("New Item", "Press and hold onto me to edit what's inside!");
         try {
             charPost.addTraitEquip(item, trait);
-            charPost.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    Log.i(TAG, "Added item to backend! Trait?: " + trait);
-                }
-            });
-        } catch (JSONException e) {
+            charPost.save();
+            Log.i(TAG, "Item saved!");
+        } catch (Exception e) {
             e.printStackTrace();
         }
         adapter.add(item);
