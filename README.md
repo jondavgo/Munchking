@@ -3,6 +3,8 @@
 ## Table of Contents
 1. [Overview](#Overview)
 2. [Product Spec](#Product-Spec)
+3. [Screen Archetypes](#Screen-Archetypes)
+4. [Navigation](#Navigation)
 
 ## Overview
 ### Description
@@ -17,8 +19,6 @@ This app allows its users to upload D&D (or any TTRPG) charPost, browse other us
 - **Scope:** The app seems reasonable to make in 4 weeks. Even stripped to its bare bones, the app provides many interesting challenges for myself as an app developer.
 
 ## Product Spec
-
-### 1. User Stories (Required and Optional)
 
 **Required Must-have Stories**
 
@@ -44,7 +44,7 @@ This app allows its users to upload D&D (or any TTRPG) charPost, browse other us
 * Users can choose to sort their home page by distance, top ratings, or date
 * Users can send friend requests to each other and filter their home page by either favorite games or friends
 
-### 2. Screen Archetypes
+## Screen Archetypes
 
 * Log-in screen
    * Users can create an account for the platform and log into it from their device.
@@ -80,7 +80,7 @@ This app allows its users to upload D&D (or any TTRPG) charPost, browse other us
 * Settings screen
     * Allows user to change basic settings for their profile
 
-### 3. Navigation
+## Navigation
 
 **Tab Navigation** (Tab to Screen)
 
