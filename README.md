@@ -2,9 +2,7 @@
 
 ## Table of Contents
 1. [Overview](#Overview)
-1. [Product Spec](#Product-Spec)
-1. [Wireframes](#Wireframes)
-2. [Schema](#Schema)
+2. [Product Spec](#Product-Spec)
 
 ## Overview
 ### Description
@@ -29,21 +27,22 @@ This app allows its users to upload D&D (or any TTRPG) charPost, browse other us
 * Users can view their own posts and the posts of other people on the app in a "timeline".
 * Users can post their own images with text descriptions either from the camera.
 * Posts can be tapped on to have a more detailed view of the post.
-* Users can comment or like another user's post from the detailed view.
+* Users can comment another user's post from the detailed view.
 * Users have their own user page that lists their posts
 * Users can log off from inside their own user page
 * App has animated transitions between each screen
 
 **Optional Nice-to-have Stories**
 
-* Users can tap images in the detailed view to get a closer look at the image and use two fingers to zoom as they see fit.
 * Users can filter the posts on their screen by the games they are interested in
 * The app has a clean and succinct user interface
-* The posts the user previously viewed are persisted when the app is offline
-* User page also lists posts the user has liked
 * User page lists the perferred games of the user
 * User can post images they have saved instead of just from the camera
 * Users can view other people's user pages by clicking on their profile images
+* Users can view a map that contains the locations of other users
+* Users can add ratings to character posts
+* Users can choose to sort their home page by distance, top ratings, or date
+* Users can send friend requests to each other and filter their home page by either favorite games or friends
 
 ### 2. Screen Archetypes
 
@@ -55,11 +54,10 @@ This app allows its users to upload D&D (or any TTRPG) charPost, browse other us
     * Posts can be tapped on to have a more detailed view of the post.
     * Users can filter the posts on their screen by the games they are interested in
     * The posts the user previously viewed are persisted when the app is offline
+    * Users can change their sorting method or view the map
 * Detailed screen
     * Users can comment or like another user's post from the detailed view.
     * Users can view other people's user pages by clicking on their profile images
-* Image screen
-    * Users can tap images in the detailed view to get a closer look at the image and use two fingers to zoom in/out.
 * User screen
     * Users have their own user page that lists their posts
     * Users can log off from inside their own user page
@@ -68,6 +66,19 @@ This app allows its users to upload D&D (or any TTRPG) charPost, browse other us
 * Posting screen
     * Users can post their own images with text descriptions either from their camera.
     * User can post images they have saved instead of just from the camera.
+* Requests screen
+    * Users can see any incoming friend requests and accept or decline them
+* Map screen
+    * Users can view all active users' locations on map (if permission is given) via a marker
+    * Clicking on a marker gives you the option to view the profile screen
+* Friends screen
+    * User can see the friends of the profile they are viewing
+    * Clicking a friend in the list provides their profile
+    * Users can unfriend people from here
+* Comments screen
+    * Allows users to view and post comments
+* Settings screen
+    * Allows user to change basic settings for their profile
 
 ### 3. Navigation
 
@@ -75,7 +86,8 @@ This app allows its users to upload D&D (or any TTRPG) charPost, browse other us
 
 * Tab 1: Main Screen
 * Tab 2: Posting Screen
-* Tab 3: User Screen
+* Tab 3: Requests Screen
+* Tab 4: User Screen
 
 **Flow Navigation** (Screen to Screen)
 
@@ -84,30 +96,19 @@ This app allows its users to upload D&D (or any TTRPG) charPost, browse other us
 * Main Screen
    * Detailed Screen (click on a post)
    * Log-in Screen (user is not logged in yet)
+   * Map Screen
 * Detailed Screen
-    * User Screen (Stretch goal, click on profile picture)
-    * Image Screen (click on image)
-* Image Screen
-    * --
+    * User Screen (Stretch goal, click on profile name)
+    * Comments screen
 * User Screen
     * Detailed Screen (click on a post)
     * Log-in Screen (after logging out)
+    * Friends Screen (clicking on friends)
+    * Setting Screen (clicking on setting FAB)
 * Post Screen
     * Main Screen (after posting)
-
-## Wireframes
-[Add picture of your hand sketched wireframes in this section]
-<img src="YOUR_WIREFRAME_IMAGE_URL" width=600>
-
-### [BONUS] Digital Wireframes & Mockups
-
-### [BONUS] Interactive Prototype
-
-## Schema 
-[This section will be completed in Unit 9]
-### Models
-[Add table of models]
-### Networking
-- [Add list of network requests by screen ]
-- [Create basic snippets for each Parse network request]
-- [OPTIONAL: List endpoints if using existing API such as Yelp]
+* Friends Screen
+    * User Screen (click on a friend)
+* Setting Screen
+    * Main Screen (click 'save changes')
+    * User Screen (click 'cancel')
